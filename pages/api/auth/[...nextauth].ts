@@ -28,9 +28,9 @@ export default NextAuth({
           throw new Error("Invalid Username Or Password!!!");
         }
 
-        const user = await prisma.user.findUnique({
+        const user = await prisma.employee.findUnique({
           where: {
-            email: username,
+            userName: username,
           },
         });
 
@@ -38,7 +38,7 @@ export default NextAuth({
           throw new Error("Invalid User!!!");
         }
 
-        const isPasswordValid = await compare(password, user.password);
+        const isPasswordValid = await compare(password, user.passWord);
 
         // if (!isPasswordValid) {
         //   throw new Error("Invalid Password!!!");
@@ -47,7 +47,7 @@ export default NextAuth({
         const token = jwt.sign(
           {
             id: user.id,
-            username: user.email,
+            username: user.userName,
             role: user.role,
             exp: Math.floor(Date.now() / 1000) + (60 * 60 * 8), // 8 ชั่วโมง
           },

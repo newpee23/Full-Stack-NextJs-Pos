@@ -4,14 +4,12 @@ import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 
 export default function Home() {
-  const [username, setUsername] = useState("admin@gmail.com");
-  const [password, setPassword] = useState("123456789");
+  const [username, setUsername] = useState("admin");
+  const [password, setPassword] = useState("admin");
   const [date, setDate] = useState(new Date());
   const { data: session, update } = useSession();
 
   async function updateSession() {
-
-
     await update({
       ...session,
       user: {

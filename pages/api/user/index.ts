@@ -1,8 +1,8 @@
-// pages/api/someRoute.ts
+// pages/api/user
 
 import { NextApiRequest, NextApiResponse } from 'next';
 import authenticate from '../checkToken';
-// import authenticate from '@/middleware';
+import { prisma } from "@/pages/lib/prismaDB";
 
 export default authenticate(async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'GET') {
@@ -10,14 +10,15 @@ export default authenticate(async (req: NextApiRequest, res: NextApiResponse) =>
   } else if (req.method === 'POST') {
     POST(req, res);
   } else {
-    res.status(405).end(); // 405 Method Not Allowed สำหรับเมธอดอื่น ๆ ที่ไม่ได้ระบุ
+    res.status(405).end();
   }
 });
-
+// getUser
 export async function GET(req: NextApiRequest, res: NextApiResponse) {
-  res.status(200).json({ message: 'GET คำขอถูกต้อง'});
+  const company = await prisma.company.findMany();
+  res.status(200).json({ message: 'GET คำขอถูกต้อง', result : company});
 }
-
+// addUser
 export async function POST(req: NextApiRequest, res: NextApiResponse) {
   // โค้ดสำหรับ HTTP POST request
   const body = await req.body;

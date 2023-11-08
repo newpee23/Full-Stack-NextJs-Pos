@@ -11,46 +11,57 @@ datasource db {
 }
 
 model Company {
-  id        Int        @id @default(autoincrement())
-  name      String     @db.VarChar(50)
-  createdAt DateTime   @default(now())
-  address   String
-  tax       String     @db.VarChar(30)
-  phone     String     @db.VarChar(10)
-  email     String     @db.VarChar(50)
-  logo      String     @unique @db.VarChar(50)
-  status    enumStatus @default(Active)
-  branchs   Branch[] // one to maney
-  products  Product[]
-  units     Unit[]
+  id           Int           @id @default(autoincrement())
+  name         String        @db.VarChar(50)
+  createdAt    DateTime      @default(now())
+  address      String
+  tax          String        @db.VarChar(30)
+  phone        String        @db.VarChar(10)
+  email        String        @db.VarChar(50)
+  logo         String        @default("-") @db.VarChar(50)
+  status       enumStatus    @default(Active)
+  branchs      Branch[] // one to maney
+  products     Product[]
+  units        Unit[]
+  ProductTypes ProductType[]
+  Promotions   Promotion[]
+  Positions    Position[]
+  tabless      Tables[]
+  expenses     Expenses[]
+  employees     Employee[]
 }
 
 model Branch {
-  id          Int        @id @default(autoincrement())
-  name        String     @db.VarChar(50)
-  codeReceipt String     @db.VarChar(10)
-  address     String
-  createdAt   DateTime   @default(now())
-  expiration  DateTime
-  phone       String     @db.VarChar(10)
-  company     Company    @relation(fields: [companyId], references: [id]) // Foreign Key
-  companyId   Int
-  status      enumStatus @default(Active)
+  id           Int           @id @default(autoincrement())
+  name         String        @db.VarChar(50)
+  codeReceipt  String        @db.VarChar(10)
+  address      String
+  createdAt    DateTime      @default(now())
+  expiration   DateTime
+  phone        String        @db.VarChar(10)
+  company      Company       @relation(fields: [companyId], references: [id]) // Foreign Key
+  companyId    Int
+  status       enumStatus    @default(Active)
+  tabless      Tables[]
+  transactions Transaction[]
+  employees     Employee[]
 }
 
 model Product {
-  id            Int         @id @default(autoincrement())
-  name          String      @db.VarChar(50)
-  cost          Float       @default(0.00)
-  price         Float       @default(0.00)
-  img           String      @unique @db.VarChar(50)
-  unit          Unit        @relation(fields: [unitId], references: [id])
-  unitId        Int
-  productType   ProductType @relation(fields: [productTypeId], references: [id])
-  productTypeId Int
-  company       Company     @relation(fields: [companyId], references: [id])
-  companyId     Int
-  status        enumStatus  @default(Active)
+  id               Int               @id @default(autoincrement())
+  name             String            @db.VarChar(50)
+  cost             Float             @default(0.00)
+  price            Float             @default(0.00)
+  stock            Int
+  img              String            @default("-") @db.VarChar(50)
+  unit             Unit              @relation(fields: [unitId], references: [id])
+  unitId           Int
+  productType      ProductType       @relation(fields: [productTypeId], references: [id])
+  productTypeId    Int
+  company          Company           @relation(fields: [companyId], references: [id])
+  companyId        Int
+  status           enumStatus        @default(Active)
+  ItemTransactions ItemTransaction[]
 }
 
 model Unit {
@@ -65,108 +76,124 @@ model Unit {
 model ProductType {
   id        Int        @id @default(autoincrement())
   name      String     @db.VarChar(50)
+  company   Company    @relation(fields: [companyId], references: [id])
   companyId Int
   status    enumStatus @default(Active)
   Products  Product[]
 }
 
 model Promotion {
-  id               Int        @id @default(autoincrement())
-  name             String     @db.VarChar(50)
+  id               Int             @id @default(autoincrement())
+  name             String          @db.VarChar(50)
   detail           String
-  promotionalPrice Float      @default(0.00)
+  promotionalPrice Float           @default(0.00)
   startDate        DateTime
   endDate          DateTime
-  img              String     @db.VarChar(50)
+  img              String          @default("-") @db.VarChar(50)
+  company          Company         @relation(fields: [companyId], references: [id])
   companyId        Int
-  status           enumStatus @default(Active)
+  status           enumStatus      @default(Active)
+  ItemPromotions   ItemPromotion[]
 }
 
-model itemPromotion {
-  id          Int        @id @default(autoincrement())
+model ItemPromotion {
+  id          Int       @id @default(autoincrement())
   productId   Int
-  price       Float      @default(0.00)
-  companyId   Int
+  price       Float     @default(0.00)
+  promotion   Promotion @relation(fields: [promotionId], references: [id])
   promotionId Int
-  status      enumStatus @default(Active)
 }
 
-model employee {
-  id         Int        @id @default(autoincrement())
-  name       String     @db.VarChar(50)
-  subname    String     @db.VarChar(50)
-  age        Int
-  cardId     String     @db.VarChar(30)
-  userName   String     @unique
-  passWord   String
-  companyId  Int
-  branchId   Int
-  positionId Int
-  status     enumStatus @default(Active)
+model Employee {
+  id           Int           @id @default(autoincrement())
+  name         String        @db.VarChar(50)
+  subname      String        @db.VarChar(50)
+  age          Int
+  cardId       String        @db.VarChar(30)
+  userName     String        @unique
+  passWord     String
+  company      Company       @relation(fields: [companyId], references: [id])
+  companyId    Int
+  branch       Branch        @relation(fields: [branchId], references: [id])
+  branchId     Int
+  position     Position      @relation(fields: [positionId], references: [id])
+  positionId   Int
+  role         enumrole      @default(user)
+  status       enumStatus    @default(Active)
+  transactions Transaction[]
 }
 
 model Position {
   id        Int        @id @default(autoincrement())
   name      String     @db.VarChar(50)
   salary    Float      @default(0.00)
+  company   Company    @relation(fields: [companyId], references: [id])
   companyId Int
   status    enumStatus @default(Active)
+  employees Employee[]
 }
 
-model tables {
+model Tables {
   id         String     @id @unique @default(uuid())
   name       String     @db.VarChar(50)
   stoves     Int
   people     Int
   expiration Int // เวลาหมดโต๊ะ (นาที)
+  branch     Branch     @relation(fields: [branchId], references: [id])
   branchId   Int
+  company    Company    @relation(fields: [companyId], references: [id])
   companyId  Int
   status     enumStatus @default(Active)
 }
 
-model Stock {
-  id        Int @id @default(autoincrement())
-  productId Int
-  qty       Int
-  branchId  Int
+model Transaction {
+  id               Int               @id @default(autoincrement())
+  tableId          String
+  receipt          String            @db.VarChar(30)
+  startOrder       DateTime
+  endOrder         DateTime
+  peoples          Int
+  totalPrice       Float             @default(0.00)
+  branch           Branch            @relation(fields: [branchId], references: [id])
+  branchId         Int
+  employee         Employee          @relation(fields: [employeeId], references: [id])
+  employeeId       Int
+  status           enumStatus        @default(Active)
+  ItemTransactions ItemTransaction[]
 }
 
-model transaction {
-  id         Int        @id @default(autoincrement())
-  tableId    String
-  receipt    String     @db.VarChar(30)
-  startOrder DateTime
-  endOrder   DateTime
-  peoples    Int
-  totalPrice Float      @default(0.00)
-  branchId   Int
-  employeeId Int
-  status     enumStatus @default(Active)
-}
-
-model itemTransaction {
-  id            Int @id @default(autoincrement())
+model ItemTransaction {
+  id            Int         @id @default(autoincrement())
   qty           Int
+  product       Product     @relation(fields: [productId], references: [id])
   productId     Int
+  transaction   Transaction @relation(fields: [transactionId], references: [id])
   transactionId Int
 }
 
-model expenses {
-  id        Int        @id @default(autoincrement())
-  name      String     @db.VarChar(50)
-  companyId Int
-  status    enumStatus @default(Active)
+model Expenses {
+  id           Int            @id @default(autoincrement())
+  name         String         @db.VarChar(50)
+  company      Company        @relation(fields: [companyId], references: [id])
+  companyId    Int
+  status       enumStatus     @default(Active)
+  itemExpenses ItemExpenses[]
 }
 
-model itemExpenses {
-  id         Int   @id @default(autoincrement())
-  price      Float @default(0.00)
+model ItemExpenses {
+  id         Int      @id @default(autoincrement())
+  price      Float    @default(0.00)
+  expenses   Expenses @relation(fields: [expensesId], references: [id])
   expensesId Int
-  branchId   Int
-  companyId  Int
 }
 
 enum enumStatus {
   Active
   InActive
+}
+
+enum enumrole {
+  admin
+  userAdmin
+  user
 }
