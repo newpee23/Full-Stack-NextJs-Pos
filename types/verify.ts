@@ -6,6 +6,7 @@ export interface tokenType {
 }
 
 export interface dataVerifyCompany {
+  id? : number;
   name: string;
   address: string;
   tax: string;
@@ -15,7 +16,18 @@ export interface dataVerifyCompany {
   status: "Active" | "InActive";
 }
 
+export interface dataVerifyBranch {
+  id? : number;
+  name: string;
+  codeReceipt: string;
+  address: string;
+  createdAt: Date;
+  expiration: Date;
+  phone: string;
+  companyId: number;
+  status: "Active" | "InActive";
+}
+
 export interface promiseDataVerify {
   message: string;
-  status: boolean;
 }

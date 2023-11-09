@@ -8,15 +8,26 @@ export const verifyUserId = async (token: string): Promise<boolean> => {
   }
 
   const tokenData = getDataToken(token);
-  //   check user
-  const user = await prisma.employee.findUnique({
-    where: {
-      userName: tokenData.username,
-    },
-  });
-
-  if (!user) {
+  if (!tokenData) {
     return false;
   }
+
+  //   check user
+  try {
+    const user = await prisma.employee.findUnique({
+      where: {
+        userName: tokenData.username,
+      },
+    });
+    
+    if (!user) {
+      return false;
+    }
+  } catch (error) {
+    return false;
+  } finally {
+    await prisma.$disconnect();
+  }
+
   return true;
 };

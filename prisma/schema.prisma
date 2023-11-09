@@ -12,13 +12,13 @@ datasource db {
 
 model Company {
   id           Int           @id @default(autoincrement())
-  name         String        @db.VarChar(50)
+  name         String        @db.VarChar(50) 
   createdAt    DateTime      @default(now())
   address      String
   tax          String        @db.VarChar(30)
   phone        String        @db.VarChar(10)
   email        String        @db.VarChar(50)
-  logo         String        @default("-") @db.VarChar(50)
+  logo         String?        @db.VarChar(50)
   status       enumStatus    @default(Active)
   branchs      Branch[] // one to maney
   products     Product[]
@@ -53,7 +53,7 @@ model Product {
   cost             Float             @default(0.00)
   price            Float             @default(0.00)
   stock            Int
-  img              String            @default("-") @db.VarChar(50)
+  img              String?            @db.VarChar(50)
   unit             Unit              @relation(fields: [unitId], references: [id])
   unitId           Int
   productType      ProductType       @relation(fields: [productTypeId], references: [id])
