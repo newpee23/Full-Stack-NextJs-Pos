@@ -1,7 +1,7 @@
 import { dataVerifyBranch, promiseDataVerify } from "@/types/verify";
 import { dateTimeIso, checkDate1translate2, isDate } from "./timeZone";
 import { getCompanyById } from "./company";
-import { fetchBranch, fetchCompany } from "@/types/fetchData";
+import { fetchBranch } from "@/types/fetchData";
 import { prisma } from "@/pages/lib/prismaDB";
 
 const phonePattern = /^[0-9]+$/;
