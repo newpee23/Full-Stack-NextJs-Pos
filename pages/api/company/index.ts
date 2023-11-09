@@ -34,7 +34,7 @@ export const GET = async (req: NextApiRequest, res: NextApiResponse) => {
   } else {
        // getCompany All
        const company = await getAllCompany();
-       if(!company){
+       if(company === null || company.length === 0){
          res.status(401).json({ message: `GET คำขอถูกปฏิเสธ : ไม่พบข้อมูล Company ทั้งหมด`, company: null, status: false });
          return;
        }

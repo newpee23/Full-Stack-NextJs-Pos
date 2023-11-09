@@ -9,7 +9,7 @@ const pushData = (message: string) => {
     return { message };
 };
 
-export const verifybranchBody = (data: dataVerifyBranch): promiseDataVerify[] => {
+export const verifyBranchBody = (data: dataVerifyBranch): promiseDataVerify[] => {
     const verifyStatus: promiseDataVerify[] = [];
 
     if (!data.name) verifyStatus.push(pushData("ไม่พบข้อมูล : name"));
@@ -97,7 +97,7 @@ export const checkCompanyData = async (companyId: number, name: string): Promise
     return verifyStatus;
 };
 
-export const insertBranch = async (data: dataVerifyBranch): Promise<promiseDataVerify[]> => {
+export const insertBranch = async (data: dataVerifyBranch): Promise<promiseDataVerify[] | null> => {
     const verifyStatus: promiseDataVerify[] = [];
 
     try {
@@ -123,3 +123,21 @@ export const insertBranch = async (data: dataVerifyBranch): Promise<promiseDataV
     }
     return verifyStatus;
 }; 
+
+export const getAllBranch = async (): Promise<fetchBranch[] | null> => {
+    try {
+      const branch = await prisma.branch.findMany();
+  
+      if (!branch) {
+        return null;
+      }
+  
+      return branch as fetchBranch[];
+    } catch (error) {
+      // Handle any errors here or log them
+      console.error('Error fetching companies:', error);
+      return null;
+    } finally {
+      await prisma.$disconnect();
+    }
+};
