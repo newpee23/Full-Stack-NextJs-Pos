@@ -21,3 +21,11 @@ export interface fetchBranch {
     companyId: number;
     status: "Active" | "InActive";
 }
+
+export interface fetchPosition {
+    id: number;
+    name: string;
+    salary: number;
+    companyId: number;
+    status: "Active" | "InActive";
+}

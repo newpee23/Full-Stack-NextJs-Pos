@@ -28,6 +28,14 @@ export interface dataVerifyBranch {
   status: "Active" | "InActive";
 }
 
+export interface dataVerifyPosition {
+  id?: number;
+  name: string;
+  salary: number;
+  companyId: number;
+  status: "Active" | "InActive";
+}
+
 export interface promiseDataVerify {
   message: string;
 }

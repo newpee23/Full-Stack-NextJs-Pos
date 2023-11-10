@@ -2,26 +2,13 @@ import { NextApiRequest, NextApiResponse } from "next";
 import authenticate from "../checkToken";
 import { dataVerifyCompany } from "@/types/verify";
 import { checkDataCompany, deleteDataCompany, getAllCompany, getCompanyById, getCompanyByName, insertDataCompany, updateDataCompany, verifyCompanyBody } from "@/utils/company";
-
-export default authenticate(async (req: NextApiRequest, res: NextApiResponse) => {
-    if (req.method === "GET") {
-      GET(req, res);
-    } else if (req.method === "POST") {
-      POST(req, res);
-    } else if (req.method === "PUT") {
-      PUT(req, res);
-    } else if (req.method === "DELETE") {
-      DELETE(req, res);
-    } else {
-      res.status(405).end();
-    }
-});
+import { typeNumber } from "@/utils/utils";
 
 export const GET = async (req: NextApiRequest, res: NextApiResponse) => {
-
-  if (req.query && req.query.id) {
-      const param1 = req.query.id;
-      const id: number = Array.isArray(param1) ? parseInt(param1[0], 10) : parseInt(param1, 10);
+  const { query } = req;
+  if (query && query.id) {
+      const param1 = query.id;
+      const id: number = typeNumber(param1);
 
       // getCompany
       const company = await getCompanyById(id);
@@ -41,8 +28,7 @@ export const GET = async (req: NextApiRequest, res: NextApiResponse) => {
  
        res.status(200).json({ message: "GET คำขอถูกต้อง", company: company, status: true });
   }
-
-  return;
+  res.status(401).json({ message: "GET คำขอถูกปฏิเสธ : พบข้อผิดพลาด", company: "company", status: true });
 };
 
 export const POST = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -69,7 +55,6 @@ export const POST = async (req: NextApiRequest, res: NextApiResponse) => {
       return;
     }
     res.status(200).json({ message: "POST คำขอถูกต้อง", verifyCompany: addCompany, status: true });
-    return;
 };
 
 export const PUT = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -101,19 +86,19 @@ export const PUT = async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
   res.status(200).json({ message: "PUT คำขอถูกต้อง", verifyCompany: updateCompany , status: true});
-  return;
 };
 
 export const DELETE = async (req: NextApiRequest, res: NextApiResponse) => {
 
-  const param1 = req.query.id;
-  if(!param1){
+  const { query } = req;
+  
+  if(!query.id){
     res.status(401).json({ message: "DELETE คำขอถูกปฏิเสธ", verifyCompany: "กรุณาระบุ : companyId" , status: true});
     return
   }
 
   // แปลง param1 เป็น Int
-  const id: number = Array.isArray(param1) ? parseInt(param1[0], 10) : parseInt(param1, 10);
+  const id: number = typeNumber(query.id);
 
   // getCompany
   const company = await getCompanyById(id);
@@ -130,7 +115,20 @@ export const DELETE = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   res.status(200).json({ message: "DELETE คำขอถูกต้อง", verifyCompany: deleteCompany , status: true});
-  return;
 };
+
+export default authenticate(async (req: NextApiRequest, res: NextApiResponse) => {
+  if (req.method === "GET") {
+    GET(req, res);
+  } else if (req.method === "POST") {
+    POST(req, res);
+  } else if (req.method === "PUT") {
+    PUT(req, res);
+  } else if (req.method === "DELETE") {
+    DELETE(req, res);
+  } else {
+    res.status(405).end();
+  }
+});
 
  

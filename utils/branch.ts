@@ -53,20 +53,36 @@ export const verifyBranchBody = (data: dataVerifyBranch): promiseDataVerify[] =>
     return verifyStatus;
 };
 
-export const getBranchByNameByCompany = async (companyId: number, name: string): Promise<fetchBranch | null> => {
+export const getBranchByNameByCompany = async (companyId: number, name: string,id?: number): Promise<fetchBranch | null> => {
     try {
-        const branchName = await prisma.branch.findFirst({
-            where: {
-                companyId: companyId,
-                name: name
+        if(id){
+            const branchName = await prisma.branch.findFirst({
+                where: {
+                    companyId: companyId,
+                    name: name,
+                    NOT: { id: id },
+                  },
+            });
+            
+            if (!branchName) {
+                return null;
             }
-        });
 
-        if (!branchName) {
-            return null;
+            return branchName as fetchBranch;
+        }else{
+            const branchName = await prisma.branch.findFirst({
+                where: {
+                    companyId: companyId,
+                    name: name
+                }
+            });
+            
+            if (!branchName) {
+                return null;
+            }
+
+            return branchName as fetchBranch;
         }
-
-        return branchName as fetchBranch;
     } catch (error) {
         // Handle any errors here or log them
         console.error('Error fetching company:', error);
@@ -135,9 +151,88 @@ export const getAllBranch = async (): Promise<fetchBranch[] | null> => {
       return branch as fetchBranch[];
     } catch (error) {
       // Handle any errors here or log them
-      console.error('Error fetching companies:', error);
+      console.error('Error fetching branch:', error);
       return null;
     } finally {
       await prisma.$disconnect();
     }
+};
+
+export const getBranchById = async (id: number): Promise<fetchBranch | null> => {
+    try {
+        const branch = await prisma.branch.findUnique({
+            where: {
+                id: id
+            }
+        });
+       
+        if (!branch) {
+          return null;
+        }
+    
+        return branch as fetchBranch;
+      } catch (error) {
+        // Handle any errors here or log them
+        console.error('Error fetching branch:', error);
+        return null;
+      } finally {
+        await prisma.$disconnect();
+      }
+}
+
+export const deleteDataBranch = async (id: number): Promise<fetchBranch | null> => {
+    try {
+      const deletedBranch = await prisma.branch.delete({
+        where: {
+          id: id,
+        },
+      });
+  
+      return deletedBranch as fetchBranch;
+    } catch (error) {
+      // จัดการข้อผิดพลาดที่เกิดขึ้น
+      console.error('เกิดข้อผิดพลาดในการลบข้อมูล:', error);
+      return null;
+    } finally {
+      await prisma.$disconnect();
+    }
+}
+
+export const getBranchByCompanyId =async (companyId: number): Promise<fetchBranch[] | null> => {
+    try {
+        const branch = await prisma.branch.findMany({
+            where: {
+                companyId: companyId
+            }
+        });
+       
+        if (!branch) {
+          return null;
+        }
+    
+        return branch as fetchBranch[];
+      } catch (error) {
+        // Handle any errors here or log them
+        console.error('Error fetching branch:', error);
+        return null;
+      } finally {
+        await prisma.$disconnect();
+      }
+}
+
+export const updateDataBranch = async (id: number, updatedData: Partial<fetchBranch>): Promise<fetchBranch | null> => {
+  try {
+
+    const branch = await prisma.branch.update({
+      where: { id },
+      data: updatedData,
+    });
+
+    return branch as fetchBranch;
+  } catch (error) {
+    console.error('Error updating branch:', error);
+    return null;
+  } finally {
+    await prisma.$disconnect();
+  }
 };
