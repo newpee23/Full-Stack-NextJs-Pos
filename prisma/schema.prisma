@@ -147,7 +147,7 @@ model Tables {
 }
 
 model Transaction {
-  id               Int               @id @default(autoincrement())
+  id               String              @id @unique @default(uuid())
   tableId          String
   receipt          String            @db.VarChar(30)
   startOrder       DateTime
@@ -159,6 +159,15 @@ model Transaction {
   employee         Employee          @relation(fields: [employeeId], references: [id])
   employeeId       Int
   status           enumStatus        @default(Active)
+  orderBills  OrderBill[]
+}
+
+model OrderBill {
+  id Int @id @default(autoincrement())
+  orderDate DateTime
+  transaction   Transaction @relation(fields: [transactionId], references: [id])
+  transactionId String
+  status  enumOrderBill @default(making)
   ItemTransactions ItemTransaction[]
 }
 
@@ -167,8 +176,8 @@ model ItemTransaction {
   qty           Int
   product       Product     @relation(fields: [productId], references: [id])
   productId     Int
-  transaction   Transaction @relation(fields: [transactionId], references: [id])
-  transactionId Int
+  orderBill   OrderBill @relation(fields: [orderBillId], references: [id])
+  orderBillId Int
 }
 
 model Expenses {
@@ -196,4 +205,10 @@ enum enumrole {
   admin
   userAdmin
   user
+}
+
+enum enumOrderBill {
+  succeed
+  cancel
+  making
 }

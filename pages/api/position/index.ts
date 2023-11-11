@@ -36,7 +36,7 @@ export const GET = async (req: NextApiRequest, res: NextApiResponse) => {
       return;
     }
     
-    res.status(401).json({ message: "GET คำขอถูกปฏิเสธ : พบข้อผิดพลาด", position: position, status: true });
+    res.status(200).json({ message: "GET คำขอถูกต้อง", position: position, status: true });
   }
 };
 
