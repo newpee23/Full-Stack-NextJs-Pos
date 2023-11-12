@@ -70,3 +70,21 @@ export const getPositionByIdByCompanyId = async (id: number,fetchColumn: string)
       await prisma.$disconnect();
     }
 };
+
+export const deleteDataPosition = async (id: number): Promise<fetchPosition | null> => {
+  try {
+    const deletedPosition = await prisma.position.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    return deletedPosition as fetchPosition;
+  } catch (error) {
+    // จัดการข้อผิดพลาดที่เกิดขึ้น
+    console.error('เกิดข้อผิดพลาดในการลบข้อมูล:', error);
+    return null;
+  } finally {
+    await prisma.$disconnect();
+  }
+}

@@ -1,48 +1,42 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import authenticate from "../checkToken";
-import { getAllPosition, getPositionByIdByCompanyId } from "@/utils/position";
+import { deleteDataPosition, getAllPosition, getPositionByIdByCompanyId } from "@/utils/position";
 import { typeNumber } from "@/utils/utils";
 
 export const GET = async (req: NextApiRequest, res: NextApiResponse) => {
   const { query } = req;
+
+  try {
     // getPosition By Id
-  if (query && query.id) {
-
-    const id: number = typeNumber(query.id);
-    const position = await getPositionByIdByCompanyId(id, "id");
-    if (!position || (Array.isArray(position) && position.length === 0)) {
-      res.status(401).json({ message: `GET คำขอถูกปฏิเสธ : ไม่พบข้อมูล Position จาก Id : ${id}`, position: null, status: false });
-      return;
+    if(query.id) {
+      return await handleGetPositionById(res, typeNumber(query.id));
     }
-
-    res.status(200).json({ message: "GET คำขอถูกต้อง", position, status: true });
-  } else if (query && query.companyId) {
-
-    // getPosition By CompanyId
-    const id: number = typeNumber(query.companyId);
-    const position = await getPositionByIdByCompanyId(id, "companyId");
-    if (!position || (Array.isArray(position) && position.length === 0)) {
-      res.status(401).json({ message: `GET คำขอถูกปฏิเสธ : ไม่พบข้อมูล Position ใน companyId : ${id}`, position: null, status: false });
-      return;
+    // getPosition By Id
+    if(query.companyId) {
+      return await handleGetPositionByCompanyId(res, typeNumber(query.companyId));
     }
-
-    res.status(200).json({ message: "GET คำขอถูกต้อง", position, status: true });
-  } else {
-
-    // getPosition All
-    const position = await getAllPosition();
-    if (!position || position.length === 0) {
-      res.status(401).json({ message: `GET คำขอถูกปฏิเสธ : ไม่พบข้อมูล Position ทั้งหมด`, position: null, status: false });
-      return;
-    }
-    
-    res.status(200).json({ message: "GET คำขอถูกต้อง", position: position, status: true });
+    //  getAllPosition
+    return await handleGetAllPosition(res);
+  } catch (error: unknown) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error",status: false });
   }
 };
 
 export const DELETE = async (req: NextApiRequest, res: NextApiResponse) => {
-  
-  res.status(200).json({ message: "DELETE คำขอถูกต้อง", position: "position", status: true });
+
+  const { query } = req;
+
+  try {
+    if(!query.id){
+      return res.status(404).json({ message: "Please specify positionId", position: null , status: true});
+    }
+    // DeletePosition By Id
+    return await handleDeletePosition(res, typeNumber(query.id));
+  } catch (error: unknown) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error",status: false });
+  }
 }
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
@@ -59,5 +53,42 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-
+const handleGetPositionById = async (res: NextApiResponse, id: number) => {
+  const position = await getPositionByIdByCompanyId(id, "id");
+  if (!position || (Array.isArray(position) && position.length === 0)) {
+    return res.status(404).json({ message: `No position found with Id : ${id}`, position: null, status: false });
+  }
+  
+  return res.status(200).json({ message: "Position found", position, status: true });
+}
  
+const handleGetPositionByCompanyId = async (res: NextApiResponse, companyId: number) => {
+  const position = await getPositionByIdByCompanyId(companyId, "companyId");
+  if (!position || (Array.isArray(position) && position.length === 0)) {
+    return res.status(404).json({ message: `No position found with companyId : ${companyId}`, position: null, status: false });
+  }
+
+  return res.status(200).json({ message: "Position found", position, status: true });
+}
+
+const handleGetAllPosition = async (res: NextApiResponse) => {
+  const position = await getAllPosition();
+  if (!position || position.length === 0) {
+    return res.status(404).json({ message: "No positions found", position: null, status: false });
+  }
+    
+  return res.status(200).json({ message: "Position found", position: position, status: true });
+}
+
+const handleDeletePosition =async (res: NextApiResponse,id: number) => {
+  const position = await getPositionByIdByCompanyId(id, "id");
+  if (!position || (Array.isArray(position) && position.length === 0)) {
+    return res.status(404).json({ message: `No position found with Id : ${id}`, position: null, status: false });
+  }
+
+  const deletePosition = await deleteDataPosition(id);
+  if(!deletePosition){
+    return res.status(404).json({ message: "An error occurred deleting data.", position: null , status: false});
+  }
+  return  res.status(200).json({ message: "Successfully deleted data", position: position, status: true });
+}
