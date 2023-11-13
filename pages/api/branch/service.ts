@@ -76,7 +76,7 @@ export const handleAddBranch = async (body: dataVerifyBranch, res: NextApiRespon
 
 export const handleUpdateBranch = async (body: dataVerifyBranch, res: NextApiResponse) => {
     if (!body.id) {
-        return res.status(404).json({ message: "Please specify companyId", branch: null, status: false });
+        return res.status(404).json({ message: "Please specify branchId", branch: null, status: false });
     }
 
     // VerifyBranchData

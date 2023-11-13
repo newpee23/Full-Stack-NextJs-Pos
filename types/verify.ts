@@ -47,7 +47,7 @@ export interface dataVerifyEmployee {
   companyId: number;
   branchId: number;
   positionId: number;
-  rold: "admin" | "userAdmin" | "user";
+  role: "admin" | "userAdmin" | "user";
   status: "Active" | "InActive";
 }
 
