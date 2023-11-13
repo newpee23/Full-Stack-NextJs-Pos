@@ -39,7 +39,7 @@ export const verifyCompanyBody = (data: dataVerifyCompany): promiseDataVerify[] 
   if (data.tax.length > 30) verifyStatus.push(pushData("กรุณาระบุ : tax ไม่เกิน 30 อักษร"));
   if (data.phone.length > 10) verifyStatus.push(pushData("กรุณาระบุ : phone ไม่เกิน 10 อักษร"));
   if (data.email.length > 50) verifyStatus.push(pushData("กรุณาระบุ : email ไม่เกิน 50 อักษร"));
-  if (data.logo.length > 50) verifyStatus.push(pushData("กรุณาระบุ : logo ไม่เกิน 50 อักษร"));
+  if (data.logo && data.logo.length > 50) verifyStatus.push(pushData("กรุณาระบุ : logo ไม่เกิน 50 อักษร"));
   if (data.status !== "Active" && data.status !== "InActive") verifyStatus.push(pushData("กรุณาระบุ : status เป็น Active หรือ InActive เท่านั้น"));
   const isNumericPhone = phonePattern.test(data.phone);
   if (!isNumericPhone) verifyStatus.push(pushData("กรุณาระบุ : phone เป็นตัวเลขเท่านั้น"));
@@ -63,7 +63,7 @@ export const checkDataCompany = async (data: dataVerifyCompany): Promise<promise
         ]
       }
     });
-    
+
     if (company.length > 0) {
       verifyStatus.push(pushData(`พบบริษัท ${data.name} ถูกใช้งานแล้ว`));
     }

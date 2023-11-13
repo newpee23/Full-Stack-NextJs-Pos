@@ -1,5 +1,6 @@
 import { prisma } from "@/pages/lib/prismaDB";
 import { getDataToken } from "./verifyToken";
+import { compare, hash } from 'bcrypt';
 
 export const verifyUserId = async (token: string): Promise<boolean> => {
 
@@ -19,7 +20,7 @@ export const verifyUserId = async (token: string): Promise<boolean> => {
         userName: tokenData.username,
       },
     });
-    
+
     if (!user) {
       return false;
     }
@@ -31,3 +32,17 @@ export const verifyUserId = async (token: string): Promise<boolean> => {
 
   return true;
 };
+
+export const hashPassword = async (password: string): Promise<string> => {
+  // เข้ารหัสรหัสผ่าน
+  const hashedPassword = await hash(password, 10);
+  return hashedPassword;
+}
+
+export const comparePassword = async (password: string, passWordDb: string): Promise<boolean> => {
+  // เข้ารหัสรหัสผ่าน
+  const hashedPassword = await hash(password, 10);
+  // เทียบรหัสผ่าน
+  const isMatch = await compare(hashedPassword, passWordDb);
+  return isMatch;
+}

@@ -29,3 +29,18 @@ export interface fetchPosition {
     companyId: number;
     status: "Active" | "InActive";
 }
+
+export interface fetchEmployee {
+    id: number;
+    name: string;
+    subname: string;
+    age: number;
+    cardId: string;
+    userName: string;
+    passWord: string;
+    companyId: number;
+    branchId: number;
+    positionId: number;
+    role: "admin" | "userAdmin" | "user";
+    status: "Active" | "InActive";
+  }

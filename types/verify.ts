@@ -36,6 +36,21 @@ export interface dataVerifyPosition {
   status: "Active" | "InActive";
 }
 
+export interface dataVerifyEmployee {
+  id?: number;
+  name: string;
+  subname: string;
+  age: number;
+  cardId: string;
+  userName: string;
+  passWord: string;
+  companyId: number;
+  branchId: number;
+  positionId: number;
+  rold: "admin" | "userAdmin" | "user";
+  status: "Active" | "InActive";
+}
+
 export interface promiseDataVerify {
   message: string;
 }

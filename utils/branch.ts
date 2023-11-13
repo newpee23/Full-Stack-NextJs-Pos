@@ -222,13 +222,25 @@ export const getBranchByCompanyId =async (companyId: number): Promise<fetchBranc
 
 export const updateDataBranch = async (id: number, updatedData: Partial<fetchBranch>): Promise<fetchBranch | null> => {
   try {
-
-    const branch = await prisma.branch.update({
-      where: { id },
-      data: updatedData,
-    });
-
-    return branch as fetchBranch;
+    const expirationString = updatedData.expiration;
+    if(expirationString){
+      const expiration = new Date(expirationString);
+      const isoExpiration = expiration.toISOString();
+      const branch = await prisma.branch.update({
+        where: { id },
+        data: {
+          name: updatedData.name,
+          codeReceipt: updatedData.codeReceipt,
+          address: updatedData.address,
+          expiration: isoExpiration,
+          phone: updatedData.phone,
+          status: updatedData.status
+        },
+      });
+  
+      return branch as fetchBranch;
+    }
+    return null;
   } catch (error) {
     console.error('Error updating branch:', error);
     return null;

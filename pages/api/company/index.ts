@@ -1,121 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import authenticate from "../checkToken";
 import { dataVerifyCompany } from "@/types/verify";
-import { checkDataCompany, deleteDataCompany, getAllCompany, getCompanyById, getCompanyByName, insertDataCompany, updateDataCompany, verifyCompanyBody } from "@/utils/company";
 import { typeNumber } from "@/utils/utils";
-
-export const GET = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { query } = req;
-  if (query && query.id) {
-      const param1 = query.id;
-      const id: number = typeNumber(param1);
-
-      // getCompany
-      const company = await getCompanyById(id);
-      if(!company){
-        res.status(401).json({ message: `GET คำขอถูกปฏิเสธ : ไม่พบข้อมูล Company จาก Id : ${id}`, company: null, status: false });
-        return;
-      }
-
-      res.status(200).json({ message: "GET คำขอถูกต้อง", company: company, status: true });
-  } else {
-       // getCompany All
-       const company = await getAllCompany();
-       if(company === null || company.length === 0){
-         res.status(401).json({ message: `GET คำขอถูกปฏิเสธ : ไม่พบข้อมูล Company ทั้งหมด`, company: null, status: false });
-         return;
-       }
- 
-       res.status(200).json({ message: "GET คำขอถูกต้อง", company: company, status: true });
-  }
-  res.status(401).json({ message: "GET คำขอถูกปฏิเสธ : พบข้อผิดพลาด", company: "company", status: true });
-};
-
-export const POST = async (req: NextApiRequest, res: NextApiResponse) => {
-
-    const body: dataVerifyCompany = await req.body;
-    // VerifyCompanyData
-    const verifyCompany = verifyCompanyBody(body);
-    if(verifyCompany.length > 0) {
-      res.status(404).json({ message: "POST คำขอถูกปฏิเสธ", verifyCompany: verifyCompany, status: false });
-      return;
-    }
-    
-    // ตรวจว่าใน DB มี ข้อมูล company หรือยัง
-    const checkCompanyData = await checkDataCompany(body);
-    if(checkCompanyData.length > 0){
-      res.status(404).json({ message: "POST คำขอถูกปฏิเสธ", verifyCompany: checkCompanyData, status: false });
-      return;
-    }
-
-    // add Company
-    const addCompany = await insertDataCompany(body);
-    if(!addCompany){
-      res.status(404).json({ message: "POST คำขอถูกปฏิเสธ", verifyCompany: "เกิดข้อผิดพลาดการบันทึกข้อมูล", status: false});
-      return;
-    }
-    res.status(200).json({ message: "POST คำขอถูกต้อง", verifyCompany: addCompany, status: true });
-};
-
-export const PUT = async (req: NextApiRequest, res: NextApiResponse) => {
-
-  const body: dataVerifyCompany = await req.body;
-  // VerifyCompanyData
-  if(!body.id){
-    res.status(404).json({ message: "PUT คำขอถูกปฏิเสธ", verifyCompany: `กรุณาระบุ CompanyId`, status: false });
-    return;
-  }
-
-  const verifyCompany = verifyCompanyBody(body);
-  if(verifyCompany.length > 0) {
-    res.status(404).json({ message: "PUT คำขอถูกปฏิเสธ", verifyCompany: verifyCompany });
-    return;
-  }
-  
-  // ตรวจว่าใน DB มี ข้อมูล company หรือยัง
-  const checkCompanyData = await getCompanyByName(body.name,body.tax,body.id);
-  if(checkCompanyData){
-    res.status(404).json({ message: "PUT คำขอถูกปฏิเสธ", verifyCompany: `พบข้อมูลบริษัท : ${body.name} และ ${body.tax} ถูกนำไปใช้แล้วในระบบ`, status: false });
-    return;
-  }
-
-  // update Company
-  const updateCompany = await updateDataCompany(body.id,body);
-  if(!updateCompany){
-    res.status(404).json({ message: "PUT คำขอถูกปฏิเสธ", verifyCompany: "เกิดข้อผิดพลาดการแก้ไขข้อมูล", status: false });
-    return;
-  }
-  res.status(200).json({ message: "PUT คำขอถูกต้อง", verifyCompany: updateCompany , status: true});
-};
-
-export const DELETE = async (req: NextApiRequest, res: NextApiResponse) => {
-
-  const { query } = req;
-  
-  if(!query.id){
-    res.status(401).json({ message: "DELETE คำขอถูกปฏิเสธ", verifyCompany: "กรุณาระบุ : companyId" , status: true});
-    return
-  }
-
-  // แปลง param1 เป็น Int
-  const id: number = typeNumber(query.id);
-
-  // getCompany
-  const company = await getCompanyById(id);
-  if(!company){
-    res.status(401).json({ message: "DELETE คำขอถูกปฏิเสธ", verifyCompany: `ไม่พบข้อมูลบริษัทจาก companyId : ${id}` , status: true});
-    return;
-  }
-
-  // deleteCompany
-  const deleteCompany = await deleteDataCompany(id);
-  if(!deleteCompany){
-    res.status(401).json({ message: "DELETE คำขอถูกปฏิเสธ", verifyCompany: "เกิดข้อผิดพลาดการลบข้อมูล" , status: true});
-    return;
-  }
-
-  res.status(200).json({ message: "DELETE คำขอถูกต้อง", verifyCompany: deleteCompany , status: true});
-};
+import { handleAddCompany, handleDeleteCompany, handleGetAllCompany, handleGetCompanyById, handleUpdateCompany } from "./service";
 
 export default authenticate(async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "GET") {
@@ -131,4 +18,49 @@ export default authenticate(async (req: NextApiRequest, res: NextApiResponse) =>
   }
 });
 
- 
+const GET = async (req: NextApiRequest, res: NextApiResponse) => {
+  const { query } = req;
+  try {
+    // getCompany By Id
+    if (query.id) {
+      return await handleGetCompanyById(res, typeNumber(query.id));
+    }
+    //  getAllCompany
+    return await handleGetAllCompany(res);
+  } catch (error: unknown) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error", status: false });
+  }
+};
+
+const POST = async (req: NextApiRequest, res: NextApiResponse) => {
+  try {
+    const body: dataVerifyCompany = await req.body;
+    // Verify/Add Company
+    return await handleAddCompany(body, res);
+  } catch (error: unknown) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error", status: false });
+  }
+};
+
+const PUT = async (req: NextApiRequest, res: NextApiResponse) => {
+  try {
+    const body: dataVerifyCompany = await req.body;
+    // Verify/Update Company
+    return await handleUpdateCompany(body, res);
+  } catch (error: unknown) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error", status: false });
+  }
+};
+
+const DELETE = async (req: NextApiRequest, res: NextApiResponse) => {
+  try {
+    // Verify/Delete Company
+    return await handleDeleteCompany(req, res);
+  } catch (error: unknown) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error", status: false });
+  }
+};
