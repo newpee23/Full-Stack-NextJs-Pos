@@ -1,9 +1,10 @@
 import { dataVerifyEmployee } from "@/types/verify";
 import { getBranchById } from "@/utils/branch";
 import { getCompanyById } from "@/utils/company";
-import { getAllEmployee, getEmployeeByCompanyId, getEmployeeById, getEmployeeByNameCardIdUser, getusernameByCompanyId, insertEmployee, updateEmployee, verifyEmployeeBody } from "@/utils/employee";
+import { deleteDataEmployee, getAllEmployee, getEmployeeByCompanyId, getEmployeeById, getEmployeeByNameCardIdUser, getUsernameByCompanyId, insertEmployee, updateEmployee, verifyEmployeeBody } from "@/utils/employee";
 import { getPositionByIdByCompanyId } from "@/utils/position";
-import { NextApiResponse } from "next";
+import { typeNumber } from "@/utils/utils";
+import { NextApiRequest, NextApiResponse } from "next";
 
 export const handleGetEmployeeById = async (res: NextApiResponse, id: number) => {
     const employee = await getEmployeeById(id);
@@ -59,7 +60,7 @@ export const handleAddEmployee = async (body: dataVerifyEmployee, res: NextApiRe
         return res.status(404).json({ message: `Found information name : ${body.name} ${body.subname} and cardId : ${body.cardId} has already been used in the system.`, employee: null, status: false });
     }
     // check username in company
-    const checkUserName = await getusernameByCompanyId(body.userName, body.companyId);
+    const checkUserName = await getUsernameByCompanyId(body.userName, body.companyId);
     if (checkUserName) {
         return res.status(404).json({ message: `Found information userName : ${body.userName} has already been used in the system.`, employee: null, status: false });
     }
@@ -84,8 +85,8 @@ export const handleUpdateEmployee = async (body: dataVerifyEmployee, res: NextAp
     }
 
     // ตรวจว่าใน DB มี ข้อมูล id หรือยัง
-    const checkemployeeId = await getEmployeeById(body.id);
-    if (!checkemployeeId) {
+    const checkEmployeeId = await getEmployeeById(body.id);
+    if (!checkEmployeeId) {
         return res.status(404).json({ message: `No employee information found from Id. ${body.id}`, employee: null, status: false })
     }
 
@@ -96,7 +97,7 @@ export const handleUpdateEmployee = async (body: dataVerifyEmployee, res: NextAp
     }
 
     // check username in company
-    const checkUserName = await getusernameByCompanyId(body.userName, body.companyId, body.id);
+    const checkUserName = await getUsernameByCompanyId(body.userName, body.companyId, body.id);
     if (checkUserName) {
         return res.status(404).json({ message: `Found information userName : ${body.userName} has already been used in the system.`, employee: null, status: false });
     }
@@ -108,5 +109,29 @@ export const handleUpdateEmployee = async (body: dataVerifyEmployee, res: NextAp
     }
 
     return res.status(200).json({ message: "Successfully edited information.", employee: body, status: true });
+}
+
+export const handleDeleteEmployee = async (req: NextApiRequest, res: NextApiResponse) => {
+    const { query } = req;
+    // Check EmployeeId is not null
+    if (!query.id) {
+        return res.status(404).json({ message: "Please specify EmployeeId", employee: null, status: false });
+    }
+
+    const id = typeNumber(query.id);
+
+    // ตรวจว่าใน DB มี ข้อมูล id หรือยัง
+    const checkEmployeeId = await getEmployeeById(id);
+    if (!checkEmployeeId) {
+        return res.status(404).json({ message: `No employee information found from Id. ${id}`, employee: null, status: false })
+    }
+
+    // deleteEmployee
+    const deleteEmployee = await deleteDataEmployee(id);
+    if (!deleteEmployee) {
+        return res.status(401).json({ message: "An error occurred deleting data.", employee: null, status: false });
+    }
+
+    res.status(200).json({ message: "Successfully deleted data.", employee: deleteEmployee, status: true });
 }
 

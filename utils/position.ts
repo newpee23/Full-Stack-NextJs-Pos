@@ -2,6 +2,7 @@ import { prisma } from "@/pages/lib/prismaDB";
 import { fetchPosition } from "@/types/fetchData";
 import { dataVerifyPosition, promiseDataVerify } from "@/types/verify";
 import { getCompanyById } from "./company";
+import { Prisma } from "@prisma/client";
 
 const pushData = (message: string) => {
   return { message };
@@ -97,27 +98,14 @@ export const getPositionByIdByCompanyId = async (id: number, fetchColumn: string
 
 export const getPositionByCompanyName = async (companyId: number, name: string, id?: number): Promise<fetchPosition | null> => {
   try {
+    let whereCondition: Prisma.PositionWhereInput = { companyId: companyId, name: name, };
     // Where name not company
     if (id) {
-      const position = await prisma.position.findFirst({
-        where: {
-          companyId: companyId,
-          name: name,
-          NOT: { id: id },
-        }
-      });
-      if (!position) {
-        return null;
-      }
-
-      return position as fetchPosition;
+        whereCondition = { ...whereCondition, NOT: { id: id } };
     }
     // Where name
     const position = await prisma.position.findFirst({
-      where: {
-        companyId: companyId,
-        name: name
-      }
+      where: whereCondition,
     });
 
     if (!position) {

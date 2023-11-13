@@ -1,11 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import authenticate from "../checkToken";
 import { dataVerifyEmployee } from "@/types/verify";
-import { handleAddEmployee, handleGetAllEmployee, handleGetEmployeeByCompanyId, handleGetEmployeeById, handleUpdateEmployee } from "./service";
+import { handleAddEmployee, handleDeleteEmployee, handleGetAllEmployee, handleGetEmployeeByCompanyId, handleGetEmployeeById, handleUpdateEmployee } from "./service";
 import { typeNumber } from "@/utils/utils";
 
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+export default authenticate(async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "GET") {
     GET(req, res);
   } else if (req.method === "POST") {
@@ -13,11 +13,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   } else if (req.method === "PUT") {
     PUT(req, res);
   } else if (req.method === "DELETE") {
-    // DELETE(req, res);
+    DELETE(req, res);
   } else {
     res.status(405).end();
   }
-};
+});
 
 const GET = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -60,18 +60,12 @@ const PUT = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-// const DELETE = async (req: NextApiRequest, res: NextApiResponse) => {
-
-//   const { query } = req;
-
-//   try {
-//     if(!query.id){
-//       return res.status(404).json({ message: "Please specify positionId", position: null , status: true});
-//     }
-//     // DeletePosition By Id
-//     return await handleDeletePosition(res, typeNumber(query.id));
-//   } catch (error: unknown) {
-//     console.error(error);
-//     return res.status(500).json({ message: "Internal server error",status: false });
-//   }
-// };
+const DELETE = async (req: NextApiRequest, res: NextApiResponse) => {
+  try {
+    // DeletePosition By Id
+    return await handleDeleteEmployee(req, res);
+  } catch (error: unknown) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error",status: false });
+  }
+};

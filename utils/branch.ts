@@ -3,6 +3,7 @@ import { dateTimeIso, checkDate1translate2, isDate } from "./timeZone";
 import { getCompanyById } from "./company";
 import { fetchBranch } from "@/types/fetchData";
 import { prisma } from "@/pages/lib/prismaDB";
+import { Prisma } from "@prisma/client";
 
 const phonePattern = /^[0-9]+$/;
 const pushData = (message: string) => {
@@ -55,34 +56,20 @@ export const verifyBranchBody = (data: dataVerifyBranch): promiseDataVerify[] =>
 
 export const getBranchByNameByCompany = async (companyId: number, name: string,id?: number): Promise<fetchBranch | null> => {
     try {
-        if(id){
-            const branchName = await prisma.branch.findFirst({
-                where: {
-                    companyId: companyId,
-                    name: name,
-                    NOT: { id: id },
-                  },
-            });
+      let whereCondition: Prisma.BranchWhereInput = { companyId: companyId, name: name, };
+      // where id
+      if(id){
+        whereCondition = { ...whereCondition, NOT: { id: id } };
+      }
+      const branchName = await prisma.branch.findFirst({
+          where: whereCondition,
+      });
             
-            if (!branchName) {
-                return null;
-            }
+      if (!branchName) {
+        return null;
+      }
 
-            return branchName as fetchBranch;
-        }else{
-            const branchName = await prisma.branch.findFirst({
-                where: {
-                    companyId: companyId,
-                    name: name
-                }
-            });
-            
-            if (!branchName) {
-                return null;
-            }
-
-            return branchName as fetchBranch;
-        }
+      return branchName as fetchBranch;
     } catch (error) {
         // Handle any errors here or log them
         console.error('Error fetching company:', error);
@@ -189,7 +176,7 @@ export const deleteDataBranch = async (id: number): Promise<fetchBranch | null> 
       });
   
       return deletedBranch as fetchBranch;
-    } catch (error) {
+    } catch (error: unknown) {
       // จัดการข้อผิดพลาดที่เกิดขึ้น
       console.error('เกิดข้อผิดพลาดในการลบข้อมูล:', error);
       return null;

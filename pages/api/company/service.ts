@@ -83,6 +83,7 @@ export const handleDeleteCompany = async (req: NextApiRequest, res: NextApiRespo
     if (!company) {
         return res.status(401).json({ message: `Company information not found from companyId : ${companyId}`, company: null, status: false });
     }
+    
     // deleteCompany
     const deleteCompany = await deleteDataCompany(companyId);
     if (!deleteCompany) {

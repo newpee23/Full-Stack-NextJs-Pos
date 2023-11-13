@@ -79,7 +79,7 @@ export const getEmployeeByNameCardIdUser = async (name: string, subname: string,
     }
 }
 
-export const getusernameByCompanyId = async (username: string, companyId: number, id?: number): Promise<fetchEmployee | null> => {
+export const getUsernameByCompanyId = async (username: string, companyId: number, id?: number): Promise<fetchEmployee | null> => {
     try {
         let whereCondition: Prisma.EmployeeWhereInput = { userName: username, companyId: companyId, };
         // where id
@@ -215,4 +215,22 @@ export const updateEmployee = async (body: dataVerifyEmployee, id: number): Prom
       } finally {
         await prisma.$disconnect();
       }
+}
+
+export const deleteDataEmployee = async (id: number): Promise<fetchEmployee | null> => {
+    try {
+        const deletedEmployee = await prisma.employee.delete({
+            where: {
+              id: id,
+            },
+        });
+      
+        return deletedEmployee as fetchEmployee;
+    } catch (error: unknown) {
+        // จัดการข้อผิดพลาดที่เกิดขึ้น
+        console.error('เกิดข้อผิดพลาดในการลบข้อมูล:', error);
+        return null;
+    } finally {
+        await prisma.$disconnect();
+    }
 }
