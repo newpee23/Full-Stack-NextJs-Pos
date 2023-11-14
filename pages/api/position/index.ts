@@ -19,9 +19,8 @@ export default authenticate(async (req: NextApiRequest, res: NextApiResponse) =>
 });
 
 const GET = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { query } = req;
-
   try {
+    const { query } = req;
     // getPosition By Id
     if (query.id) return await handleGetPositionById(res, typeNumber(query.id));
     // getPosition By Id

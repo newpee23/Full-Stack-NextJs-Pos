@@ -77,3 +77,94 @@ export const insertUnit = async (body: dataVerifyUnit): Promise<promiseDataVerif
 
     return verifyStatus;
 }
+
+export const fetchUnitById = async (id: number): Promise<fetchUnit | null> => {
+    try {
+        const unit = await prisma.unit.findUnique({
+            where: {
+                id: id
+            },
+        });
+
+        if (!unit) return null;
+        return unit as fetchUnit;
+    } catch (error: unknown) {
+        // Handle any errors here or log them
+        console.error('Error fetching unit:', error);
+        return null;
+    } finally {
+        await prisma.$disconnect();
+    }
+}
+
+export const fetchUnitByCompanyId = async (companyId: number): Promise<fetchUnit[] | null> => {
+    try {
+        const unit = await prisma.unit.findMany({
+            where: {
+                companyId: companyId
+            },
+        });
+
+        if (!unit) return null;
+        return unit as fetchUnit[];
+    } catch (error: unknown) {
+        // Handle any errors here or log them
+        console.error('Error fetching unit:', error);
+        return null;
+    } finally {
+        await prisma.$disconnect();
+    }
+}
+
+export const fetchAllUnit = async (): Promise<fetchUnit[] | null> => {
+    try {
+        const unit = await prisma.unit.findMany({});
+
+        if (!unit) return null;
+        return unit as fetchUnit[];
+    } catch (error: unknown) {
+        // Handle any errors here or log them
+        console.error('Error fetching unit:', error);
+        return null;
+    } finally {
+        await prisma.$disconnect();
+    }
+}
+
+export const updateDataUnit = async (body: dataVerifyUnit, id: number): Promise<fetchUnit | null> => {
+    try {
+        const unit = await prisma.unit.update({
+            where: { id },
+            data: {
+                name: body.name,
+                status: body.status
+            },
+        });
+
+        if (!unit) return null;
+        return unit as fetchUnit;
+    } catch (error) {
+        console.error('Error updating employee:', error);
+        return null;
+    } finally {
+        await prisma.$disconnect();
+    }
+}
+
+export const deleteDataUnit = async (id: number): Promise<fetchUnit | null> => {
+    try {
+        const deletedUnit = await prisma.unit.delete({
+            where: {
+                id: id,
+            },
+        });
+
+        if (!deletedUnit) return null;
+        return deletedUnit as fetchUnit;
+    } catch (error) {
+        console.error('Error updating unit:', error);
+        return null;
+    } finally {
+        await prisma.$disconnect();
+    }
+}
