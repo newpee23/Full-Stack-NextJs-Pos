@@ -58,6 +58,26 @@ export interface dataVerifyUnit {
   status: "Active" | "InActive";
 }
 
+export interface dataVerifyProductType {
+  id?: number;
+  name: string;
+  companyId: number;
+  status: "Active" | "InActive";
+}
+
+export interface dataVerifyProduct {
+  id?: number;
+  name: string;
+  cost: number;
+  price: number;
+  stock: number;
+  img?: string;
+  unitId: number;
+  productTypeId: number;
+  companyId: number;
+  status: "Active" | "InActive";
+}
+
 export interface promiseDataVerify {
   message: string;
 }

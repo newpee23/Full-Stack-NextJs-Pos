@@ -51,3 +51,23 @@ export interface fetchUnit {
     companyId: number;
     status: "Active" | "InActive";
 }
+
+export interface fetchProduct {
+    id: number;
+    name: string;
+    cost: number;
+    price: number;
+    stock: number;
+    img: string;
+    unitId: number;
+    productTypeId: number;
+    companyId: number;
+    status: "Active" | "InActive";
+  }
+
+export interface fetchProductType {
+    id: number;
+    name: string;
+    companyId: number;
+    status: "Active" | "InActive";
+  }

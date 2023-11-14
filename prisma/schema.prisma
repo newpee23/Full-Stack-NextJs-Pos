@@ -52,7 +52,7 @@ model Product {
   name             String            @db.VarChar(50)
   cost             Float             @default(0.00)
   price            Float             @default(0.00)
-  stock            Int
+  stock            Int              
   img              String?            @db.VarChar(50)
   unit             Unit              @relation(fields: [unitId], references: [id])
   unitId           Int
