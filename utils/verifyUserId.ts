@@ -4,14 +4,9 @@ import { compare, hash } from 'bcrypt';
 
 export const verifyUserId = async (token: string): Promise<boolean> => {
 
-  if (!token) {
-    return false;
-  }
-
+  if (!token) return false;
   const tokenData = getDataToken(token);
-  if (!tokenData) {
-    return false;
-  }
+  if (!tokenData) return false;
 
   //   check user
   try {
@@ -21,9 +16,7 @@ export const verifyUserId = async (token: string): Promise<boolean> => {
       },
     });
 
-    if (!user) {
-      return false;
-    }
+    if (!user) return false;
   } catch (error) {
     return false;
   } finally {

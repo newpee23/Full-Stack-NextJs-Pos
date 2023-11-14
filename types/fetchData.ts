@@ -43,4 +43,11 @@ export interface fetchEmployee {
     positionId: number;
     role: "admin" | "userAdmin" | "user";
     status: "Active" | "InActive";
-  }
+}
+
+export interface fetchUnit {
+    id: number;
+    name: string;
+    companyId: number;
+    status: "Active" | "InActive";
+}

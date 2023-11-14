@@ -22,9 +22,7 @@ const GET = async (req: NextApiRequest, res: NextApiResponse) => {
   const { query } = req;
   try {
     // getCompany By Id
-    if (query.id) {
-      return await handleGetCompanyById(res, typeNumber(query.id));
-    }
+    if (query.id) return await handleGetCompanyById(res, typeNumber(query.id));
     //  getAllCompany
     return await handleGetAllCompany(res);
   } catch (error: unknown) {

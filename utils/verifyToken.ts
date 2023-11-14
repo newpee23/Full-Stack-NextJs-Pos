@@ -1,18 +1,13 @@
 import { tokenType } from "@/types/verify";
 
 export const verifyToken = (token: string): boolean => {
-  if (!token) {
-    return false;
-  }
+  if (!token) return false;
   const tokenData = getDataToken(token);
-  if(!tokenData){
-    return false;
-  }
+  if (!tokenData) return false;
   const dateNow = Math.floor(Date.now() / 1000);
   const expDateToken: number = tokenData.exp;
-  if (expDateToken < dateNow) {
-    return false;
-  }
+  if (expDateToken < dateNow) return false;
+
   return true;
 };
 

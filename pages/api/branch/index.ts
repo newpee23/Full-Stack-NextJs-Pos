@@ -22,13 +22,9 @@ const GET = async (req: NextApiRequest, res: NextApiResponse) => {
   const { query } = req;
   try {
     // getBranch By Id
-    if (query.id) {
-      return await handleGetBranchById(res, typeNumber(query.id));
-    }
+    if (query.id) return await handleGetBranchById(res, typeNumber(query.id));
     // getBranch By companyId
-    if (query.companyId) {
-      return await handleGetBranchByCompanyId(res, typeNumber(query.companyId));
-    }
+    if (query.companyId) return await handleGetBranchByCompanyId(res, typeNumber(query.companyId));
     //  getAllBranch
     return await handleGetAllBranch(res);
   } catch (error: unknown) {

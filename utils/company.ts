@@ -9,7 +9,7 @@ const pushData = (message: string) => {
 export const verifyCompanyBody = (data: dataVerifyCompany): promiseDataVerify[] => {
   const verifyStatus: promiseDataVerify[] = [];
   const phonePattern = /^[0-9]+$/;
-  
+
   if (!data.name) verifyStatus.push(pushData("ไม่พบข้อมูล : name"));
   if (!data.address) verifyStatus.push(pushData("ไม่พบข้อมูล : address"));
   if (!data.tax) verifyStatus.push(pushData("ไม่พบข้อมูล : tax"));
@@ -19,9 +19,7 @@ export const verifyCompanyBody = (data: dataVerifyCompany): promiseDataVerify[] 
   if (!data.status) verifyStatus.push(pushData("ไม่พบข้อมูล : status"));
 
   // Return
-  if (verifyStatus.length > 0) {
-    return verifyStatus;
-  }
+  if (verifyStatus.length > 0) return verifyStatus;
 
   // ตรวจสอบการ trim เพื่อป้องกันการกรอกช่องว่าง
   if (!data.name.trim()) verifyStatus.push(pushData("กรุณาระบุ : name"));
@@ -30,9 +28,7 @@ export const verifyCompanyBody = (data: dataVerifyCompany): promiseDataVerify[] 
   if (!data.email.trim()) verifyStatus.push(pushData("กรุณาระบุ : email"));
 
   // Return
-  if (verifyStatus.length > 0) {
-    return verifyStatus;
-  }
+  if (verifyStatus.length > 0) return verifyStatus;
 
   // ตรวจสอบความถูกต้องของข้อมูล
   if (data.name.length > 50) verifyStatus.push(pushData("กรุณาระบุ : name ไม่เกิน 50 อักษร"));
@@ -64,9 +60,7 @@ export const checkDataCompany = async (data: dataVerifyCompany): Promise<promise
       }
     });
 
-    if (company.length > 0) {
-      verifyStatus.push(pushData(`พบบริษัท ${data.name} ถูกใช้งานแล้ว`));
-    }
+    if (company.length > 0) verifyStatus.push(pushData(`พบบริษัท ${data.name} ถูกใช้งานแล้ว`));
   } catch (error: unknown) {
     verifyStatus.push(pushData(`Database connection error: ${error}`));
   } finally {
@@ -91,7 +85,8 @@ export const insertDataCompany = async (data: dataVerifyCompany): Promise<promis
         createdAt: new Date()
       },
     });
-    
+
+    if (!addCompany) return verifyStatus;
     verifyStatus.push(pushData(`สร้างบริษัท ${addCompany.name} สำเร็จและได้รับ id: ${addCompany.id}`));
   } catch (error: unknown) {
     verifyStatus.push(pushData(`Database connection error: ${error}`));
@@ -110,10 +105,7 @@ export const getCompanyById = async (id: number): Promise<fetchCompany | null> =
       },
     });
 
-    if (!company) {
-      return null;
-    }
-
+    if (!company) return null;
     return company as fetchCompany;
   } catch (error) {
     // Handle any errors here or log them
@@ -128,10 +120,7 @@ export const getAllCompany = async (): Promise<fetchCompany[] | null> => {
   try {
     const company = await prisma.company.findMany();
 
-    if (!company) {
-      return null;
-    }
-
+    if (!company) return null;
     return company as fetchCompany[];
   } catch (error) {
     // Handle any errors here or log them
@@ -150,6 +139,7 @@ export const updateDataCompany = async (id: number, updatedData: Partial<fetchCo
       data: updatedData,
     });
 
+    if (!company) return null;
     return company as fetchCompany;
   } catch (error) {
     console.error('Error updating company:', error);
@@ -169,10 +159,7 @@ export const getCompanyByName = async (name: string, tax: string, id: number): P
       },
     });
 
-    if (!company) {
-      return null;
-    }
-
+    if (!company) return null;
     return company as fetchCompany;
   } catch (error) {
     // Handle any errors here or log them
@@ -191,6 +178,7 @@ export const deleteDataCompany = async (id: number): Promise<fetchCompany | null
       },
     });
 
+    if (!deleteDataCompany) return null;
     return deletedCompany as fetchCompany;
   } catch (error) {
     // จัดการข้อผิดพลาดที่เกิดขึ้น

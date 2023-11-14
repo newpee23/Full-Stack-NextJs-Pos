@@ -4,7 +4,6 @@ import { dataVerifyEmployee } from "@/types/verify";
 import { handleAddEmployee, handleDeleteEmployee, handleGetAllEmployee, handleGetEmployeeByCompanyId, handleGetEmployeeById, handleUpdateEmployee } from "./service";
 import { typeNumber } from "@/utils/utils";
 
-
 export default authenticate(async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "GET") {
     GET(req, res);
@@ -23,13 +22,9 @@ const GET = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const { query } = req;
     // getEmployee By Id
-    if (query.id) {
-      return await handleGetEmployeeById(res, typeNumber(query.id));
-    }
+    if (query.id)  return await handleGetEmployeeById(res, typeNumber(query.id));
     // getEmployee By Id
-    if (query.companyId) {
-      return await handleGetEmployeeByCompanyId(res, typeNumber(query.companyId));
-    }
+    if (query.companyId) return await handleGetEmployeeByCompanyId(res, typeNumber(query.companyId));
     //  getAllEmployee
     return await handleGetAllEmployee(res);
   } catch (error: unknown) {

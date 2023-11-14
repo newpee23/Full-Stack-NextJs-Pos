@@ -24,9 +24,7 @@ export const verifyEmployeeBody = (data: dataVerifyEmployee): promiseDataVerify[
     if (!data.status) verifyStatus.push(pushData("ไม่พบข้อมูล : status"));
 
     // Return
-    if (verifyStatus.length > 0) {
-        return verifyStatus;
-    }
+    if (verifyStatus.length > 0) return verifyStatus;
 
     // ตรวจสอบการ trim เพื่อป้องกันการกรอกช่องว่าง
     if (!data.name.trim()) verifyStatus.push(pushData("กรุณาระบุ : name"));
@@ -36,9 +34,7 @@ export const verifyEmployeeBody = (data: dataVerifyEmployee): promiseDataVerify[
     if (!data.passWord.trim()) verifyStatus.push(pushData("กรุณาระบุ : passWord"));
 
     // Return
-    if (verifyStatus.length > 0) {
-        return verifyStatus;
-    }
+    if (verifyStatus.length > 0) return verifyStatus;
 
     // ตรวจสอบความถูกต้องของข้อมูล
     if (data.name.length > 50) verifyStatus.push(pushData("กรุณาระบุ : name ไม่เกิน 50 อักษร"));
@@ -59,16 +55,13 @@ export const verifyEmployeeBody = (data: dataVerifyEmployee): promiseDataVerify[
 export const getEmployeeByNameCardIdUser = async (name: string, subname: string, cardId: string, id?: number): Promise<fetchEmployee | null> => {
     try {
         let whereCondition: Prisma.EmployeeWhereInput = { name: name, subname: subname, cardId: cardId, };
-        if (!id) {
-            whereCondition = { ...whereCondition, NOT: { id: id } };
-        }
+        if (!id) whereCondition = { ...whereCondition, NOT: { id: id } };
         // where id
         const employee = await prisma.employee.findFirst({
             where: whereCondition,
         });
-        if (!employee) {
-            return null;
-        }
+
+        if (!employee) return null;
         return employee as fetchEmployee;
     } catch (error: unknown) {
         // Handle any errors here or log them
@@ -83,16 +76,13 @@ export const getUsernameByCompanyId = async (username: string, companyId: number
     try {
         let whereCondition: Prisma.EmployeeWhereInput = { userName: username, companyId: companyId, };
         // where id
-        if (id) {
-            whereCondition = { ...whereCondition, NOT: { id: id } };
-        }
+        if (id) whereCondition = { ...whereCondition, NOT: { id: id } };
 
         const employee = await prisma.employee.findFirst({
             where: whereCondition,
         });
-        if (!employee) {
-            return null;
-        }
+
+        if (!employee) return null;
         return employee as fetchEmployee;
     } catch (error: unknown) {
         // Handle any errors here or log them
@@ -123,6 +113,7 @@ export const insertEmployee = async (body: dataVerifyEmployee) => {
             }
         })
 
+        if (!addEmployee) return verifyStatus;
         verifyStatus.push(pushData(`Create a employee ${addEmployee.name} accomplished and received id: ${addEmployee.id}`));
     } catch (error: unknown) {
         // Handle any errors here or log them
@@ -142,9 +133,8 @@ export const getEmployeeById = async (id: number): Promise<fetchEmployee | null>
                 id: id
             }
         });
-        if (!employee) {
-            return null;
-        }
+
+        if (!employee) return null;
         return employee as fetchEmployee;
     } catch (error: unknown) {
         // Handle any errors here or log them
@@ -162,9 +152,8 @@ export const getEmployeeByCompanyId = async (companyId: number): Promise<fetchEm
                 companyId: companyId
             }
         });
-        if (employee.length === 0) {
-            return null;
-        }
+
+        if (employee.length === 0) return null;
         return employee as fetchEmployee[];
     } catch (error: unknown) {
         // Handle any errors here or log them
@@ -178,9 +167,8 @@ export const getEmployeeByCompanyId = async (companyId: number): Promise<fetchEm
 export const getAllEmployee = async (): Promise<fetchEmployee[] | null> => {
     try {
         const employee = await prisma.employee.findMany();
-        if (employee.length === 0) {
-            return null;
-        }
+
+        if (employee.length === 0) return null;
         return employee as fetchEmployee[];
     } catch (error: unknown) {
         // Handle any errors here or log them
@@ -193,10 +181,9 @@ export const getAllEmployee = async (): Promise<fetchEmployee[] | null> => {
 
 export const updateEmployee = async (body: dataVerifyEmployee, id: number): Promise<fetchEmployee | null> => {
     try {
-        
-          const employee = await prisma.employee.update({
+        const employee = await prisma.employee.update({
             where: { id },
-            data: { 
+            data: {
                 name: body.name,
                 subname: body.subname,
                 age: body.age,
@@ -205,26 +192,27 @@ export const updateEmployee = async (body: dataVerifyEmployee, id: number): Prom
                 role: body.role,
                 status: body.status
             },
-          });
-      
-          return employee as fetchEmployee;
+        });
 
-      } catch (error) {
+        if (!employee) return null;
+        return employee as fetchEmployee;
+    } catch (error) {
         console.error('Error updating employee:', error);
         return null;
-      } finally {
+    } finally {
         await prisma.$disconnect();
-      }
+    }
 }
 
 export const deleteDataEmployee = async (id: number): Promise<fetchEmployee | null> => {
     try {
         const deletedEmployee = await prisma.employee.delete({
             where: {
-              id: id,
+                id: id,
             },
         });
-      
+
+        if (!deleteDataEmployee) return null;
         return deletedEmployee as fetchEmployee;
     } catch (error: unknown) {
         // จัดการข้อผิดพลาดที่เกิดขึ้น

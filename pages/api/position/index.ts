@@ -23,18 +23,14 @@ const GET = async (req: NextApiRequest, res: NextApiResponse) => {
 
   try {
     // getPosition By Id
-    if(query.id) {
-      return await handleGetPositionById(res, typeNumber(query.id));
-    }
+    if (query.id) return await handleGetPositionById(res, typeNumber(query.id));
     // getPosition By Id
-    if(query.companyId) {
-      return await handleGetPositionByCompanyId(res, typeNumber(query.companyId));
-    }
+    if (query.companyId) return await handleGetPositionByCompanyId(res, typeNumber(query.companyId));
     //  getAllPosition
     return await handleGetAllPosition(res);
   } catch (error: unknown) {
     console.error(error);
-    return res.status(500).json({ message: "Internal server error",status: false });
+    return res.status(500).json({ message: "Internal server error", status: false });
   }
 };
 
@@ -65,13 +61,11 @@ const DELETE = async (req: NextApiRequest, res: NextApiResponse) => {
   const { query } = req;
 
   try {
-    if(!query.id){
-      return res.status(404).json({ message: "Please specify positionId", position: null , status: true});
-    }
+    if (!query.id) return res.status(404).json({ message: "Please specify positionId", position: null, status: true });
     // DeletePosition By Id
     return await handleDeletePosition(res, typeNumber(query.id));
   } catch (error: unknown) {
     console.error(error);
-    return res.status(500).json({ message: "Internal server error",status: false });
+    return res.status(500).json({ message: "Internal server error", status: false });
   }
 };

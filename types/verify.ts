@@ -51,6 +51,13 @@ export interface dataVerifyEmployee {
   status: "Active" | "InActive";
 }
 
+export interface dataVerifyUnit {
+  id?: number;
+  name: string;
+  companyId: number;
+  status: "Active" | "InActive";
+}
+
 export interface promiseDataVerify {
   message: string;
 }

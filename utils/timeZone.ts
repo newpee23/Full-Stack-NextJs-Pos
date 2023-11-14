@@ -18,9 +18,7 @@ export const checkDate1translate2 = (value1: Date, value2: Date): boolean => {
     const date1 = new Date(value1);
     const date2 = new Date(value2);
 
-    if (date1 < date2) {
-        return true;
-    }
+    if (date1 < date2) return true;
 
     return false;
 };
