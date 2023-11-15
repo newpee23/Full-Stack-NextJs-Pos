@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import authenticate from "../checkToken";
 import { typeNumber } from "@/utils/utils";
-import { dataVerifyExpenses } from "@/types/verify";
-import { handleAddExpenses, handleDeleteExpenses, handleGetAllExpenses, handleGetExpensesByCompanyId, handleGetExpensesById, handleUpdateExpenses } from "./service";
+import { dataVerifyItemExpenses } from "@/types/verify";
+import { handleAddItemExpenses, handleDeleteItemExpenses, handleGetAllItemExpenses, handleGetItemExpensesByExpensesId, handleGetItemExpensesById, handleUpdateItemExpenses } from "./service";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === "GET") {
@@ -21,12 +21,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 const GET = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
         const { query } = req;
-        // getExpenses By Id
-        if (query.id) return await handleGetExpensesById(res, typeNumber(query.id));
-        // getExpenses By companyId
-        if (query.companyId) return await handleGetExpensesByCompanyId(res, typeNumber(query.companyId));
-        //  getAllExpenses
-        return await handleGetAllExpenses(res);
+        // getItemExpenses By Id
+        if (query.id) return await handleGetItemExpensesById(res, typeNumber(query.id));
+        // getItemExpenses By expensesId
+        if (query.expensesId) return await handleGetItemExpensesByExpensesId(res, typeNumber(query.expensesId));
+        //  getAllItemExpenses
+        return await handleGetAllItemExpenses(res);
     } catch (error: unknown) {
         console.error(error);
         return res.status(500).json({ message: "Internal server error", status: false });
@@ -35,9 +35,9 @@ const GET = async (req: NextApiRequest, res: NextApiResponse) => {
 
 const POST = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
-        const body: dataVerifyExpenses = await req.body;
+        const body: dataVerifyItemExpenses = await req.body;
         // Verify/Add itemPromotion
-        return await handleAddExpenses(body, res);
+        return await handleAddItemExpenses(body, res);
     } catch (error: unknown) {
         console.error(error);
         return res.status(500).json({ message: "Internal server error", status: false });
@@ -46,9 +46,9 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
 
 const PUT = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
-        const body: dataVerifyExpenses = await req.body;
+        const body: dataVerifyItemExpenses = await req.body;
         // Verify/Add itemPromotion
-        return await handleUpdateExpenses(body, res);
+        return await handleUpdateItemExpenses(body, res);
     } catch (error: unknown) {
         console.error(error);
         return res.status(500).json({ message: "Internal server error", status: false });
@@ -60,7 +60,7 @@ const DELETE = async (req: NextApiRequest, res: NextApiResponse) => {
         const { query } = req;
         if (!query.id) return res.status(404).json({ message: "Please specify itemPromotionId", itemPromotion: null, status: true });
         // DeleteItemPromotion By Id
-        return await handleDeleteExpenses(res, typeNumber(query.id));
+        return await handleDeleteItemExpenses(res, typeNumber(query.id));
     } catch (error: unknown) {
         console.error(error);
         return res.status(500).json({ message: "Internal server error", status: false });

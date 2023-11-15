@@ -102,7 +102,7 @@ export const insertBranch = async (data: dataVerifyBranch): Promise<promiseDataV
         name: data.name,
         codeReceipt: data.codeReceipt,
         address: data.address,
-        createdAt: new Date(),
+        createdAt: dateTimeIso(new Date()),
         expiration: expiration,
         phone: data.phone,
         companyId: data.companyId,

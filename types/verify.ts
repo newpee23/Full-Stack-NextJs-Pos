@@ -113,7 +113,15 @@ export interface dataVerifyExpenses {
   id?: number;
   name: string;
   companyId: number;
+  expensesId: number;
   status: "Active" | "InActive";
+}
+
+export interface dataVerifyItemExpenses {
+  id?: number;
+  price: number;
+  orderDate: Date;
+  expensesId: number
 }
 
 export interface promiseDataVerify {
