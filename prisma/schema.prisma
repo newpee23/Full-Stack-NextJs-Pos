@@ -12,13 +12,13 @@ datasource db {
 
 model Company {
   id           Int           @id @default(autoincrement())
-  name         String        @db.VarChar(50) 
+  name         String        @db.VarChar(50)
   createdAt    DateTime      @default(now())
   address      String
   tax          String        @db.VarChar(30)
   phone        String        @db.VarChar(10)
   email        String        @db.VarChar(50)
-  logo         String?        @db.VarChar(50)
+  logo         String?       @db.VarChar(50)
   status       enumStatus    @default(Active)
   branchs      Branch[] // one to maney
   products     Product[]
@@ -28,7 +28,7 @@ model Company {
   Positions    Position[]
   tabless      Tables[]
   expenses     Expenses[]
-  employees     Employee[]
+  employees    Employee[]
 }
 
 model Branch {
@@ -44,7 +44,7 @@ model Branch {
   status       enumStatus    @default(Active)
   tabless      Tables[]
   transactions Transaction[]
-  employees     Employee[]
+  employees    Employee[]
 }
 
 model Product {
@@ -52,8 +52,8 @@ model Product {
   name             String            @db.VarChar(50)
   cost             Float             @default(0.00)
   price            Float             @default(0.00)
-  stock            Int              
-  img              String?            @db.VarChar(50)
+  stock            Int
+  img              String?           @db.VarChar(50)
   unit             Unit              @relation(fields: [unitId], references: [id])
   unitId           Int
   productType      ProductType       @relation(fields: [productTypeId], references: [id])
@@ -89,7 +89,7 @@ model Promotion {
   promotionalPrice Float           @default(0.00)
   startDate        DateTime
   endDate          DateTime
-  img              String          @default("-") @db.VarChar(50)
+  img              String?         @db.VarChar(50)
   company          Company         @relation(fields: [companyId], references: [id])
   companyId        Int
   status           enumStatus      @default(Active)
@@ -97,11 +97,12 @@ model Promotion {
 }
 
 model ItemPromotion {
-  id          Int       @id @default(autoincrement())
+  id          Int        @id @default(autoincrement())
   productId   Int
-  price       Float     @default(0.00)
-  promotion   Promotion @relation(fields: [promotionId], references: [id])
+  stock       Float      @default(0.00)
+  promotion   Promotion  @relation(fields: [promotionId], references: [id])
   promotionId Int
+  status      enumStatus @default(Active)
 }
 
 model Employee {
@@ -136,7 +137,7 @@ model Position {
 model Tables {
   id         String     @id @unique @default(uuid())
   name       String     @db.VarChar(50)
-  stoves     Int
+  stoves     Int //จำนวนเตา
   people     Int
   expiration Int // เวลาหมดโต๊ะ (นาที)
   branch     Branch     @relation(fields: [branchId], references: [id])
@@ -147,35 +148,35 @@ model Tables {
 }
 
 model Transaction {
-  id               String              @id @unique @default(uuid())
-  tableId          String
-  receipt          String            @db.VarChar(30)
-  startOrder       DateTime
-  endOrder         DateTime
-  peoples          Int
-  totalPrice       Float             @default(0.00)
-  branch           Branch            @relation(fields: [branchId], references: [id])
-  branchId         Int
-  employee         Employee          @relation(fields: [employeeId], references: [id])
-  employeeId       Int
-  status           enumStatus        @default(Active)
-  orderBills  OrderBill[]
+  id         String      @id @unique @default(uuid())
+  tableId    String
+  receipt    String      @db.VarChar(30)
+  startOrder DateTime
+  endOrder   DateTime
+  peoples    Int
+  totalPrice Float       @default(0.00)
+  branch     Branch      @relation(fields: [branchId], references: [id])
+  branchId   Int
+  employee   Employee    @relation(fields: [employeeId], references: [id])
+  employeeId Int
+  status     enumStatus  @default(Active)
+  orderBills OrderBill[]
 }
 
 model OrderBill {
-  id Int @id @default(autoincrement())
-  orderDate DateTime
-  transaction   Transaction @relation(fields: [transactionId], references: [id])
-  transactionId String
-  status  enumOrderBill @default(making)
+  id               Int               @id @default(autoincrement())
+  orderDate        DateTime
+  transaction      Transaction       @relation(fields: [transactionId], references: [id])
+  transactionId    String
+  status           enumOrderBill     @default(making)
   ItemTransactions ItemTransaction[]
 }
 
 model ItemTransaction {
-  id            Int         @id @default(autoincrement())
-  qty           Int
-  product       Product     @relation(fields: [productId], references: [id])
-  productId     Int
+  id          Int       @id @default(autoincrement())
+  qty         Int
+  product     Product   @relation(fields: [productId], references: [id])
+  productId   Int
   orderBill   OrderBill @relation(fields: [orderBillId], references: [id])
   orderBillId Int
 }
@@ -192,6 +193,7 @@ model Expenses {
 model ItemExpenses {
   id         Int      @id @default(autoincrement())
   price      Float    @default(0.00)
+  orderDate  DateTime @default(now())
   expenses   Expenses @relation(fields: [expensesId], references: [id])
   expensesId Int
 }

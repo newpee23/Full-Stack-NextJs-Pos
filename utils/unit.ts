@@ -29,6 +29,12 @@ export const verifyUnitBody = (data: dataVerifyUnit): promiseDataVerify[] => {
     if (data.status !== "Active" && data.status !== "InActive") verifyStatus.push(pushData("กรุณาระบุ : status เป็น Active หรือ InActive เท่านั้น"));
 
     // Return
+    if (verifyStatus.length > 0) return verifyStatus;
+
+    // ตรวจสอบว่าเป็นจำนวนเต็มเท่านั้น
+    if (!Number.isInteger(data.companyId) || data.companyId <= 0) verifyStatus.push(pushData("กรุณาระบุ : companyId เป็นตัวเลขจำนวนเต็มเท่านั้น"));
+
+    // Return
     return verifyStatus;
 }
 

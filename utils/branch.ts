@@ -47,6 +47,12 @@ export const verifyBranchBody = (data: dataVerifyBranch): promiseDataVerify[] =>
   if (!isNumericPhone) verifyStatus.push(pushData("กรุณาระบุ : phone เป็นตัวเลขเท่านั้น"));
 
   // Return
+  if (verifyStatus.length > 0) return verifyStatus;
+
+  // ตรวจสอบว่าเป็นจำนวนเต็มเท่านั้น
+  if (!Number.isInteger(data.companyId) || data.companyId <= 0) verifyStatus.push(pushData("กรุณาระบุ : companyId เป็นตัวเลขจำนวนเต็มเท่านั้น"));
+
+  // Return
   return verifyStatus;
 };
 

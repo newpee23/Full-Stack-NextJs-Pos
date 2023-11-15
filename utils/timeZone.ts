@@ -27,3 +27,12 @@ export const dateTimeIso = (value: Date): Date => {
     const date1 = new Date(value);
     return date1;
 }
+
+// Function to check if a string is a valid date
+export const isValidDate = (dateString: string): boolean => {
+    // Regular expression for a simple datetime format (YYYY-MM-DDTHH:mm:ss)
+    const datetimeFormatRegex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
+
+    // Check if the string matches the date format
+    return datetimeFormatRegex.test(dateString);
+}

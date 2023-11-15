@@ -30,6 +30,12 @@ export const verifyProductTypeBody = (data: dataVerifyProductType): promiseDataV
     if (data.status !== "Active" && data.status !== "InActive") verifyStatus.push(pushData("กรุณาระบุ : status เป็น Active หรือ InActive เท่านั้น"));
 
     // Return
+    if (verifyStatus.length > 0) return verifyStatus;
+
+    // ตรวจสอบว่าเป็นจำนวนเต็มเท่านั้น
+    if (!Number.isInteger(data.companyId) || data.companyId <= 0) verifyStatus.push(pushData("กรุณาระบุ : companyId เป็นตัวเลขจำนวนเต็มเท่านั้น"));
+
+    // Return
     return verifyStatus;
 };
 
@@ -73,18 +79,18 @@ export const checkProductTypeDataByName = async (companyId: number, name: string
 
 export const insertaddProductType = async (body: dataVerifyProductType): Promise<promiseDataVerify[] | null> => {
     const verifyStatus: promiseDataVerify[] = [];
-  
+
     try {
-      const addProductType = await prisma.productType.create({
-        data: body,
-      });
-  
-      if (!addProductType) return null;
-      verifyStatus.push(pushData(`Create a productType ${addProductType.name} accomplished and received id: ${addProductType.id}`));
+        const addProductType = await prisma.productType.create({
+            data: body,
+        });
+
+        if (!addProductType) return null;
+        verifyStatus.push(pushData(`Create a productType ${addProductType.name} accomplished and received id: ${addProductType.id}`));
     } catch (error: unknown) {
-      console.error(`Database connection error: ${error}`);
+        console.error(`Database connection error: ${error}`);
     } finally {
-      await prisma.$disconnect();
+        await prisma.$disconnect();
     }
     return verifyStatus;
 };

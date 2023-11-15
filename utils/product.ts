@@ -29,7 +29,7 @@ export const verifyProductBody = (data: dataVerifyProduct): promiseDataVerify[] 
 
     // ตรวจสอบความถูกต้องของข้อมูล
     if (data.name.length > 50) verifyStatus.push(pushData("กรุณาระบุ : name ไม่เกิน 50 อักษร"));
-    if(data.img) if (data.img.length > 50) verifyStatus.push(pushData("กรุณาระบุ : img ไม่เกิน 50 อักษร"));
+    if (data.img) if (data.img.length > 50) verifyStatus.push(pushData("กรุณาระบุ : img ไม่เกิน 50 อักษร"));
     if (isNaN(Number(data.cost))) verifyStatus.push(pushData("กรุณาระบุ : cost เป็นตัวเลขเท่านั้น"));
     if (isNaN(Number(data.price))) verifyStatus.push(pushData("กรุณาระบุ : price เป็นตัวเลขเท่านั้น"));
     if (isNaN(Number(data.stock))) verifyStatus.push(pushData("กรุณาระบุ : stock เป็นตัวเลขเท่านั้น"));
@@ -37,6 +37,14 @@ export const verifyProductBody = (data: dataVerifyProduct): promiseDataVerify[] 
     if (isNaN(Number(data.productTypeId))) verifyStatus.push(pushData("กรุณาระบุ : productTypeId เป็นตัวเลขเท่านั้น"));
     if (isNaN(Number(data.companyId))) verifyStatus.push(pushData("กรุณาระบุ : companyId เป็นตัวเลขเท่านั้น"));
     if (data.status !== "Active" && data.status !== "InActive") verifyStatus.push(pushData("กรุณาระบุ : status เป็น Active หรือ InActive เท่านั้น"));
+
+    // Return
+    if (verifyStatus.length > 0) return verifyStatus;
+
+    // ตรวจสอบว่าเป็นจำนวนเต็มเท่านั้น
+    if (!Number.isInteger(data.unitId) || data.unitId <= 0) verifyStatus.push(pushData("กรุณาระบุ : unitId เป็นตัวเลขจำนวนเต็มเท่านั้น"));
+    if (!Number.isInteger(data.productTypeId) || data.productTypeId <= 0) verifyStatus.push(pushData("กรุณาระบุ : productTypeId เป็นตัวเลขจำนวนเต็มเท่านั้น"));
+    if (!Number.isInteger(data.companyId) || data.companyId <= 0) verifyStatus.push(pushData("กรุณาระบุ : companyId เป็นตัวเลขจำนวนเต็มเท่านั้น"));
 
     // Return
     return verifyStatus;
@@ -117,18 +125,18 @@ export const fetchAllProduct = async (): Promise<fetchProduct[] | null> => {
 
 export const insertaddProduct = async (body: dataVerifyProduct): Promise<promiseDataVerify[] | null> => {
     const verifyStatus: promiseDataVerify[] = [];
-  
+
     try {
-      const addProduct = await prisma.product.create({
-        data: body,
-      });
-  
-      if (!addProduct) return null;
-      verifyStatus.push(pushData(`Create a productType ${addProduct.name} accomplished and received id: ${addProduct.id}`));
+        const addProduct = await prisma.product.create({
+            data: body,
+        });
+
+        if (!addProduct) return null;
+        verifyStatus.push(pushData(`Create a productType ${addProduct.name} accomplished and received id: ${addProduct.id}`));
     } catch (error: unknown) {
-      console.error(`Database connection error: ${error}`);
+        console.error(`Database connection error: ${error}`);
     } finally {
-      await prisma.$disconnect();
+        await prisma.$disconnect();
     }
     return verifyStatus;
 };

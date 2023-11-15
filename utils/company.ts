@@ -37,8 +37,10 @@ export const verifyCompanyBody = (data: dataVerifyCompany): promiseDataVerify[] 
   if (data.email.length > 50) verifyStatus.push(pushData("กรุณาระบุ : email ไม่เกิน 50 อักษร"));
   if (data.logo && data.logo.length > 50) verifyStatus.push(pushData("กรุณาระบุ : logo ไม่เกิน 50 อักษร"));
   if (data.status !== "Active" && data.status !== "InActive") verifyStatus.push(pushData("กรุณาระบุ : status เป็น Active หรือ InActive เท่านั้น"));
+  
   const isNumericPhone = phonePattern.test(data.phone);
   if (!isNumericPhone) verifyStatus.push(pushData("กรุณาระบุ : phone เป็นตัวเลขเท่านั้น"));
+  
   // Return
   return verifyStatus;
 };

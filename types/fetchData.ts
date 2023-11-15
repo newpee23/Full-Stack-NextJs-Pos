@@ -63,11 +63,42 @@ export interface fetchProduct {
     productTypeId: number;
     companyId: number;
     status: "Active" | "InActive";
-  }
+}
+
+export interface fetchPromotion {
+    id: number;
+    name: string;
+    detail: string;
+    promotionalPrice: number;
+    startDate: Date;
+    endDate: Date;
+    img: string;
+    companyId: number;
+    status: "Active" | "InActive";
+}
+
+export interface fetchItemPromotion {
+    id: number;
+    productId: number;
+    stock: number;
+    promotionId: number;
+    status: "Active" | "InActive";
+}
+
+export interface fetchTable {
+    id: string;
+    name: string;
+    stoves: number;
+    people: number;
+    expiration: number;
+    branchId: number;
+    companyId: number;
+    status: "Active" | "InActive";
+}
 
 export interface fetchProductType {
     id: number;
     name: string;
     companyId: number;
     status: "Active" | "InActive";
-  }
+}

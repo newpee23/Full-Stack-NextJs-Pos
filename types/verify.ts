@@ -6,7 +6,7 @@ export interface tokenType {
 }
 
 export interface dataVerifyCompany {
-  id? : number;
+  id?: number;
   name: string;
   address: string;
   tax: string;
@@ -17,7 +17,7 @@ export interface dataVerifyCompany {
 }
 
 export interface dataVerifyBranch {
-  id? : number;
+  id?: number;
   name: string;
   codeReceipt: string;
   address: string;
@@ -74,6 +74,37 @@ export interface dataVerifyProduct {
   img?: string;
   unitId: number;
   productTypeId: number;
+  companyId: number;
+  status: "Active" | "InActive";
+}
+
+export interface dataVerifyPromotion {
+  id?: number;
+  name: string;
+  detail: string;
+  promotionalPrice: number;
+  startDate: Date;
+  endDate: Date;
+  img?: string;
+  companyId: number;
+  status: "Active" | "InActive";
+}
+
+export interface dataVerifyItemPromotion {
+  id?: number;
+  productId: number;
+  stock: number;
+  promotionId: number;
+  status: "Active" | "InActive";
+}
+
+export interface dataVerifyTable {
+  id?: string;
+  name: string;
+  stoves: number;
+  people: number;
+  expiration: number;
+  branchId: number;
   companyId: number;
   status: "Active" | "InActive";
 }

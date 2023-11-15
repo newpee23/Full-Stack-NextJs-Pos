@@ -32,21 +32,21 @@ export const handleGetProductById = async (res: NextApiResponse, id: number) => 
     const product = await fetchProductById(id);
     if (!product) return res.status(404).json({ message: `No product found with Id : ${id}`, product: null, status: false });
 
-    return res.status(200).json({ message: "Position found", product: product, status: true });
+    return res.status(200).json({ message: "Product found", product: product, status: true });
 }
 
 export const handleGetProductByCompanyId = async (res: NextApiResponse, companyId: number) => {
     const product = await fetchProductByCompanyId(companyId);
     if (!product || (Array.isArray(product) && product.length === 0)) return res.status(404).json({ message: `No product found with companyId : ${companyId}`, product: null, status: false });
 
-    return res.status(200).json({ message: "Position found", product: product, status: true });
+    return res.status(200).json({ message: "Product found", product: product, status: true });
 }
 
 export const handleGetAllProduct = async (res: NextApiResponse) => {
     const product = await fetchAllProduct();
     if (!product || (Array.isArray(product) && product.length === 0)) return res.status(404).json({ message: `No product found`, product: null, status: false });
 
-    return res.status(200).json({ message: "Position found", product: product, status: true });
+    return res.status(200).json({ message: "Product found", product: product, status: true });
 }
 
 export const handleUpdateProduct = async (body: dataVerifyProduct, res: NextApiResponse) => {

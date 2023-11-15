@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import authenticate from "../checkToken";
-import { dataVerifyUnit } from "@/types/verify";
-import { handleAddUnit, handleDeleteUnit, handleGetAllUnit, handleGetUnitByCompanyId, handleGetUnitById, handleUpdateUnit } from "./service";
 import { typeNumber } from "@/utils/utils";
+import { dataVerifyTable } from "@/types/verify";
+import { handleAddTable, handleDeleteTable, handleGetAllTable, handleGetTableByBranchId, handleGetTableByCompanyId, handleGetTableById, handleUpdateTable } from "./service";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === "GET") {
@@ -21,12 +21,14 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 const GET = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
         const { query } = req;
-        // getUnit By Id
-        if (query.id) return await handleGetUnitById(res, typeNumber(query.id));
-        // getUnit By companyId
-        if (query.companyId) return await handleGetUnitByCompanyId(res, typeNumber(query.companyId));
-        //  getAllUnit
-        return await handleGetAllUnit(res);
+        // getTable By Id
+        if (query.id) return await handleGetTableById(res, query.id.toString());
+        // getTable By companyId
+        if (query.branchId) return await handleGetTableByBranchId(res, typeNumber(query.branchId));
+        // getTable By companyId
+        if (query.companyId) return await handleGetTableByCompanyId(res, typeNumber(query.companyId));
+        //  getAllTable
+        return await handleGetAllTable(res);
     } catch (error: unknown) {
         console.error(error);
         return res.status(500).json({ message: "Internal server error", status: false });
@@ -35,9 +37,9 @@ const GET = async (req: NextApiRequest, res: NextApiResponse) => {
 
 const POST = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
-        const body: dataVerifyUnit = await req.body;
-        // Verify/Add Unit
-        return await handleAddUnit(body, res);
+        const body: dataVerifyTable = await req.body;
+        // Verify/Add Table
+        return await handleAddTable(body, res);
     } catch (error: unknown) {
         console.error(error);
         return res.status(500).json({ message: "Internal server error", status: false });
@@ -46,9 +48,9 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
 
 const PUT = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
-        const body: dataVerifyUnit = await req.body;
-        // Verify/Add Unit
-        return await handleUpdateUnit(body, res);
+        const body: dataVerifyTable = await req.body;
+        // Verify/Add Promotion
+        return await handleUpdateTable(body, res);
     } catch (error: unknown) {
         console.error(error);
         return res.status(500).json({ message: "Internal server error", status: false });
@@ -58,9 +60,9 @@ const PUT = async (req: NextApiRequest, res: NextApiResponse) => {
 const DELETE = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
         const { query } = req;
-        if (!query.id || isNaN(Number(query.id))) return res.status(404).json({ message: "Please specify unitId.", unit: null, status: false });
-        // Verify/Delete Unit
-        return await handleDeleteUnit(res, typeNumber(query.id));
+        if (!query.id) return res.status(404).json({ message: "Please specify tablesId", tables: null, status: true });
+        // DeletePromotion By Id
+        return await handleDeleteTable(res, query.id.toString());
     } catch (error: unknown) {
         console.error(error);
         return res.status(500).json({ message: "Internal server error", status: false });
