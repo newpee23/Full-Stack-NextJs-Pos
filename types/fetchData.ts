@@ -96,6 +96,13 @@ export interface fetchTable {
     status: "Active" | "InActive";
 }
 
+export interface fetchExpenses {
+    id: number;
+    name: string;
+    companyId: number;
+    status: "Active" | "InActive";
+  }
+
 export interface fetchProductType {
     id: number;
     name: string;

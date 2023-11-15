@@ -109,6 +109,13 @@ export interface dataVerifyTable {
   status: "Active" | "InActive";
 }
 
+export interface dataVerifyExpenses {
+  id?: number;
+  name: string;
+  companyId: number;
+  status: "Active" | "InActive";
+}
+
 export interface promiseDataVerify {
   message: string;
 }
