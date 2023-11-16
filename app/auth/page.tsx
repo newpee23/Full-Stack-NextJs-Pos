@@ -32,7 +32,7 @@ const SignIn = () => {
         password,
         redirect: false,
       });
-      
+
       if (response?.status === 401) {
         setIsLogin(false);
         return showMessageApi("error", "ไม่พบข้อมูล Username และ Password");
@@ -73,7 +73,7 @@ const SignIn = () => {
 
         <Form name="basic" className="mt-14" autoComplete="off" onFinish={onFinish} onFinishFailed={onFinishFailed}>
           <Form.Item<FieldType> name="username" rules={[{ required: true, message: "กรุณากรอก username!" }]}>
-            <Input size="large" placeholder="default size" prefix={<UserOutlined className="text-orange-700" />} />
+            <Input size="large" placeholder="Username" prefix={<UserOutlined className="text-orange-700" />} />
           </Form.Item>
           <Form.Item<FieldType> name="password" className="mb-10" rules={[{ required: true, message: "กรุณากรอก password!" }]}>
             <Input.Password size="large" placeholder="Password" prefix={<KeyOutlined className="text-orange-700" />} />
