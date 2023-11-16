@@ -40,9 +40,9 @@ export default NextAuth({
 
         const isPasswordValid = await compare(password, user.passWord);
 
-        // if (!isPasswordValid) {
-        //   throw new Error("Invalid Password!!!");
-        // }
+        if (!isPasswordValid) {
+          throw new Error("Invalid Password!!!");
+        }
 
         const token = jwt.sign(
           {

@@ -1,0 +1,29 @@
+:where(.css-dev-only-do-not-override-1adbn6x).ant-input-affix-wrapper:focus
+, :where(.css-dev-only-do-not-override-1adbn6x).ant-input-affix-wrapper:focus-within
+, :where(.css-dev-only-do-not-override-1adbn6x).ant-input-affix-wrapper:hover{
+  border-color: #ed7d31;
+}
+
+.ant-card-body{
+  padding: 0 !important;
+}
+
+.ant-col.ant-col-16.ant-col-offset-8.ant-form-item-control.css-dev-only-do-not-override-1adbn6x{
+  margin: 0;
+}
+
+:where(.css-dev-only-do-not-override-1adbn6x).ant-btn-default:not(:disabled):not(.ant-btn-disabled):active {
+  color: #ffffff;
+  border-color: #ea580c;
+}
+
+:where(.css-dev-only-do-not-override-1adbn6x).ant-btn:not(:disabled):focus-visible {
+  outline: 4px solid #ed7d31;
+  outline-offset: 1px;
+  transition: outline-offset 0s,outline 0s;
+}
+
+:where(.css-dev-only-do-not-override-1adbn6x).ant-btn-default:not(:disabled):not(.ant-btn-disabled):hover {
+  color: #ffffff;
+  border-color: #ed7d31;
+}

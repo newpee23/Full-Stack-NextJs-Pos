@@ -8,10 +8,41 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic':
-          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+      backgroundColor: {
+        'background': '#f2f6fc',
+        'btn-orange': '#ED7D31',
+      },
+      colors: {
+        'orange-1': "#FF5B22",
+        'orange-2': "#ED7D31",
+        'orange-3': "#FF9130",
+        'orange-4': "#DE8F5F",
+        'orange-5': "#F9B572",
+        'orange-6': "#FCE09B",
+        'orange-7': "#F1EB90",
+        'green-1': "#004225",
+        'green-2': "#186F65",
+        'green-3': "#557C55",
+        'green-4': "#A6CF98",
+        'green-5': "#79AC78",
+        'green-6': "#B0D9B1",
+        'green-7': "#9FBB73",
+        'green-8': "#D0E7D2",
+        'green-9': "#F2FFE9",
+      },
+      screens: {
+        xs: "320px",
+        sm: "375px",
+        sml: "576px",
+        md: "667px",
+        mdl: "768px",
+        lg: "960px",
+        lgl: "1024px",
+        xl: "1280px",
+      },
+      fontFamily: {
+        bodyFont: ["Kanit", "sans-serif"],
+        titleFont: ["Kanit", "sans-serif"],
       },
     },
   },

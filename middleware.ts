@@ -8,13 +8,13 @@ export async function middleware(request: NextRequest) {
 
     if(!token){
         return NextResponse.rewrite(
-            new URL("/", request.url)
+            new URL("/auth", request.url)
         );
     }
     
     if(request.nextUrl.pathname === "/customerCloud" && token && token.role === "user"){
         return NextResponse.rewrite(
-            new URL("/", request.url)
+            new URL("/auth", request.url)
         );
     }
 

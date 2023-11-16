@@ -4,7 +4,7 @@ import { typeNumber } from "@/utils/utils";
 import { handleAddPosition, handleDeletePosition, handleGetAllPosition, handleGetPositionByCompanyId, handleGetPositionById, handleUpdatePosition } from "./service";
 import { dataVerifyPosition } from "@/types/verify";
 
-export default authenticate(async (req: NextApiRequest, res: NextApiResponse) => {
+export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "GET") {
     GET(req, res);
   } else if (req.method === "POST") {
@@ -16,7 +16,7 @@ export default authenticate(async (req: NextApiRequest, res: NextApiResponse) =>
   } else {
     res.status(405).end();
   }
-});
+};
 
 const GET = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
