@@ -5,44 +5,33 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import MenuPage from "../components/MenuPage";
-import HomePage from "./pages/HomePage";
-
+import BlockContens from "./BlockContens";
+import Navbar from "../components/Navbar";
+import "@/app/customerCloud/page.css"
+import FloatBtn from "../components/UI/FloatBtn";
 
 const HomeCloudPage = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
-
-  const [selectedComponent, setSelectedComponent] = useState<ReactNode | null>(null);
+  const [selectedComponent, setSelectedComponent] = useState<React.Key | null>("1");
   const [employee, setEmployee] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const handleMenuClick = (key: React.Key) => {
+    console.log(key)
     // ให้เปลี่ยน state เมื่อมีการคลิกที่เมนู
-    switch (key) {
-      case "1":
-        setSelectedComponent(<HomePage />);
-        break;
-      case "13":
-        signOut({ callbackUrl: "/auth" })
-        break;
-
-      // เพิ่ม case ตามต้องการ
-      default:
-        setSelectedComponent(null);
-    }
-
+    if (key === "13") signOut({ callbackUrl: "/auth" });
+    setSelectedComponent(key);
   };
 
   useEffect(() => {
     const fetchData = async () => {
       const token = session?.user.accessToken;
-
       if (token && !employee) {
         if (status === "unauthenticated") {
           return router.push("/auth", { scroll: false });
         }
         setEmployee(true);
-
         try {
           const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/employee`, {
             headers: {
@@ -81,24 +70,19 @@ const HomeCloudPage = () => {
 
   return (
     <>
-    
-    <section>
-      <div className="flex">
-        <MenuPage onMenuClick={handleMenuClick} />
-        <div className="w-full">
-          {selectedComponent ? (
-            // แสดง component ที่ถูกเลือก
-            selectedComponent
-          ) : (
-            // หรือแสดงเนื้อหาหรือคอมโพเนนต์อื่น ๆ ที่คุณต้องการ
-            <button>Logout</button>
-          )}
+      <Navbar />
+      <main>
+        <div className="flex mt-14 bg-slate-50">
+          <MenuPage onMenuClick={handleMenuClick} />
+          <div className="w-full">
+            {selectedComponent ? (
+              // แสดง component ที่ถูกเลือก
+                <BlockContens idComponents={selectedComponent} />
+            ) : null}
+          </div>
         </div>
-      </div>
-      {/* <div>
-      <button onClick={() => signOut({ callbackUrl: "/auth" })}>Logout</button>
-    </div> */}
-    </section>
+        <FloatBtn />
+      </main>
     </>
   );
 };

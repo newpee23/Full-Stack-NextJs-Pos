@@ -1,0 +1,27 @@
+.ant-menu-light .ant-menu-item-selected {
+    background-color: #ff59001a;
+    color: #ff5b00;
+    font-weight: 600;
+}
+
+.ant-menu-light .ant-menu-item , .ant-menu-light .ant-menu-submenu-title:not(.ant-menu-item-disabled):focus-visible{
+    outline: 0 !important;
+}
+
+.ant-menu-light:not(.ant-menu-horizontal) .ant-menu-item:not(.ant-menu-item-selected):active, :where(.css-dev-only-do-not-override-1adbn6x).ant-menu-light>.ant-menu:not(.ant-menu-horizontal) .ant-menu-item:not(.ant-menu-item-selected):active{
+    background-color: #ff59001a;
+}
+
+:where(.css-dev-only-do-not-override-1adbn6x).ant-menu-light:not(.ant-menu-horizontal) .ant-menu-submenu-title:active, :where(.css-dev-only-do-not-override-1adbn6x).ant-menu-light>.ant-menu:not(.ant-menu-horizontal) .ant-menu-submenu-title:active{
+    background-color: #ff59001a;
+}
+.ant-menu-light .ant-menu-submenu-selected >.ant-menu-submenu-title,.ant-menu-light>.ant-menu .ant-menu-submenu-selected >.ant-menu-submenu-title{
+    color: #ff5b00;
+}
+
+.ant-btn-default {
+    color: #1f1f1f;
+    border-color: #f0f0f0;
+    font-weight: 600;
+}
+
