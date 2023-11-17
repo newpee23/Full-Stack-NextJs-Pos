@@ -1,8 +1,10 @@
 // BlockContens.tsx
 import React, { ReactNode, useEffect, useState } from 'react';
-import HomePage from './components/HomePage';
+
 import HeadTitle from '../components/UI/HeadTitle';
-import BranchPage from './components/BranchPage';
+import BranchTable from '../components/Table/BranchTable';
+import HomePage from '../components/HomePage';
+
 
 type Props = { idComponents: React.Key | null;};
 
@@ -16,7 +18,7 @@ const BlockContens = (props: Props) => {
           setComponent(<HomePage />);
           break;
         case '2':
-          setComponent(<BranchPage />);
+          setComponent(<BranchTable />);
           break;
         // เพิ่ม case ตามต้องการ
         default:

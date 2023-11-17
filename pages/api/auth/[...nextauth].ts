@@ -10,6 +10,7 @@ interface UserLogin {
   id: string;
   name: string;
   role: string;
+  company_id: number;
   accessToken: string;
 }
 
@@ -58,6 +59,7 @@ export default NextAuth({
           id: user.id.toString(),
           name: user.name,
           role: user.role,
+          company_id: user.companyId,
           accessToken: token,
         };
 

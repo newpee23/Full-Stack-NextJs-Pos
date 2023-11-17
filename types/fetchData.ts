@@ -11,12 +11,26 @@ export interface fetchCompany {
 }
 
 export interface fetchBranch {
+  key: string;
   id: number;
   name: string;
   codeReceipt: string;
   address: string;
   createdAt: Date;
   expiration: Date;
+  phone: string;
+  companyId: number;
+  status: "Active" | "InActive";
+}
+
+export interface fetchTableBranch {
+  key: string;
+  id: number;
+  name: string;
+  codeReceipt: string;
+  address: string;
+  createdAt: string;
+  expiration: string;
   phone: string;
   companyId: number;
   status: "Active" | "InActive";

@@ -1,7 +1,7 @@
 import { dataVerifyBranch, promiseDataVerify } from "@/types/verify";
-import { dateTimeIso, checkDate1translate2, isDate } from "./timeZone";
+import { dateTimeIso, checkDate1translate2, isDate, formatDate } from "./timeZone";
 import { getCompanyById } from "./company";
-import { fetchBranch } from "@/types/fetchData";
+import { fetchBranch, fetchTableBranch } from "@/types/fetchData";
 import { prisma } from "@/pages/lib/prismaDB";
 import { Prisma } from "@prisma/client";
 
@@ -173,16 +173,23 @@ export const deleteDataBranch = async (id: number): Promise<fetchBranch | null> 
   }
 }
 
-export const getBranchByCompanyId = async (companyId: number): Promise<fetchBranch[] | null> => {
+export const getBranchByCompanyId = async (companyId: number): Promise<fetchTableBranch[] | null> => {
   try {
     const branch = await prisma.branch.findMany({
-      where: {
-        companyId: companyId
-      }
+      where: { companyId: companyId, },
+      orderBy: { id: 'asc', },
     });
 
     if (!branch) return null;
-    return branch as fetchBranch[];
+      // สร้าง key เพื่อเอาไปใส่ table และ แปลง date เป็น str
+      const branchesWithKey: fetchTableBranch[] = branch.map(branch => ({
+        ...branch,
+        key: branch.id.toString(),
+        createdAt: formatDate(branch.createdAt),
+        expiration: formatDate(branch.expiration),
+      }));
+
+    return branchesWithKey;
   } catch (error) {
     // Handle any errors here or log them
     console.error('Error fetching branch:', error);

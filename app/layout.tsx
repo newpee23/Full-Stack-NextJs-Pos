@@ -14,7 +14,6 @@ export default function RootLayout({ children, }: { children: React.ReactNode; }
   return (
     <html lang="en">
       <title>หน้าแรก</title>
-      <link rel="icon" href="https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.flaticon.com%2Ffree-icon%2Ffood_333344&psig=AOvVaw0A5HOR6PS_hafzfXtZNuuz&ust=1700279152036000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCMiD_siPyoIDFQAAAAAdAAAAABAE" />
       <body className={poppins.className}>
         <LoadingPage>
           <SessionProvider>
