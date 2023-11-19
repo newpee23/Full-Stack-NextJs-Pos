@@ -22,7 +22,7 @@ const getItem = (label: React.ReactNode, key: React.Key, icon?: React.ReactNode,
   return { key, icon, children, label, type, } as MenuItem;
 }
 
-const MenuPage: React.FC<MenuPageProps> = ({ onMenuClick }) => {
+const MenuPage = ({ onMenuClick }: MenuPageProps) => {
   const [collapsed, setCollapsed] = useState(false);
 
   const toggleCollapsed = () => {

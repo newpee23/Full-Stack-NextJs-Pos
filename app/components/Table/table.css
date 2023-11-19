@@ -1,0 +1,50 @@
+th.ant-table-cell {
+  text-align: center !important;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+.ant-table-title,
+th,
+td,
+button.ant-btn.css-dev-only-do-not-override-1adbn6x.ant-btn-primary,
+.ant-btn-default,
+.ant-menu-title-content,
+.ant-modal-title {
+  font-family: "__Kanit_89665d", "__Kanit_Fallback_89665d"; /* Set the font to Kanit with a fallback to sans-serif */
+}
+
+:where(.css-dev-only-do-not-override-1adbn6x).ant-tag-success , :where(.css-dev-only-do-not-override-1adbn6x).ant-tag-error{
+  width: 80px;
+  text-align: center;
+  padding: 3px;
+  margin: 0;
+}
+
+button.ant-btn.css-dev-only-do-not-override-1adbn6x.ant-btn-primary , :where(.css-dev-only-do-not-override-1adbn6x).ant-btn-primary:not(:disabled):not(.ant-btn-disabled):hover , :where(.css-dev-only-do-not-override-1adbn6x).ant-btn-primary:not(:disabled):not(.ant-btn-disabled):active{
+  color: #ffffff;
+  border-color: #ef4949;
+  background-color: #ef4949;
+}
+
+:where(.css-dev-only-do-not-override-1adbn6x).ant-btn-default:not(:disabled):not(.ant-btn-disabled):hover , :where(.css-dev-only-do-not-override-1adbn6x).ant-btn-default:not(:disabled):not(.ant-btn-disabled):active {
+  color: #ef4949;
+  border-color: #ef4949;
+}
+
+
+.ant-btn-default{
+  font-weight: 500 !important;
+}
+
+.ant-modal-close ,button.ant-btn.css-dev-only-do-not-override-1adbn6x.ant-btn-primary, :where(.css-dev-only-do-not-override-1adbn6x).ant-btn-primary:not(:disabled):not(.ant-btn-disabled):hover, :where(.css-dev-only-do-not-override-1adbn6x).ant-btn-primary:not(:disabled):not(.ant-btn-disabled):active{
+  transition-property: transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transform: none;
+}
+
+.ant-modal-close, :where(.css-dev-only-do-not-override-1adbn6x).ant-btn-primary:not(:disabled):not(.ant-btn-disabled):hover , :where(.css-dev-only-do-not-override-1adbn6x).ant-btn-default:not(:disabled):not(.ant-btn-disabled):hover{
+  transform: scale(1.05);
+}
+
+

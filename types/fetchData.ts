@@ -25,6 +25,7 @@ export interface fetchBranch {
 
 export interface fetchTableBranch {
   key: string;
+  index: number;
   id: number;
   name: string;
   codeReceipt: string;

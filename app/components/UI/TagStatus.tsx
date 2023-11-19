@@ -1,6 +1,5 @@
 import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { Tag } from 'antd';
-import React from 'react';
 
 const STATUS_COLORS = {
   success: 'success',
@@ -9,8 +8,8 @@ const STATUS_COLORS = {
 
 type Props = { textShow: string; color: keyof typeof STATUS_COLORS };
 
-const TagStatus = (props: Props) => {
-  const { textShow, color } = props;
+const TagStatus = ({color, textShow}: Props) => {
+
   const icon = color === 'success' ? <CheckCircleOutlined /> : <CloseCircleOutlined />;
   const tagColor = STATUS_COLORS[color];
 

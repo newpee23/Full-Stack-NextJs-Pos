@@ -18,7 +18,7 @@ const HomeCloudPage = () => {
   const [loading, setLoading] = useState(true);
 
   const handleMenuClick = (key: React.Key) => {
-    console.log(key)
+ 
     // ให้เปลี่ยน state เมื่อมีการคลิกที่เมนู
     if (key === "13") signOut({ callbackUrl: "/auth" });
     setSelectedComponent(key);

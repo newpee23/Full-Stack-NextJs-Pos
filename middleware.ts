@@ -7,6 +7,7 @@ export async function middleware(request: NextRequest) {
     const token = await getToken({ req: request });
 
     if(!token){
+        console.log("Error: token")
         return NextResponse.rewrite(
             new URL("/auth", request.url)
         );

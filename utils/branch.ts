@@ -182,8 +182,9 @@ export const getBranchByCompanyId = async (companyId: number): Promise<fetchTabl
 
     if (!branch) return null;
       // สร้าง key เพื่อเอาไปใส่ table และ แปลง date เป็น str
-      const branchesWithKey: fetchTableBranch[] = branch.map(branch => ({
+      const branchesWithKey: fetchTableBranch[] = branch.map((branch, index) => ({
         ...branch,
+        index: (index + 1),
         key: branch.id.toString(),
         createdAt: formatDate(branch.createdAt),
         expiration: formatDate(branch.expiration),

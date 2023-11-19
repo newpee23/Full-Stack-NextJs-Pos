@@ -23,39 +23,42 @@ const Navbar = () => {
         setIsScrolling(false);
       }
     };
-  
+
     window.addEventListener("scroll", handleScroll);
-  
+
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [isScrolling]);
 
- 
+
   return (
     <nav className={`py-4 w-full fixed top-0 bg-white shadow-lg z-50`}>
       <div className="w-[95%] m-auto flex justify-between items-center">
         <a href="/">
-          <Image src={logo} width={150} height={undefined} loading="lazy"  placeholder="blur" alt="moon lamp" />
+          <Image
+            src={logo}
+            width={150}
+            height={undefined}
+            priority 
+            alt="logo"
+          />
         </a>
 
-     
-
         <div className="flex gap-4 items-center text-dark ml-auto md:ml-0">
-          <div className="cursor-pointer relative">
+          <div className="cursor-pointer relative" aria-label="Shopping Cart">
             <AiOutlineShoppingCart size={20} />
-           
           </div>
-     
-          {/* CLERK USER BUTTON */}
-     
-              <AiOutlineUser size={25} />
-         
+
+          <div aria-label="User Account">
+            <AiOutlineUser size={25} />
+          </div>
+
         </div>
 
       </div>
-     
-    
+
+
     </nav>
   );
 };
