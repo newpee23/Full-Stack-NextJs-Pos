@@ -23,7 +23,7 @@ export interface dataVerifyBranch {
   address: string;
   expiration: Date;
   phone: string;
-  companyId: number| undefined;
+  companyId: number;
   status: "Active" | "InActive";
 }
 

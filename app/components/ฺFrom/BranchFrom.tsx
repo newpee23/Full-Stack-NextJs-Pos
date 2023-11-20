@@ -1,13 +1,16 @@
 "use client"
 import React, { useEffect, useState } from "react";
-import { Col, DatePicker, Form, Input, Progress, Row, Select } from "antd";
+import { Col, DatePicker, Form, Input, message, Row, Select } from "antd";
 import DrawerAdd from "../DrawerAdd";
 import { optionStatus, validateExpirationDate, validateWhitespace } from "./validate/validate";
 import SaveBtn from "../UI/SaveBtn";
 import { Moment } from "moment";
-import { dataVerifyBranch } from "@/types/verify";
+
 import { useSession } from "next-auth/react";
 import { useAddDataBranch } from "@/app/api/branch";
+import { useAppDispatch } from "@/app/store/store";
+import { setLoading } from "@/app/store/slices/loadingSlice";
+import ProgressBar from "../UI/ProgressBar";
 
 interface branchSubmit {
     name: string;
@@ -112,51 +115,78 @@ const MyForm = ({ onFinish }: { onFinish: (values: object) => void }): React.JSX
                 </Form.Item>
             </Col>
         </Row>
+        <ProgressBar/>
         <SaveBtn label="บันทึกข้อมูล" />
     </Form>
 );
 
 const BranchFrom = ({ onClick }: Props) => {
+
+    const dispatch = useAppDispatch();
+    const [messageApi, contextHolder] = message.useMessage();
     const { data: session } = useSession();
     const addDataBranchMutation = useAddDataBranch();
-    const [load, setLoad] = useState<number>(0);
-    const convertBranchSubmitToDataVerifyBranch = (branchSubmit: branchSubmit): dataVerifyBranch => {
-        return {
-            name: branchSubmit.name,
-            codeReceipt: branchSubmit.codeReceipt,
-            address: branchSubmit.address,
-            expiration: branchSubmit.expiration.toDate(), // ใช้ .toDate() เพื่อแปลง Moment เป็น Date
-            phone: branchSubmit.phone,
-            companyId: session?.user.company_id, // ตัวอย่างการกำหนดค่า companyId
-            status: branchSubmit.status === "Active" ? "Active" : "InActive",
-        };
-    }
-
+    const [loadingQuery, setLoadingQuery] = useState<number>(0);
+    const [messageError, setMessageError] = useState<{ message: string }[]>([]);
     const handleSubmit = async (values: object) => {
+
         const dataFrom: branchSubmit = values as branchSubmit;
-        const dataVerifyBranchData: dataVerifyBranch = convertBranchSubmitToDataVerifyBranch(dataFrom);
-        setLoad(0);
+
+        setLoadingQuery(0);
+        dispatch(setLoading({loadingAction: 0,showLoading: true}));
         try {   
+            if(!session?.user.company_id){
+                return;
+            }
             const result = await addDataBranchMutation.mutateAsync({
                 token: session?.user.accessToken,
-                branchData: dataVerifyBranchData,
-                setLoad: setLoad
+                branchData: {   name: dataFrom.name,
+                    codeReceipt: dataFrom.codeReceipt,
+                    address: dataFrom.address,
+                    expiration: dataFrom.expiration.toDate(),
+                    phone: dataFrom.phone,
+                    companyId: session?.user.company_id, 
+                    status: dataFrom.status === "Active" ? "Active" : "InActive",},
+                setLoadingQuery: setLoadingQuery
             });
+           
+            if(result === null) return showMessage({ status: "error", text: "เพิ่มข้อมูลสาขาไม่สำเร็จ กรุณาลองอีกครั้ง" });
+            
+           if(result?.status === true){
+            setTimeout(() => {
+                onClick();
+            }, 1000);
+            return showMessage({ status: "success", text: "เพิ่มข้อมูลสาขาสำเร็จ" });
+           }
 
-            console.log('Data added successfully:', result);
-        } catch (error) {
+           if(typeof result.message !== 'string') setMessageError(result.message);
+           return showMessage({ status: "warning", text: "เพิ่มข้อมูลสาขาไม่สำเร็จ กรุณาแก้ไขข้อผิดพลาด" });
+        } catch (error: unknown) {
             console.error('Failed to add data:', error);
-        } finally {
-        //   if(load == 100){
-        //     onClick();
-        //   }
-        //   console.log(load)
         }
-        // console.log("Form submitted with values:", dataFrom.expiration);
-        console.log(session?.user.company_id)
     };
-   
-    return <><DrawerAdd title="เพิ่มข้อมูลสาขา" formContent={<MyForm onFinish={handleSubmit} />} /><Progress percent={load} /></>;
+    
+    useEffect(() => {
+        const loadComponents = () => {
+            if(loadingQuery > 0){
+                dispatch(setLoading({loadingAction: loadingQuery,showLoading: true}));
+            }
+        };
+
+        loadComponents();
+      }, [loadingQuery]);
+
+      const showMessage = ({ status, text }: { status: string, text: string }) => {
+        if (status === 'success') {
+          messageApi.success(text);
+        } else if (status === 'error') {
+          messageApi.error(text);
+        } else if (status === 'warning') {
+          messageApi.warning(text);
+        }
+      };
+      console.log(messageError)
+    return <>{contextHolder}<DrawerAdd title="เพิ่มข้อมูลสาขา" showError={messageError} formContent={<MyForm onFinish={handleSubmit} />} /></>;
 };
 
 export default BranchFrom;

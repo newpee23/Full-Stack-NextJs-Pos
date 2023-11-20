@@ -1,9 +1,8 @@
 // BlockContens.tsx
 import React, { ReactNode, useEffect, useState } from 'react';
-
 import HeadTitle from '../components/UI/HeadTitle';
-import BranchTable from '../components/Table/branchTable';
 import HomePage from '../components/HomePage';
+import BranchTable from '../components/Table/BranchTable';
 
 
 type Props = { idComponents: React.Key | null;};

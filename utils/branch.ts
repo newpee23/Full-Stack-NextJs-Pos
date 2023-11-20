@@ -50,7 +50,7 @@ export const verifyBranchBody = (data: dataVerifyBranch): promiseDataVerify[] =>
   if (verifyStatus.length > 0) return verifyStatus;
 
   // ตรวจสอบว่าเป็นจำนวนเต็มเท่านั้น
-  if (!Number.isInteger(data.companyId) || data.companyId <= 0) verifyStatus.push(pushData("กรุณาระบุ : companyId เป็นตัวเลขจำนวนเต็มเท่านั้น"));
+  if(data.companyId) if (!Number.isInteger(data.companyId) || data.companyId <= 0) verifyStatus.push(pushData("กรุณาระบุ : companyId เป็นตัวเลขจำนวนเต็มเท่านั้น"));
 
   // Return
   return verifyStatus;
@@ -105,7 +105,7 @@ export const insertBranch = async (data: dataVerifyBranch): Promise<promiseDataV
         createdAt: dateTimeIso(new Date()),
         expiration: expiration,
         phone: data.phone,
-        companyId: data.companyId,
+        companyId: data.companyId ? data.companyId  : 0,
         status: data.status
       },
     });
