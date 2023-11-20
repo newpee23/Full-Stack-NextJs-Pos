@@ -87,12 +87,21 @@ const deleteBranch = async (token: string | undefined, itemId: string): Promise<
   }
 };
 
-const addBranch = async (token: string | undefined, branchData: dataVerifyBranch): Promise<fetchTableBranch | null> => {
+const addBranch = async (token: string | undefined, branchData: dataVerifyBranch, setLoad:  React.Dispatch<React.SetStateAction<number>>): Promise<fetchTableBranch | null> => {
   try {
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_BASE_URL}/branch`,
       branchData,
       {
+        onDownloadProgress: progressEvent => {
+          if(progressEvent.total){
+            const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            setLoad(progress);
+            console.log(progress)
+          }
+
+          
+        },
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -137,7 +146,8 @@ export const useAddDataBranch = () => {
     (variables: {
       token: string | undefined;
       branchData: dataVerifyBranch;
-    }) => addBranch(variables.token, variables.branchData)
+      setLoad: React.Dispatch<React.SetStateAction<number>>;
+    }) => addBranch(variables.token, variables.branchData, variables.setLoad)
   );
 };
 

@@ -1,6 +1,6 @@
 "use client"
-import React, { useState } from "react";
-import { Col, DatePicker, Form, Input, Row, Select } from "antd";
+import React, { useEffect, useState } from "react";
+import { Col, DatePicker, Form, Input, Progress, Row, Select } from "antd";
 import DrawerAdd from "../DrawerAdd";
 import { optionStatus, validateExpirationDate, validateWhitespace } from "./validate/validate";
 import SaveBtn from "../UI/SaveBtn";
@@ -119,7 +119,7 @@ const MyForm = ({ onFinish }: { onFinish: (values: object) => void }): React.JSX
 const BranchFrom = ({ onClick }: Props) => {
     const { data: session } = useSession();
     const addDataBranchMutation = useAddDataBranch();
-   
+    const [load, setLoad] = useState<number>(0);
     const convertBranchSubmitToDataVerifyBranch = (branchSubmit: branchSubmit): dataVerifyBranch => {
         return {
             name: branchSubmit.name,
@@ -135,24 +135,28 @@ const BranchFrom = ({ onClick }: Props) => {
     const handleSubmit = async (values: object) => {
         const dataFrom: branchSubmit = values as branchSubmit;
         const dataVerifyBranchData: dataVerifyBranch = convertBranchSubmitToDataVerifyBranch(dataFrom);
-
-        try {
+        setLoad(0);
+        try {   
             const result = await addDataBranchMutation.mutateAsync({
                 token: session?.user.accessToken,
                 branchData: dataVerifyBranchData,
+                setLoad: setLoad
             });
 
             console.log('Data added successfully:', result);
         } catch (error) {
             console.error('Failed to add data:', error);
         } finally {
-            onClick();
+        //   if(load == 100){
+        //     onClick();
+        //   }
+        //   console.log(load)
         }
         // console.log("Form submitted with values:", dataFrom.expiration);
         console.log(session?.user.company_id)
     };
-
-    return <DrawerAdd title="เพิ่มข้อมูลสาขา" formContent={<MyForm onFinish={handleSubmit} />} />;
+   
+    return <><DrawerAdd title="เพิ่มข้อมูลสาขา" formContent={<MyForm onFinish={handleSubmit} />} /><Progress percent={load} /></>;
 };
 
 export default BranchFrom;
