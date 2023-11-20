@@ -2,7 +2,7 @@
 import React, { ReactNode, useEffect, useState } from 'react';
 
 import HeadTitle from '../components/UI/HeadTitle';
-import BranchTable from '../components/Table/BranchTable';
+import BranchTable from '../components/Table/branchTable';
 import HomePage from '../components/HomePage';
 
 

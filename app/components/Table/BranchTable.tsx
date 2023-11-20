@@ -9,10 +9,10 @@ import SkeletonTable from "../UI/SkeletonTable";
 import TagStatus from "../UI/TagStatus";
 import ErrPage from "../ErrPage";
 import { DataTypeBranch } from "@/types/columns";
-import { useDataBranch } from "@/app/api/fetch/fetchTableData";
+import { useDataBranch, useDeleteDataBranch } from "@/app/api/branch";
 import "@/app/components/Table/table.css";
 import DeleteBtn from "../UI/DeleteBtn";
-import { useDeleteDataBranch } from "@/app/api/delete/deleteBranch";
+
 import RefreshBtn from "../UI/RefreshBtn";
 
 const BranchTable = () => {
@@ -25,25 +25,23 @@ const BranchTable = () => {
     try {
       const token = session?.user.accessToken;
       const branch = await deleteDataBranch.mutateAsync({ token, id });
-  
+
       if (!branch) {
         showMessage({ status: "error", text: "ลบข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง" });
       } else {
         const branchName: string = `ลบข้อมูลสาขา ${branch?.name} สำเร็จ`;
         showMessage({ status: "success", text: branchName });
-
-        // Delayed refresh
-        setTimeout(() => {
-          handleRefresh();
-        }, 1500);
       }
     } catch (error) {
       // Display a generic error message
       showMessage({ status: "error", text: "ลบข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง" });
+    } finally {
+      // Delayed refresh
+      setTimeout(() => {handleRefresh(); }, 1500);
     }
   };
 
-  const showMessage = ({status, text}: {status: string , text: string}) => {
+  const showMessage = ({ status, text }: { status: string, text: string }) => {
     if (status === 'success') {
       messageApi.success(text);
     } else if (status === 'error') {
@@ -52,7 +50,7 @@ const BranchTable = () => {
       messageApi.warning(text);
     }
   };
-  
+
   const handleRefresh = async () => {
     remove();
     return await refetch();
@@ -130,7 +128,7 @@ const BranchTable = () => {
       className: "text-center",
       render: (_, record) => (
         <Space size="middle">
-         <DeleteBtn name={record.name} onClick={() => handleDeleteClick(record.key)} label="ลบข้อมูล"/>
+          <DeleteBtn name={record.name} onClick={() => handleDeleteClick(record.key)} label="ลบข้อมูล" />
         </Space>
       ),
     },
@@ -140,8 +138,8 @@ const BranchTable = () => {
   return (
     <div>
       <div className="flex items-center justify-between">
-        <BranchFrom />
-        <RefreshBtn label="Refresh Data" onClick={handleRefresh}/>
+        <BranchFrom onClick={handleRefresh}/>
+        <RefreshBtn label="Refresh Data" onClick={handleRefresh} />
       </div>
       <div className="overflow-x-auto m-3">
         <Table columns={columnsBranch} dataSource={data || []} bordered title={() => "ฐานข้อมูลสาขา"} />

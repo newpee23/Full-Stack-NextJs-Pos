@@ -21,10 +21,9 @@ export interface dataVerifyBranch {
   name: string;
   codeReceipt: string;
   address: string;
-  createdAt: Date;
   expiration: Date;
   phone: string;
-  companyId: number;
+  companyId: number| undefined;
   status: "Active" | "InActive";
 }
 

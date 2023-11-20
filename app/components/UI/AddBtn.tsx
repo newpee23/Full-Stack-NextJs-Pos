@@ -1,4 +1,4 @@
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusCircleOutlined } from "@ant-design/icons";
 
 type Props = {
   label: string;
@@ -12,7 +12,7 @@ const AddBtn = ({ label, onClick }: Props) => {
       onClick={onClick}
       className="text-orange-500 m-3 py-2 px-3 border rounded-md text-sm drop-shadow-md hover:bg-orange-600 hover:text-white hover:drop-shadow-xl whitespace-nowrap transition-transform transform hover:scale-105"
     >
-      <PlusOutlined />
+      <PlusCircleOutlined />
       <span className="ml-1">{label}</span>
     </button>
   );
