@@ -6,3 +6,6 @@ html {
   scroll-behavior: smooth;
 }
 
+*,body {
+  font-family: "__Kanit_89665d", "__Kanit_Fallback_89665d"; /* Set the font to Kanit with a fallback to sans-serif */
+}

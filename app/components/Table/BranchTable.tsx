@@ -12,8 +12,8 @@ import { DataTypeBranch } from "@/types/columns";
 import { useDataBranch, useDeleteDataBranch } from "@/app/api/branch";
 import "@/app/components/Table/table.css";
 import DeleteBtn from "../UI/DeleteBtn";
-
 import RefreshBtn from "../UI/RefreshBtn";
+
 
 const BranchTable = () => {
   const [messageApi, contextHolder] = message.useMessage();
@@ -33,22 +33,16 @@ const BranchTable = () => {
         showMessage({ status: "success", text: branchName });
       }
     } catch (error) {
-      // Display a generic error message
       showMessage({ status: "error", text: "ลบข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง" });
     } finally {
-      // Delayed refresh
       setTimeout(() => {handleRefresh(); }, 1500);
     }
   };
 
   const showMessage = ({ status, text }: { status: string, text: string }) => {
-    if (status === 'success') {
-      messageApi.success(text);
-    } else if (status === 'error') {
-      messageApi.error(text);
-    } else if (status === 'warning') {
-      messageApi.warning(text);
-    }
+    if (status === 'success') { messageApi.success(text);} 
+    else if (status === 'error') { messageApi.error(text);} 
+    else if (status === 'warning') { messageApi.warning(text);}
   };
 
   const handleRefresh = async () => {
@@ -65,6 +59,7 @@ const BranchTable = () => {
   }
 
   const columnsBranch: ColumnsType<DataTypeBranch> = [
+   
     {
       title: "ลำดับ",
       dataIndex: "index",
@@ -96,13 +91,6 @@ const BranchTable = () => {
       className: "min-w-[250px]",
     },
     {
-      title: "วันที่สร้างสาขา",
-      dataIndex: "createdAt",
-      key: "createdAt",
-      className: "min-w-[150px]",
-      align: "center"
-    },
-    {
       title: "วันหมดอายุสาขา",
       dataIndex: "expiration",
       key: "expiration",
@@ -128,17 +116,17 @@ const BranchTable = () => {
       className: "text-center",
       render: (_, record) => (
         <Space size="middle">
+          <BranchFrom onClick={handleRefresh} editData={record}  title="แก้ไขข้อมูลสาขา" statusAction="update"/>
           <DeleteBtn name={record.name} onClick={() => handleDeleteClick(record.key)} label="ลบข้อมูล" />
         </Space>
       ),
     },
   ];
 
-
   return (
     <div>
       <div className="flex items-center justify-between">
-        <BranchFrom onClick={handleRefresh}/>
+        <BranchFrom onClick={handleRefresh} title="เพิ่มข้อมูลสาขา" statusAction="add"/>
         <RefreshBtn label="Refresh Data" onClick={handleRefresh} />
       </div>
       <div className="overflow-x-auto m-3">

@@ -4,15 +4,7 @@ th.ant-table-cell {
   font-size: 14px;
 }
 
-.ant-table-title,
-th,
-td,
-button.ant-btn.css-dev-only-do-not-override-1adbn6x.ant-btn-primary,
-.ant-btn-default,
-.ant-menu-title-content,
-.ant-modal-title {
-  font-family: "__Kanit_89665d", "__Kanit_Fallback_89665d"; /* Set the font to Kanit with a fallback to sans-serif */
-}
+
 
 :where(.css-dev-only-do-not-override-1adbn6x).ant-tag-success , :where(.css-dev-only-do-not-override-1adbn6x).ant-tag-error{
   width: 80px;
@@ -45,6 +37,26 @@ button.ant-btn.css-dev-only-do-not-override-1adbn6x.ant-btn-primary , :where(.cs
 
 .ant-modal-close, :where(.css-dev-only-do-not-override-1adbn6x).ant-btn-primary:not(:disabled):not(.ant-btn-disabled):hover , :where(.css-dev-only-do-not-override-1adbn6x).ant-btn-default:not(:disabled):not(.ant-btn-disabled):hover{
   transform: scale(1.05);
+}
+
+:where(.css-dev-only-do-not-override-1adbn6x).ant-list-lg .ant-list-item{
+  padding: 10px;
+}
+
+:where(.css-dev-only-do-not-override-1adbn6x).ant-pagination .ant-pagination-item-active , :where(.css-dev-only-do-not-override-1adbn6x).ant-pagination .ant-pagination-item-active:hover{
+  border-color: #ea580c;
+}
+
+:where(.css-dev-only-do-not-override-1adbn6x).ant-pagination .ant-pagination-item-active  ,:where(.css-dev-only-do-not-override-1adbn6x).ant-pagination .ant-pagination-item-active a , :where(.css-dev-only-do-not-override-1adbn6x).ant-pagination .ant-pagination-item-active:hover a{
+  color: #ea580c;
+}
+
+:where(.css-dev-only-do-not-override-1adbn6x).ant-drawer .ant-drawer-title{
+  font-weight: 500;
+}
+
+.ant-table-title {
+  font-size: 17px;
 }
 
 

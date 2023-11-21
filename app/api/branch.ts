@@ -5,9 +5,9 @@ import axios, { AxiosError } from 'axios';
 import { useMutation, useQuery } from 'react-query';
 
 interface addBranchType {
-   message: { message: string }[] | string
-   , branch: null
-   , status: boolean 
+  message: { message: string }[] | string
+  , branch: null
+  , status: boolean
 }
 
 const fetchBranchData = async (token: string | undefined, company_id: number | undefined): Promise<fetchTableBranch[]> => {
@@ -93,11 +93,7 @@ const deleteBranch = async (token: string | undefined, itemId: string): Promise<
   }
 };
 
-const addBranch = async (
-  token: string | undefined,
-  branchData: dataVerifyBranch,
-  setLoadingQuery: React.Dispatch<React.SetStateAction<number>>
-): Promise<addBranchType | null> => {
+const addBranch = async (token: string | undefined,branchData: dataVerifyBranch,setLoadingQuery: React.Dispatch<React.SetStateAction<number>>): Promise<addBranchType | null> => {
   try {
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_BASE_URL}/branch`,
@@ -141,11 +137,70 @@ const addBranch = async (
       // Handle non-Axios error
       console.error("Unexpected error: ", error);
     }
-  return null;
+    return null;
+  }
+};
+
+const updateBranch = async (token: string | undefined,branchData: dataVerifyBranch,setLoadingQuery: React.Dispatch<React.SetStateAction<number>>): Promise<addBranchType | null> => {
+  try {
+    const response = await axios.put(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/branch`,
+      branchData,
+      {
+        onDownloadProgress: progressEvent => {
+          if (progressEvent.total) {
+            const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            setLoadingQuery(progress);
+          }
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const branch: addBranchType = response.data;
+    return branch;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      // The error is an instance of AxiosError
+      const axiosError = error as any;
+
+      if (axiosError.response) {
+        // Server responded with a status code that falls outside the range of 2xx
+        const message: addBranchType = axiosError.response.data;
+
+        console.error("Error data: ", axiosError.response.data);
+        console.error("Error status: ", axiosError.response.status);
+        console.error("Error headers: ", axiosError.response.headers);
+        return message;
+      } else if (axiosError.request) {
+        // Request was made but no response was received
+        console.error("Error request: ", axiosError.request);
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        console.error("Error message: ", axiosError.message);
+      }
+    } else {
+      // Handle non-Axios error
+      console.error("Unexpected error: ", error);
+    }
+    return null;
   }
 };
 
 // function React Query
+
+export const useUpdateDataBranch = () => {
+  return useMutation(
+    (variables: {
+      token: string | undefined;
+      branchData: dataVerifyBranch;
+      setLoadingQuery: React.Dispatch<React.SetStateAction<number>>;
+    }) => updateBranch(variables.token, variables.branchData, variables.setLoadingQuery)
+  );
+};
+
 export const useAddDataBranch = () => {
   return useMutation(
     (variables: {

@@ -2,7 +2,8 @@
 import React, { ReactNode, useEffect, useState } from 'react';
 import HeadTitle from '../components/UI/HeadTitle';
 import HomePage from '../components/HomePage';
-import BranchTable from '../components/Table/BranchTable';
+import BranchTable from '../components/Table/branchTable';
+
 
 
 type Props = { idComponents: React.Key | null;};

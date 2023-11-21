@@ -1,14 +1,17 @@
-import { Button, Drawer, Form, Space } from "antd";
+import { Button, Drawer, Space } from "antd";
 import { ReactNode, useState } from "react"
 import AddBtn from "./UI/AddBtn";
+import ErrFrom from "./ErrFrom";
+import EditBtn from "./UI/EditBtn";
 
 type DrawerAddProps = {
     formContent: ReactNode; // ให้ DrawerAdd รับ prop ชื่อ formContent ที่มี type เป็น ReactNode
     title: string;
     showError: { message: string }[];
+    statusAction: "add" | "update";
 };
 
-const DrawerAdd = ({ formContent, title, showError }: DrawerAddProps) => {
+const DrawerActionData = ({ formContent, title, showError, statusAction }: DrawerAddProps) => {
     const [open, setOpen] = useState(false);
 
     const showDrawer = () => {
@@ -20,12 +23,10 @@ const DrawerAdd = ({ formContent, title, showError }: DrawerAddProps) => {
     };
 
     return (
-        <>
-            <AddBtn onClick={showDrawer} label="เพิ่มข้อมูล" />
-            <Drawer title={title} width={720}
-                onClose={onClose}
-                open={open}
-                styles={{ body: { paddingBottom: 80, }, }}
+        <div>
+            {statusAction === "add" ? <AddBtn onClick={showDrawer} label="เพิ่มข้อมูล" /> : <EditBtn onClick={showDrawer} label="แก้ไขข้อมูล"/>}
+            
+            <Drawer title={title} width={800} onClose={onClose} open={open} styles={{ body: { paddingBottom: 80, }, }}
                 extra={
                     <Space>
                         <Button onClick={onClose} >ยกเลิก</Button>
@@ -33,14 +34,10 @@ const DrawerAdd = ({ formContent, title, showError }: DrawerAddProps) => {
                 }
             >
                 {formContent}
-                <ul>
-                    {showError.map((error, index) => (
-                        <li key={index}>{error.message}</li>
-                    ))}
-                </ul>
+                {showError.length > 0 && <ErrFrom showError={showError}/>}
             </Drawer>
-        </>
+        </div>
     )
 }
 
-export default DrawerAdd
+export default DrawerActionData;

@@ -65,7 +65,7 @@ export const handleUpdateBranch = async (body: dataVerifyBranch, res: NextApiRes
     if (!checkBranchId) return res.status(404).json({ message: `No branch information found from Id. ${body.id}`, branch: null, status: false })
     // ตรวจว่าใน DB มี ข้อมูล ชื่อสาขา หรือยัง
     const checkBranchName = await getBranchByNameByCompany(body.companyId, body.name, body.id);
-    if (checkBranchName) return res.status(404).json({ message: `Found company information : ${body.name} has already been used in the system`, branch: checkBranchName, status: false });
+    if (checkBranchName) return res.status(404).json({ message: [{message: `Found company information : ${body.name} has already been used in the system`}], branch: checkBranchName, status: false });
     // update Branch
     const updateBranch = await updateDataBranch(body.id, body);
     if (!updateBranch) return res.status(404).json({ message: "An error occurred editing data.", branch: null, status: false });

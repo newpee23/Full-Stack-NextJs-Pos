@@ -26,3 +26,28 @@ export const optionStatus: { value: string, label: string }[] = [
     { value: "Active", label: "เปิดใช้งาน" },
     { value: 'InActive', label: 'ไม่เปิดใช้งาน' }
 ];
+
+export const parseDateStringToMoment = (dateString: string): Moment => {
+    const formatString = 'DD/MM/YYYY H:mm:ss';
+    const momentObject = moment(dateString, formatString);
+
+    return momentObject;
+}
+
+export const convertStatusToOption = (status: string): { value: string, label: string } => {
+    let label = '';
+
+    switch (status) {
+        case 'Active':
+            label = 'เปิดใช้งาน';
+            break;
+        case 'InActive':
+            label = 'ไม่เปิดใช้งาน';
+            break;
+        default:
+            label = status;
+            break;
+    }
+
+    return { value: status, label };
+}
