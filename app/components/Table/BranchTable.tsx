@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Space, Table, message } from "antd";
-import type { ColumnsType } from "antd/es/table";
+import { ColumnsType } from "antd/es/table";
 import BranchFrom from "../ฺFrom/BranchFrom";
 
 import { useSession } from "next-auth/react";
@@ -59,7 +59,6 @@ const BranchTable = () => {
   }
 
   const columnsBranch: ColumnsType<DataTypeBranch> = [
-   
     {
       title: "ลำดับ",
       dataIndex: "index",
@@ -75,7 +74,6 @@ const BranchTable = () => {
       dataIndex: "name",
       key: "name",
       className: "min-w-[230px]",
-      render: (text) => <a>{text}</a>,
     },
     {
       title: "รหัสใบเสร็จ",

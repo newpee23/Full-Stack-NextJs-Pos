@@ -40,11 +40,9 @@ const MenuPage = ({ onMenuClick }: MenuPageProps) => {
     getItem("สาขา", "2", <DesktopOutlined />),
     getItem("Option 3", "3", <ContainerOutlined />),
 
-    getItem("Navigation One", "sub1", <MailOutlined />, [
-      getItem("Option 5", "5"),
-      getItem("Option 6", "6"),
-      getItem("Option 7", "7"),
-      getItem("Option 8", "8"),
+    getItem("ข้อมูลผู้ใช้", "sub1", <MailOutlined />, [
+      getItem("ตำแหน่ง", "5"),
+      getItem("พนักงาน", "6"),
     ]),
 
     getItem("Navigation Two", "sub2", <AppstoreOutlined />, [
@@ -60,9 +58,6 @@ const MenuPage = ({ onMenuClick }: MenuPageProps) => {
   return (
     <section>
       <div className="p-2 pb-1 bg-white border-inline-end flex items-center justify-end">
-        {/* <div className="w-full max-w-[180px]">
-          <p className="overflow-hidden whitespace-nowrap overflow-ellipsis">บริษัท นิวจำกัด</p>
-        </div> */}
         <Button onClick={toggleCollapsed} className={`flex items-center justify-center ${collapsed && "w-full"}`}>
           {collapsed ? <MenuUnfoldOutlined onClick={toggleCollapsed}/> : <MenuFoldOutlined onClick={toggleCollapsed}/>}
         </Button>
@@ -71,7 +66,6 @@ const MenuPage = ({ onMenuClick }: MenuPageProps) => {
       <Menu
         onClick={({ key }) => handleMenuItemClick(key)}
         defaultSelectedKeys={["1"]}
-        // defaultOpenKeys={["sub1"]}
         mode="inline"
         inlineCollapsed={collapsed}
         items={items}

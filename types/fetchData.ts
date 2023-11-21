@@ -38,6 +38,8 @@ export interface fetchTableBranch {
 }
 
 export interface fetchPosition {
+  key: string;
+  index: number;
   id: number;
   name: string;
   salary: number;

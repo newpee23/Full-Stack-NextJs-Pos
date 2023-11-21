@@ -190,7 +190,6 @@ const updateBranch = async (token: string | undefined,branchData: dataVerifyBran
 };
 
 // function React Query
-
 export const useUpdateDataBranch = () => {
   return useMutation(
     (variables: {

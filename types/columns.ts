@@ -8,5 +8,14 @@ export interface DataTypeBranch {
     expiration: string;
     phone: string;
     companyId: number;
-    status: string;
+    status: "Active" | "InActive";
+  }
+
+  export interface DataTypePosition {
+    index: number;
+    key: string;
+    name: string;
+    salary: number;
+    companyId: number;
+    status: "Active" | "InActive";
   }

@@ -2,11 +2,10 @@
 import React, { ReactNode, useEffect, useState } from 'react';
 import HeadTitle from '../components/UI/HeadTitle';
 import HomePage from '../components/HomePage';
-import BranchTable from '../components/Table/branchTable';
+import BranchTable from '../components/Table/BranchTable';
+import PositionTable from '../components/Table/PositionTable';
 
-
-
-type Props = { idComponents: React.Key | null;};
+type Props = { idComponents: React.Key | null; };
 
 const BlockContens = (props: Props) => {
   const [component, setComponent] = useState<ReactNode | null>(null);
@@ -19,6 +18,9 @@ const BlockContens = (props: Props) => {
           break;
         case '2':
           setComponent(<BranchTable />);
+          break;
+        case '5':
+          setComponent(<PositionTable />);
           break;
         // เพิ่ม case ตามต้องการ
         default:

@@ -9,12 +9,14 @@ type DrawerAddProps = {
     title: string;
     showError: { message: string }[];
     statusAction: "add" | "update";
+    resetForm: () => void;
 };
 
-const DrawerActionData = ({ formContent, title, showError, statusAction }: DrawerAddProps) => {
+const DrawerActionData = ({ formContent, title, showError, statusAction , resetForm }: DrawerAddProps) => {
     const [open, setOpen] = useState(false);
 
     const showDrawer = () => {
+        resetForm();
         setOpen(true);
     };
 

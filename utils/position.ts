@@ -78,7 +78,13 @@ export const getPositionByIdByCompanyId = async (id: number, fetchColumn: string
     });
 
     if (!position) return null;
-    return position as fetchPosition[];
+    // สร้าง key เพื่อเอาไปใส่ table และ แปลง date เป็น str
+    const positionsWithKey: fetchPosition[] = position.map((position, index) => ({
+      ...position,
+      index: (index + 1),
+      key: position.id.toString(),
+    }));
+    return positionsWithKey;
   } catch (error) {
     // Handle any errors here or log them
     console.error('Error fetching position:', error);

@@ -23,8 +23,8 @@ interface branchSubmit {
     status: { value: string, label: string };
 }
 
-interface Props { 
-    onClick: () => void; 
+interface Props {
+    onClick: () => void;
     editData?: DataTypeBranch;
     title: string;
     statusAction: "add" | "update";
@@ -116,6 +116,31 @@ const BranchFrom = ({ onClick, editData, title, statusAction }: Props) => {
         else if (status === 'warning') { messageApi.warning(text); }
     };
 
+    const resetForm = () => {
+        if (statusAction === "update") {
+            if (editData?.key) {
+                setFormValues({
+                    name: editData.name,
+                    codeReceipt: editData.codeReceipt,
+                    address: editData.address,
+                    expiration: parseDateStringToMoment(editData.expiration),
+                    phone: editData.phone,
+                    status: convertStatusToOption(editData.status),
+                });
+            }else{
+                setFormValues({
+                    name: "",
+                    codeReceipt: "",
+                    address: "",
+                    expiration: undefined,
+                    phone: "",
+                    status: { value: "Active", label: "เปิดใช้งาน" },
+                });
+            }
+            if(messageError.length > 0)  setMessageError([]);
+        }
+    };
+
     useEffect(() => {
         const loadComponents = () => {
             if (loadingQuery > 0) { dispatch(setLoading({ loadingAction: loadingQuery, showLoading: true })); }
@@ -135,7 +160,6 @@ const BranchFrom = ({ onClick, editData, title, statusAction }: Props) => {
                     phone: editData.phone,
                     status: convertStatusToOption(editData.status),
                 });
-
             }
         }
         setInitialEditValues();
@@ -197,13 +221,7 @@ const BranchFrom = ({ onClick, editData, title, statusAction }: Props) => {
                                 { validator: validateExpirationDate },
                             ]}
                         >
-                            <DatePicker
-                                style={{ width: "100%" }}
-                                showTime={{ format: "HH:mm" }}
-                                format="YYYY-MM-DD HH:mm"
-                                getPopupContainer={(trigger) => trigger.parentElement!}
-                                placeholder="ว/ด/ป เวลา"
-                            />
+                            <DatePicker style={{ width: "100%" }} showTime={{ format: "HH:mm" }} format="YYYY-MM-DD HH:mm" getPopupContainer={(trigger) => trigger.parentElement!} placeholder="ว/ด/ป เวลา" />
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -226,7 +244,6 @@ const BranchFrom = ({ onClick, editData, title, statusAction }: Props) => {
                                     message: "กรุณาเลือกสถานะ",
                                 },
                             ]}
-                            initialValue={formValues.status}
                         >
                             <Select
                                 options={optionStatus}
@@ -244,7 +261,7 @@ const BranchFrom = ({ onClick, editData, title, statusAction }: Props) => {
     return (
         <div>
             {contextHolder}
-            <DrawerActionData formContent={<MyForm onFinish={handleSubmit} />} title={title} showError={messageError} statusAction={statusAction}/>
+            <DrawerActionData resetForm={resetForm} formContent={<MyForm onFinish={handleSubmit} />} title={title} showError={messageError} statusAction={statusAction} />
         </div>
     );
 };
