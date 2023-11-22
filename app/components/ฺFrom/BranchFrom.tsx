@@ -1,4 +1,3 @@
-"use client"
 import React, { useEffect, useState } from "react";
 import { Col, DatePicker, Form, Input, message, Row, Select } from "antd";
 
@@ -20,7 +19,7 @@ interface branchSubmit {
     address: string;
     expiration: Moment | undefined;
     phone: string;
-    status: { value: string, label: string };
+    status: string;
 }
 
 interface Props {
@@ -45,15 +44,13 @@ const BranchFrom = ({ onClick, editData, title, statusAction }: Props) => {
         address: "",
         expiration: undefined,
         phone: "",
-        status: { value: "Active", label: "เปิดใช้งาน" },
+        status: "Active",
     });
 
     const handleSubmit = async (values: object) => {
-
-        const dataFrom: branchSubmit = values as branchSubmit;
+        const dataFrom = values as branchSubmit;
         setLoadingQuery(0);
         dispatch(setLoading({ loadingAction: 0, showLoading: true }));
-
         try {
             if (!session?.user.company_id) {
                 return showMessage({ status: "error", text: "พบข้อผิดพลาดกรุณาเข้าสู่ระบบใหม่อีกครั้ง" });
@@ -70,7 +67,7 @@ const BranchFrom = ({ onClick, editData, title, statusAction }: Props) => {
                         expiration: dataFrom.expiration ? dataFrom.expiration.toDate() : moment().toDate(),
                         phone: dataFrom.phone,
                         companyId: session?.user.company_id,
-                        status: dataFrom.status.value === "Active" ? "Active" : "InActive",
+                        status: dataFrom.status === "Active" ? "Active" : "InActive",
                     },
                     setLoadingQuery: setLoadingQuery
                 });
@@ -93,7 +90,7 @@ const BranchFrom = ({ onClick, editData, title, statusAction }: Props) => {
                     expiration: dataFrom.expiration ? dataFrom.expiration.toDate() : moment().toDate(),
                     phone: dataFrom.phone,
                     companyId: session?.user.company_id,
-                    status: dataFrom.status.value === "Active" ? "Active" : "InActive",
+                    status: dataFrom.status === "Active" ? "Active" : "InActive",
                 },
                 setLoadingQuery: setLoadingQuery
             });
@@ -125,7 +122,7 @@ const BranchFrom = ({ onClick, editData, title, statusAction }: Props) => {
                     address: editData.address,
                     expiration: parseDateStringToMoment(editData.expiration),
                     phone: editData.phone,
-                    status: convertStatusToOption(editData.status),
+                    status: editData.status,
                 });
             }else{
                 setFormValues({
@@ -134,7 +131,7 @@ const BranchFrom = ({ onClick, editData, title, statusAction }: Props) => {
                     address: "",
                     expiration: undefined,
                     phone: "",
-                    status: { value: "Active", label: "เปิดใช้งาน" },
+                    status: "Active",
                 });
             }
             if(messageError.length > 0)  setMessageError([]);
@@ -149,21 +146,6 @@ const BranchFrom = ({ onClick, editData, title, statusAction }: Props) => {
         loadComponents();
     }, [loadingQuery]);
 
-    useEffect(() => {
-        const setInitialEditValues = () => {
-            if (editData?.key) {
-                setFormValues({
-                    name: editData.name,
-                    codeReceipt: editData.codeReceipt,
-                    address: editData.address,
-                    expiration: parseDateStringToMoment(editData.expiration),
-                    phone: editData.phone,
-                    status: convertStatusToOption(editData.status),
-                });
-            }
-        }
-        setInitialEditValues();
-    }, [editData]);
 
     const MyForm = ({ onFinish }: { onFinish: (values: object) => void }): React.JSX.Element => {
         return (

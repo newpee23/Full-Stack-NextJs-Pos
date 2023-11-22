@@ -4,17 +4,20 @@ import React from 'react'
 import TagStatus from '../UI/TagStatus';
 import { Space, Table, message } from 'antd';
 import { useSession } from 'next-auth/react';
-import { useDataPosition } from '@/app/api/position';
+import { useDataPosition, useDeleteDataPosition } from '@/app/api/position';
 import SkeletonTable from '../UI/SkeletonTable';
 import ErrPage from '../ErrPage';
 import RefreshBtn from '../UI/RefreshBtn';
+import PositionFrom from '../ฺFrom/PositionFrom';
+import DeleteBtn from '../UI/DeleteBtn';
 
 
 const PositionTable = () => {
     const [messageApi, contextHolder] = message.useMessage();
     const { data: session } = useSession();
     const { data, isLoading, isError, refetch, remove } = useDataPosition(session?.user.accessToken, session?.user.company_id);
-    
+    const deleteDataPosition = useDeleteDataPosition();
+
     const showMessage = ({ status, text }: { status: string, text: string }) => {
         if (status === 'success') { messageApi.success(text);} 
         else if (status === 'error') { messageApi.error(text);} 
@@ -24,6 +27,24 @@ const PositionTable = () => {
     const handleRefresh = async () => {
         remove();
         return await refetch();
+    };
+
+    const handleDeleteClick = async (id: string) => {
+      try {
+        const token = session?.user.accessToken;
+        const branch = await deleteDataPosition.mutateAsync({ token, id });
+  
+        if (!branch) {
+          showMessage({ status: "error", text: "ลบข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง" });
+        } else {
+          const branchName: string = "ลบข้อมูลตำแหน่งพนักงานสำเร็จ";
+          showMessage({ status: "success", text: branchName });
+        }
+      } catch (error) {
+        showMessage({ status: "error", text: "ลบข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง" });
+      } finally {
+        setTimeout(() => {handleRefresh(); }, 1500);
+      }
     };
 
     if (isLoading) {
@@ -77,8 +98,8 @@ const PositionTable = () => {
           className: "text-center",
           render: (_, record) => (
             <Space size="middle">
-              {/* <BranchFrom onClick={handleRefresh} editData={record}  title="แก้ไขข้อมูลสาขา" statusAction="update"/>
-              <DeleteBtn name={record.name} onClick={() => handleDeleteClick(record.key)} label="ลบข้อมูล" /> */}
+              <PositionFrom onClick={handleRefresh} editData={record}  title="แก้ไขข้อมูลสาขา" statusAction="update"/>
+              <DeleteBtn name={record.name} onClick={() => handleDeleteClick(record.key)} label="ลบข้อมูล" />
             </Space>
           ),
         },
@@ -87,11 +108,11 @@ const PositionTable = () => {
   return (
      <div>
       <div className="flex items-center justify-between">
-      
+        <PositionFrom onClick={handleRefresh} statusAction="add" title="เพิ่มข้อมูลตำแหน่งพนักงาน"/>
         <RefreshBtn label="Refresh Data" onClick={handleRefresh} />
       </div>
       <div className="overflow-x-auto m-3">
-        <Table columns={columnsPosition} dataSource={data || []} bordered title={() => "ฐานข้อมูลข้อมูลผู้ใช้งาน"} />
+        <Table columns={columnsPosition} dataSource={data || []} bordered title={() => "ฐานข้อมูลข้อมูลตำแหน่งพนักงาน"} />
       </div>
       {contextHolder}
     </div>

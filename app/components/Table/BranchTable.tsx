@@ -29,7 +29,7 @@ const BranchTable = () => {
       if (!branch) {
         showMessage({ status: "error", text: "ลบข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง" });
       } else {
-        const branchName: string = `ลบข้อมูลสาขา ${branch?.name} สำเร็จ`;
+        const branchName: string = "ลบข้อมูลสาขาสำเร็จ";
         showMessage({ status: "success", text: branchName });
       }
     } catch (error) {

@@ -215,7 +215,7 @@ export const useDeleteDataBranch = () => {
 };
 
 export const useDataBranch = (token: string | undefined, company_id: number | undefined) => {
-  return useQuery('data', () => fetchBranchData(token, company_id), {
+  return useQuery('dataBranch', () => fetchBranchData(token, company_id), {
     refetchOnWindowFocus: false,
   });
 };

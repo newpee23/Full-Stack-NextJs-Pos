@@ -35,8 +35,8 @@ export const verifyPositionBody = (data: dataVerifyPosition): promiseDataVerify[
   if (verifyStatus.length > 0) return verifyStatus;
 
   // ตรวจสอบว่าเป็นจำนวนเต็มเท่านั้น
+  if (!Number.isFinite(data.salary) || data.salary <= 0) verifyStatus.push(pushData("กรุณาระบุ : salary เป็นตัวเลขจำนวนเต็มเท่านั้น"));
   if (!Number.isInteger(data.companyId) || data.companyId <= 0) verifyStatus.push(pushData("กรุณาระบุ : companyId เป็นตัวเลขจำนวนเต็มเท่านั้น"));
-
   // Return
   return verifyStatus;
 };
@@ -72,9 +72,8 @@ export const getPositionByIdByCompanyId = async (id: number, fetchColumn: string
 
     // Where CompanyId
     const position = await prisma.position.findMany({
-      where: {
-        companyId: id
-      }
+      where: { companyId: id },
+      orderBy: { id: 'asc', },
     });
 
     if (!position) return null;
