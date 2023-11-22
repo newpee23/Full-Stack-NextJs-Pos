@@ -37,8 +37,7 @@ const PositionTable = () => {
         if (!branch) {
           showMessage({ status: "error", text: "ลบข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง" });
         } else {
-          const branchName: string = "ลบข้อมูลตำแหน่งพนักงานสำเร็จ";
-          showMessage({ status: "success", text: branchName });
+          showMessage({ status: "success", text: "ลบข้อมูลตำแหน่งพนักงานสำเร็จ" });
         }
       } catch (error) {
         showMessage({ status: "error", text: "ลบข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง" });

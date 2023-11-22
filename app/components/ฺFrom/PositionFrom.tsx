@@ -51,12 +51,6 @@ const PositionFrom = ({ onClick, statusAction, title, editData }: Props) => {
                     salary: editData.salary.toString(),
                     status: editData.status,
                 });
-            } else {
-                setFormValues({
-                    name: "",
-                    salary: "",
-                    status: "Active",
-                });
             }
             if (messageError.length > 0) setMessageError([]);
         }

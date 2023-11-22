@@ -66,8 +66,8 @@ export const handleUpdateEmployee = async (body: dataVerifyEmployee, res: NextAp
 
     // check name and subname and cardId
     const checkUserEmployee = await getEmployeeByNameCardIdUser(body.name, body.subname, body.cardId, body.id);
-    if (checkUserEmployee) return res.status(404).json({ message: `Found information name : ${body.name} ${body.subname} and cardId : ${body.cardId} has already been used in the system.`, employee: checkUserEmployee, status: false });
-
+    if (checkUserEmployee) return res.status(404).json({ message: [{message: `Found information name : ${body.name} ${body.subname} and cardId : ${body.cardId} has already been used in the system.`}], employee: checkUserEmployee, status: false });
+   
     // check username in company
     const checkUserName = await getUsernameByCompanyId(body.userName, body.companyId, body.id);
     if (checkUserName) return res.status(404).json({ message: `Found information userName : ${body.userName} has already been used in the system.`, employee: checkUserName, status: false });

@@ -63,12 +63,12 @@ export const verifyEmployeeBody = (data: dataVerifyEmployee): promiseDataVerify[
 export const getEmployeeByNameCardIdUser = async (name: string, subname: string, cardId: string, id?: number): Promise<fetchEmployee | null> => {
     try {
         let whereCondition: Prisma.EmployeeWhereInput = { name: name, subname: subname, cardId: cardId, };
-        if (!id) whereCondition = { ...whereCondition, NOT: { id: id } };
+        if (id) whereCondition = { ...whereCondition, NOT: { id: id } };
         // where id
         const employee = await prisma.employee.findFirst({
             where: whereCondition,
         });
-
+     
         if (!employee) return null;
         return employee as fetchEmployee;
     } catch (error: unknown) {
@@ -265,6 +265,8 @@ export const updateEmployee = async (body: dataVerifyEmployee, id: number): Prom
                 age: body.age,
                 cardId: body.cardId,
                 userName: body.userName,
+                positionId: body.positionId,
+                branchId: body.branchId,
                 role: body.role,
                 status: body.status
             },

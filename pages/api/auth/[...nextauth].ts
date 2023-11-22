@@ -11,6 +11,7 @@ interface UserLogin {
   name: string;
   role: string;
   company_id: number;
+  branch_id: number;
   accessToken: string;
 }
 
@@ -60,6 +61,7 @@ export default NextAuth({
           name: user.name,
           role: user.role,
           company_id: user.companyId,
+          branch_id: user.branchId,
           accessToken: token,
         };
 

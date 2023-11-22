@@ -1,4 +1,4 @@
-import { useDataEmployee } from '@/app/api/employee';
+import { useDataEmployee, useDeleteDataEmployee } from '@/app/api/employee';
 import { useSession } from 'next-auth/react';
 import React from 'react'
 import SkeletonTable from '../UI/SkeletonTable';
@@ -9,6 +9,7 @@ import { ColumnsType } from 'antd/lib/table';
 import TagStatus from '../UI/TagStatus';
 import RefreshBtn from '../UI/RefreshBtn';
 import EmployeeFrom from '../ฺFrom/EmployeeFrom';
+import DeleteBtn from '../UI/DeleteBtn';
 
 type Props = {}
 
@@ -16,6 +17,7 @@ const EmployeeTable = (props: Props) => {
 
   const [messageApi, contextHolder] = message.useMessage();
   const { data: session } = useSession();
+  const deleteDataEmployee = useDeleteDataEmployee();
   const { data, isLoading, isError, refetch, remove } = useDataEmployee(session?.user.accessToken, session?.user.company_id);
 
   const handleRefresh = async () => {
@@ -27,6 +29,23 @@ const EmployeeTable = (props: Props) => {
     if (status === 'success') { messageApi.success(text); }
     else if (status === 'error') { messageApi.error(text); }
     else if (status === 'warning') { messageApi.warning(text); }
+  };
+
+  const handleDeleteClick = async (id: string) => {
+    try {
+      const token = session?.user.accessToken;
+      const employee = await deleteDataEmployee.mutateAsync({ token, id });
+
+      if (!employee) {
+        showMessage({ status: "error", text: "ลบข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง" });
+      } else {
+        showMessage({ status: "success", text: "ลบข้อมูลตำแหน่งพนักงานสำเร็จ" });
+      }
+    } catch (error) {
+      showMessage({ status: "error", text: "ลบข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง" });
+    } finally {
+      setTimeout(() => {handleRefresh(); }, 1500);
+    }
   };
 
   if (isLoading) {
@@ -87,6 +106,12 @@ const EmployeeTable = (props: Props) => {
       className: "",
     },
     {
+      title: "สิทธิ์ผู้ใช้งาน",
+      dataIndex: "role",
+      key: "role",
+      className: "text-center",
+    },
+    {
       title: "สถานะ",
       key: "status",
       className: "text-center min-w-[100px]",
@@ -100,8 +125,8 @@ const EmployeeTable = (props: Props) => {
       className: "text-center",
       render: (_, record) => (
         <Space size="middle">
-          {/* <PositionFrom onClick={handleRefresh} editData={record}  title="แก้ไขข้อมูลสาขา" statusAction="update"/>
-        <DeleteBtn name={record.name} onClick={() => handleDeleteClick(record.key)} label="ลบข้อมูล" /> */}
+          <EmployeeFrom onClick={handleRefresh} editData={record}  title="แก้ไขข้อมูลสาขา" statusAction="update"/>
+          <DeleteBtn name={record.name} onClick={() => handleDeleteClick(record.key)} label="ลบข้อมูล" />
         </Space>
       ),
     },

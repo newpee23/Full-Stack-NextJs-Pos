@@ -124,15 +124,6 @@ const BranchFrom = ({ onClick, editData, title, statusAction }: Props) => {
                     phone: editData.phone,
                     status: editData.status,
                 });
-            }else{
-                setFormValues({
-                    name: "",
-                    codeReceipt: "",
-                    address: "",
-                    expiration: undefined,
-                    phone: "",
-                    status: "Active",
-                });
             }
             if(messageError.length > 0)  setMessageError([]);
         }
