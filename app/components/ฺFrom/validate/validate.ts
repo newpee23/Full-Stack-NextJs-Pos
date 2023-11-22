@@ -27,6 +27,11 @@ export const optionStatus: { value: string, label: string }[] = [
     { value: 'InActive', label: 'ไม่เปิดใช้งาน' }
 ];
 
+export const optionRole: { value: string, label: string }[] = [
+    { value: "user", label: "user" },
+    { value: 'userAdmin', label: 'userAdmin' }
+];
+
 export const parseDateStringToMoment = (dateString: string): Moment => {
     const formatString = 'DD/MM/YYYY H:mm:ss';
     const momentObject = moment(dateString, formatString);

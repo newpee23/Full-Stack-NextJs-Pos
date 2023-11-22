@@ -58,8 +58,22 @@ export interface fetchEmployee {
   companyId: number;
   branchId: number;
   positionId: number;
-  role: "admin" | "userAdmin" | "user";
-  status: "Active" | "InActive";
+  role: string;
+  status: string;
+  branch: {
+    id: number;
+    name: string;
+  };
+  company: {
+    id: number;
+    name: string;
+  };
+  position: {
+    id: number;
+    name: string;
+  };
+  index: number;
+  key: string;
 }
 
 export interface fetchUnit {
@@ -132,4 +146,14 @@ export interface fetchProductType {
   name: string;
   companyId: number;
   status: "Active" | "InActive";
+}
+
+export interface optionSelect {
+  value: number;
+  label: string;
+}
+
+export interface fetchOptionAddEmployeeType {
+  position: optionSelect[];
+  branch: optionSelect[]; 
 }

@@ -55,7 +55,7 @@ export const verifyEmployeeBody = (data: dataVerifyEmployee): promiseDataVerify[
     if (!Number.isInteger(data.branchId) || data.branchId <= 0) verifyStatus.push(pushData("กรุณาระบุ : branchId เป็นตัวเลขจำนวนเต็มเท่านั้น"));
     if (!Number.isInteger(data.companyId) || data.companyId <= 0) verifyStatus.push(pushData("กรุณาระบุ : companyId เป็นตัวเลขจำนวนเต็มเท่านั้น"));
     if (!Number.isInteger(data.positionId) || data.positionId <= 0) verifyStatus.push(pushData("กรุณาระบุ : positionId เป็นตัวเลขจำนวนเต็มเท่านั้น"));
-    
+
     // Return
     return verifyStatus;
 };
@@ -139,7 +139,27 @@ export const getEmployeeById = async (id: number): Promise<fetchEmployee | null>
         const employee = await prisma.employee.findUnique({
             where: {
                 id: id
-            }
+            },
+            include: {
+                branch: {
+                    select: {
+                        id: true,
+                        name: true,
+                    },
+                },
+                company: {
+                    select: {
+                        id: true,
+                        name: true,
+                    },
+                },
+                position: {
+                    select: {
+                        id: true,
+                        name: true,
+                    },
+                },
+            },
         });
 
         if (!employee) return null;
@@ -157,12 +177,39 @@ export const getEmployeeByCompanyId = async (companyId: number): Promise<fetchEm
     try {
         const employee = await prisma.employee.findMany({
             where: {
-                companyId: companyId
-            }
+                companyId: companyId,
+            },
+            include: {
+                branch: {
+                    select: {
+                        id: true,
+                        name: true,
+                    },
+                },
+                company: {
+                    select: {
+                        id: true,
+                        name: true,
+                    },
+                },
+                position: {
+                    select: {
+                        id: true,
+                        name: true,
+                    },
+                },
+            },
+            orderBy: { id: 'asc', },
         });
 
-        if (employee.length === 0) return null;
-        return employee as fetchEmployee[];
+        const employeesWithKey: fetchEmployee[] = employee.map((employee, index) => ({
+            ...employee,
+            index: (index + 1),
+            key: employee.id.toString(),
+        }));
+
+        if (employeesWithKey.length === 0) return null;
+        return employeesWithKey;
     } catch (error: unknown) {
         // Handle any errors here or log them
         console.error('Error fetching employee:', error);
@@ -174,10 +221,31 @@ export const getEmployeeByCompanyId = async (companyId: number): Promise<fetchEm
 
 export const getAllEmployee = async (): Promise<fetchEmployee[] | null> => {
     try {
-        const employee = await prisma.employee.findMany();
+        const employees = await prisma.employee.findMany({
+            include: {
+                branch: {
+                    select: {
+                        id: true,
+                        name: true,
+                    },
+                },
+                company: {
+                    select: {
+                        id: true,
+                        name: true,
+                    },
+                },
+                position: {
+                    select: {
+                        id: true,
+                        name: true,
+                    },
+                },
+            },
+        });
 
-        if (employee.length === 0) return null;
-        return employee as fetchEmployee[];
+        if (employees.length === 0) return null;
+        return employees as fetchEmployee[];
     } catch (error: unknown) {
         // Handle any errors here or log them
         console.error('Error fetching employee:', error);

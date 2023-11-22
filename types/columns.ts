@@ -19,3 +19,11 @@ export interface DataTypePosition {
   companyId: number;
   status: "Active" | "InActive";
 }
+
+export interface DataTypeEmployee {
+  index: number;
+  key: string;
+  name: string;
+  companyId: number;
+  status: "Active" | "InActive";
+}

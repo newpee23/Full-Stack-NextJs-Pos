@@ -4,6 +4,7 @@ import HeadTitle from '../components/UI/HeadTitle';
 import HomePage from '../components/HomePage';
 import BranchTable from '../components/Table/BranchTable';
 import PositionTable from '../components/Table/PositionTable';
+import EmployeeTable from '../components/Table/EmployeeTable';
 
 type Props = { idComponents: React.Key | null; };
 
@@ -22,6 +23,9 @@ const BlockContens = (props: Props) => {
         case '5':
           setComponent(<PositionTable />);
           break;
+          case '6':
+            setComponent(<EmployeeTable />);
+            break;
         // เพิ่ม case ตามต้องการ
         default:
           setComponent(null);
