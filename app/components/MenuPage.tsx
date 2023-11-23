@@ -49,7 +49,15 @@ const MenuPage = ({ onMenuClick }: MenuPageProps) => {
       getItem("หัวข้อค่าใช้จ่าย", "7"),
       getItem("บันทึกค่าใช้จ่าย", "8"),
     ]),
-    getItem("Submenu", "sub3", null, [getItem("Option 11", "11"), getItem("Option 12", "12")]),
+    getItem("ข้อมูลสินค้า", "sub3", null, [
+      getItem("ประเภทสินค้า", "11"),
+      getItem("หน่วยนับ", "12"),
+      getItem("ข้อมูลสินค้า", "14"),
+    ]),
+    getItem("โปรโมชั่น", "sub4", null, [
+      getItem("หัวข้อโปรโมชั่น", "15"),
+      getItem("บันทึกโปรโมชั่น", "16"),
+    ]),
     getItem("LogOut", "13", <ContainerOutlined />),
   ];
 
