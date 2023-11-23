@@ -53,25 +53,25 @@ export const handleGetAllTable = async (res: NextApiResponse) => {
 }
 
 export const handleUpdateTable = async (body: dataVerifyTable, res: NextApiResponse) => {
-    if (!body.id) return res.status(404).json({ message: "Please specify tablesId.", tables: null, status: false });
+    if (!body.id) return res.status(404).json({ message: [{message: "Please specify tablesId."}], tables: null, status: false });
     // VerifyPromotionData
     const verifyTable = verifyTableBody(body);
     if (verifyTable.length > 0) return res.status(404).json({ message: verifyTable, tables: null, status: false });
     // check TablesById
     const checkTableId = await fetchTableById(body.id);
-    if (!checkTableId) return res.status(404).json({ message: `No tables found with id : ${body.id}`, tables: null, status: false });
+    if (!checkTableId) return res.status(404).json({ message: [{message: `No tables found with id : ${body.id}`}], tables: null, status: false });
     // check companyId
     const checkCompanyId = await getCompanyById(body.companyId);
-    if (!checkCompanyId) return res.status(404).json({ message: `No company found with companyId : ${body.companyId}`, tables: null, status: false });
+    if (!checkCompanyId) return res.status(404).json({ message: [{message: `No company found with companyId : ${body.companyId}`}], tables: null, status: false });
     // check BranchId
     const checkBranchId = await getBranchById(body.branchId);
-    if (!checkBranchId) return res.status(404).json({ message: `No branch found with branchId : ${body.branchId}`, tables: null, status: false });
+    if (!checkBranchId) return res.status(404).json({ message: [{message: `No branch found with branchId : ${body.branchId}`}], tables: null, status: false });
     // check NameBy branchId
     const checkName = await fetchTableNameBybranchId(body.name, body.branchId, body.id);
-    if (checkName) return res.status(404).json({ message: `Found information name : ${body.name} has already been used in the system.`, tables: null, status: false });
+    if (checkName) return res.status(404).json({ message: [{message: `Found information name : ${body.name} has already been used in the system.`}], tables: null, status: false });
     // updateTables
     const updateTables = await updateDataTables(body, body.id);
-    if (!updateTables) return res.status(404).json({ message: "An error occurred saving data.", tables: null, status: false });
+    if (!updateTables) return res.status(404).json({ message: [{message: "An error occurred saving data."}], tables: null, status: false });
 
     return res.status(200).json({ message: "Data saved successfully.", tables: updateTables, status: true });
 }

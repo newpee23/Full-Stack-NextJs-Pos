@@ -1,4 +1,4 @@
-import { useDataTables } from '@/app/api/table';
+import { useDataTables, useDeleteDataTables } from '@/app/api/table';
 import { Space, Table, message } from 'antd';
 import { useSession } from 'next-auth/react';
 import React from 'react'
@@ -9,11 +9,14 @@ import { DataTypeTables } from '@/types/columns';
 import { ColumnsType } from 'antd/lib/table';
 import TagStatus from '../UI/TagStatus';
 import TablesFrom from '../ฺFrom/TablesFrom';
+import DeleteBtn from '../UI/DeleteBtn';
+import { fetchTable } from '@/types/fetchData';
 
 const TablesTable = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const { data: session } = useSession();
   const { data, isLoading, isError, refetch, remove } = useDataTables(session?.user.accessToken, session?.user.company_id);
+  const deleteDataTables = useDeleteDataTables();
 
   const showMessage = ({ status, text }: { status: string, text: string }) => {
     if (status === 'success') { messageApi.success(text); }
@@ -26,6 +29,20 @@ const TablesTable = () => {
     return await refetch();
   };
 
+  const handleDeleteClick = async (id: string) => {
+    try {
+      const token = session?.user.accessToken;
+      const branch = await deleteDataTables.mutateAsync({ token, id });
+
+      if (!branch) return showMessage({ status: "error", text: "ไม่สามารถลบข้อมูลได้เนื่องจากมีการนำไปใช้งานแล้ว" });
+      return showMessage({ status: "success", text: "ลบข้อมูลสำเร็จ" });
+    } catch (error) {
+      showMessage({ status: "error", text: "ลบข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง" });
+    } finally {
+      setTimeout(() => { handleRefresh(); }, 1500);
+    }
+  };
+
   if (isLoading) {
     return <SkeletonTable />;
   }
@@ -34,7 +51,7 @@ const TablesTable = () => {
     return <ErrPage onClick={handleRefresh} />;
   }
 
-  const columnsTables: ColumnsType<DataTypeTables> = [
+  const columnsTables: ColumnsType<fetchTable> = [
 
     {
       title: "ลำดับ",
@@ -66,7 +83,6 @@ const TablesTable = () => {
       className: "min-w-[150px] text-center",
       align: "center",
     },
-
     {
       title: "จำนวนคนต่อโต๊ะ",
       dataIndex: "people",
@@ -94,8 +110,8 @@ const TablesTable = () => {
       className: "text-center",
       render: (_, record) => (
         <Space size="middle">
-          {/* <PositionFrom onClick={handleRefresh} editData={record}  title="แก้ไขข้อมูลสาขา" statusAction="update"/>
-              <DeleteBtn name={record.name} onClick={() => handleDeleteClick(record.key)} label="ลบข้อมูล" /> */}
+          <TablesFrom onClick={handleRefresh} editData={record}  title="แก้ไขข้อมูลสาขา" statusAction="update"/>
+          <DeleteBtn name={record.name} onClick={() => handleDeleteClick(record.key)} label="ลบข้อมูล" />
         </Space>
       ),
     },

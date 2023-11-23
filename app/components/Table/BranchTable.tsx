@@ -25,12 +25,8 @@ const BranchTable = () => {
       const token = session?.user.accessToken;
       const branch = await deleteDataBranch.mutateAsync({ token, id });
   
-      if (!branch) {
-        showMessage({ status: "error", text: "ไม่สามารถลบข้อมูลได้เนื่องจากมีการนำไปใช้งานแล้ว" });
-      } else {
-        const branchName: string = "ลบข้อมูลสาขาสำเร็จ";
-        showMessage({ status: "success", text: branchName });
-      }
+      if (!branch) return showMessage({ status: "error", text: "ไม่สามารถลบข้อมูลได้เนื่องจากมีการนำไปใช้งานแล้ว" });
+      return showMessage({ status: "success", text: "ลบข้อมูลสำเร็จ" });
     } catch (error) {
       showMessage({ status: "error", text: "ลบข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง" });
     } finally {

@@ -34,11 +34,8 @@ const EmployeeTable = () => {
       const token = session?.user.accessToken;
       const employee = await deleteDataEmployee.mutateAsync({ token, id });
 
-      if (!employee) {
-        showMessage({ status: "error", text: "ไม่สามารถลบข้อมูลได้เนื่องจากมีการนำไปใช้งานแล้ว" });
-      } else {
-        showMessage({ status: "success", text: "ลบข้อมูลตำแหน่งพนักงานสำเร็จ" });
-      }
+      if (!employee) return showMessage({ status: "error", text: "ไม่สามารถลบข้อมูลได้เนื่องจากมีการนำไปใช้งานแล้ว" });
+      return showMessage({ status: "success", text: "ลบข้อมูลสำเร็จ" });
     } catch (error) {
       showMessage({ status: "error", text: "ลบข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง" });
     } finally {

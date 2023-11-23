@@ -1,34 +1,139 @@
 import { setLoading } from '@/app/store/slices/loadingSlice';
 import { useAppDispatch } from '@/app/store/store';
-import { Col, Form, Input, Select } from 'antd';
+import { Col, Form, Input, Select, Skeleton, message } from 'antd';
 import { useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react'
 import { optionStatus, validateWhitespace } from './validate/validate';
 import ProgressBar from '../UI/ProgressBar';
 import SaveBtn from '../UI/SaveBtn';
 import DrawerActionData from '../DrawerActionData';
-import { useSelectOpTables } from '@/app/api/table';
+import { useAddDataTables, useSelectOpTables, useUpdateDataTables } from '@/app/api/table';
+import ErrPage from '../ErrPage';
+import { fetchTable } from '@/types/fetchData';
+
+interface tablesSubmit {
+  name: string;
+  stoves: string | undefined;
+  people: string | undefined;
+  expiration: string | undefined;
+  branch: number | undefined;
+  status: string;
+}
 
 interface Props {
   onClick: () => void;
-  // editData?: fetchEmployee;
+  editData?: fetchTable;
   title: string;
   statusAction: "add" | "update";
 };
 
-const TablesFrom = ({ onClick, title, statusAction }: Props) => {
+const TablesFrom = ({ onClick, title, statusAction, editData }: Props) => {
+  
+  const [messageApi, contextHolder] = message.useMessage();
   const dispatch = useAppDispatch();
   const { data: session } = useSession();
   const { data, isLoading, isError, refetch, remove } = useSelectOpTables(session?.user.accessToken, session?.user.company_id);
+  const addDataTablesMutation = useAddDataTables();
+  const updateDataTablesMutation = useUpdateDataTables();
   const [messageError, setMessageError] = useState<{ message: string }[]>([]);
   const [loadingQuery, setLoadingQuery] = useState<number>(0);
+  const [formValues, setFormValues] = useState<tablesSubmit>({
+    name: "",
+    stoves: undefined,
+    people: undefined,
+    expiration: undefined,
+    branch: undefined,
+    status: "Active",
+  });
 
-  const handleSubmit = async (values: object) => {
-    console.log(values)
+  const showMessage = ({ status, text }: { status: string, text: string }) => {
+      if (status === "success") { messageApi.success(text); }
+      else if (status === "error") { messageApi.error(text); }
+      else if (status === "warning") { messageApi.warning(text); }
   };
 
-  const resetForm = () => {
+  const handleSubmit = async (values: object) => {
+    const dataFrom = values as tablesSubmit;
+    setLoadingQuery(0);
+    dispatch(setLoading({ loadingAction: 0, showLoading: true }));
+     try {
+ 
+      if (!session?.user.company_id) return showMessage({ status: "error", text: "พบข้อผิดพลาดกรุณาเข้าสู่ระบบใหม่อีกครั้ง" });
+      if (!dataFrom.branch) return showMessage({ status: "error", text: "กรุณาเลือกสาขา" });
+      if (!dataFrom.stoves) return showMessage({ status: "error", text: "กรุณาระบุจำนวนเตาต่อโต๊ะ" });
+      if (!dataFrom.people) return showMessage({ status: "error", text: "กรุณาระบุจำนวนคนต่อโต๊ะ" });
+      if (!dataFrom.expiration) return showMessage({ status: "error", text: "กรุณาระบุเวลาบริการ(นาที)" });
+     // Update Tables
+      if (editData?.key) {
+          const updateTables = await updateDataTablesMutation.mutateAsync({
+              token: session?.user.accessToken,
+              tablesData: {
+                  id: editData.key,
+                  name: dataFrom.name,
+                  stoves: parseInt(dataFrom.stoves, 10),
+                  people: parseInt(dataFrom.people, 10),
+                  expiration: parseInt(dataFrom.expiration, 10),
+                  branchId: dataFrom.branch,
+                  companyId: session?.user.company_id,
+                  status: dataFrom.status === "Active" ? "Active" : "InActive",
+              },
+              setLoadingQuery: setLoadingQuery
+          });
 
+          if (updateTables === null) return showMessage({ status: "error", text: "แก้ไขข้อมูลโต๊ะไม่สำเร็จ กรุณาลองอีกครั้ง" });
+          if (updateTables?.status === true) {
+              setTimeout(() => { onClick(); }, 1500);
+              return showMessage({ status: "success", text: "แก้ไขข้อมูลโต๊ะสำเร็จ" });
+          }
+          if (typeof updateTables.message !== 'string') setMessageError(updateTables.message);
+          return showMessage({ status: "error", text: "แก้ไขข้อมูลโต๊ะไม่สำเร็จ กรุณาแก้ไขข้อผิดพลาด" });
+      }
+      // Insert Tables
+      const addtables = await addDataTablesMutation.mutateAsync({
+          token: session?.user.accessToken,
+          tablesData: {
+              name: dataFrom.name,
+              stoves: parseInt(dataFrom.stoves, 10),
+              people: parseInt(dataFrom.people, 10),
+              expiration: parseInt(dataFrom.expiration, 10),
+              branchId: dataFrom.branch,
+              companyId: session?.user.company_id,
+              status: dataFrom.status === "Active" ? "Active" : "InActive",
+          },
+          setLoadingQuery: setLoadingQuery
+      });
+
+      if (addtables === null) return showMessage({ status: "error", text: "เพิ่มข้อมูลโต๊ะไม่สำเร็จ กรุณาลองอีกครั้ง" });
+      if (addtables?.status === true) {
+          setTimeout(() => { onClick(); }, 1500);
+          return showMessage({ status: "success", text: "เพิ่มข้อมูลโต๊ะสำเร็จ" });
+      }
+      if (typeof addtables.message !== 'string') setMessageError(addtables.message);
+      return showMessage({ status: "error", text: "เพิ่มข้อมูลโต๊ะไม่สำเร็จ กรุณาแก้ไขข้อผิดพลาด" });
+  } catch (error: unknown) {
+      console.error('Failed to add data:', error);
+  }
+  };
+
+  const handleRefresh = () => {
+    remove();
+    return refetch();
+  }
+
+  const resetForm = () => {
+    if (statusAction === "update") {
+      if (editData?.key) {
+          setFormValues({
+            name: editData.name,
+            stoves: editData.stoves.toString(),
+            people: editData.people.toString(),
+            expiration: editData.expiration.toString(),
+            branch: editData.branchId,
+            status: editData.status === "Active" ? "Active" : "InActive",
+          });
+      }
+      if (messageError.length > 0) setMessageError([]);
+  }
   };
 
   useEffect(() => {
@@ -39,9 +144,17 @@ const TablesFrom = ({ onClick, title, statusAction }: Props) => {
     loadComponents();
   }, [loadingQuery]);
 
+  if (isLoading) {
+    return <div className="mx-3"><Skeleton.Input active={true} size="small" /></div>;
+  }
+
+  if (isError) {
+    return <ErrPage onClick={handleRefresh} />;
+  }
+
   const MyForm = ({ onFinish }: { onFinish: (values: object) => void }): React.JSX.Element => {
     return (
-      <Form layout="vertical" onFinish={(values) => { onFinish(values); }}>
+      <Form layout="vertical" onFinish={(values) => { setFormValues(values as tablesSubmit); onFinish(values); }} initialValues={formValues}>
         <div className="grid gap-3 grid-cols-1 sml:grid-cols-2">
           <Col>
             <Form.Item name="name" label="ชื่อโต๊ะประจำสาขา"
@@ -59,7 +172,7 @@ const TablesFrom = ({ onClick, title, statusAction }: Props) => {
           </Col>
         </div>
         <div className="grid gap-3 grid-cols-1 sml:grid-cols-3">
-        <Col>
+          <Col>
             <Form.Item name="stoves" label="จำนวนเตาต่อโต๊ะ"
               rules={[
                 { required: true, message: "กรุณาระบุจำนวนเตาต่อโต๊ะ" },
@@ -70,7 +183,7 @@ const TablesFrom = ({ onClick, title, statusAction }: Props) => {
                 { validator: validateWhitespace },
               ]}
             >
-              <Input placeholder="ระบุจำนวนเตาต่อโต๊ะ" />
+              <Input type="number" step="0" placeholder="ระบุจำนวนเตาต่อโต๊ะ" />
             </Form.Item>
           </Col>
           <Col>
@@ -84,7 +197,7 @@ const TablesFrom = ({ onClick, title, statusAction }: Props) => {
                 { validator: validateWhitespace },
               ]}
             >
-              <Input placeholder="ระบุจำนวนคนต่อโต๊ะ" />
+              <Input type="number" step="0" placeholder="ระบุจำนวนคนต่อโต๊ะ" />
             </Form.Item>
           </Col>
           <Col>
@@ -98,10 +211,10 @@ const TablesFrom = ({ onClick, title, statusAction }: Props) => {
                 { validator: validateWhitespace },
               ]}
             >
-              <Input placeholder="ระบุเวลาบริการ(นาที)" />
+              <Input type="number" step="0" placeholder="ระบุเวลาบริการ(นาที)" />
             </Form.Item>
           </Col>
-         
+
         </div>
         <div className="grid gap-3 grid-cols-1 sml:grid-cols-2">
           <Col>
@@ -134,6 +247,7 @@ const TablesFrom = ({ onClick, title, statusAction }: Props) => {
 
   return (
     <div>
+      {contextHolder}
       <DrawerActionData resetForm={resetForm} formContent={<MyForm onFinish={handleSubmit} />} title={title} showError={messageError} statusAction={statusAction} />
     </div>
   )

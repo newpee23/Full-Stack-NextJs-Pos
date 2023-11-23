@@ -31,13 +31,10 @@ const PositionTable = () => {
     const handleDeleteClick = async (id: string) => {
       try {
         const token = session?.user.accessToken;
-        const branch = await deleteDataPosition.mutateAsync({ token, id });
+        const position = await deleteDataPosition.mutateAsync({ token, id });
   
-        if (!branch) {
-          showMessage({ status: "error", text: "ไม่สามารถลบข้อมูลได้เนื่องจากมีการนำไปใช้งานแล้ว" });
-        } else {
-          showMessage({ status: "success", text: "ลบข้อมูลตำแหน่งพนักงานสำเร็จ" });
-        }
+        if (!position) return showMessage({ status: "error", text: "ไม่สามารถลบข้อมูลได้เนื่องจากมีการนำไปใช้งานแล้ว" });
+        return showMessage({ status: "success", text: "ลบข้อมูลสำเร็จ" });
       } catch (error) {
         showMessage({ status: "error", text: "ลบข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง" });
       } finally {

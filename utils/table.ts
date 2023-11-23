@@ -150,8 +150,7 @@ export const fetchTableCompanyId = async (companyId: number): Promise<fetchTable
                         name: true,
                     },
                 }
-            }
-            ,orderBy: { id: 'asc', },
+            }      
         });
 
         if (!tables) return null;
