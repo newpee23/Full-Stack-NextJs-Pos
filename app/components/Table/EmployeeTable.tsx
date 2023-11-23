@@ -11,9 +11,7 @@ import RefreshBtn from '../UI/RefreshBtn';
 import EmployeeFrom from '../ฺFrom/EmployeeFrom';
 import DeleteBtn from '../UI/DeleteBtn';
 
-type Props = {}
-
-const EmployeeTable = (props: Props) => {
+const EmployeeTable = () => {
 
   const [messageApi, contextHolder] = message.useMessage();
   const { data: session } = useSession();
@@ -37,7 +35,7 @@ const EmployeeTable = (props: Props) => {
       const employee = await deleteDataEmployee.mutateAsync({ token, id });
 
       if (!employee) {
-        showMessage({ status: "error", text: "ลบข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง" });
+        showMessage({ status: "error", text: "ไม่สามารถลบข้อมูลได้เนื่องจากมีการนำไปใช้งานแล้ว" });
       } else {
         showMessage({ status: "success", text: "ลบข้อมูลตำแหน่งพนักงานสำเร็จ" });
       }
@@ -71,13 +69,13 @@ const EmployeeTable = (props: Props) => {
       title: "ชื่อ",
       dataIndex: "name",
       key: "name",
-      className: "",
+      className: "min-w-[180px]",
     },
     {
       title: "นามสกุล",
       dataIndex: "subname",
       key: "subname",
-      className: "",
+      className: "min-w-[180px]",
     },
     {
       title: "ตำแหน่ง",
@@ -89,11 +87,11 @@ const EmployeeTable = (props: Props) => {
       title: "ชื่อผู้ใช้",
       dataIndex: "userName",
       key: "userName",
-      className: "",
+      className: "min-w-[150px]",
     },
     {
       title: "รหัสผ่าน",
-      key: "status",
+      key: "passWord",
       className: "text-center min-w-[100px]",
       render: (_, record) => (
         (record.status === "Active") ? <TagStatus color="success" textShow={record.status} /> : <TagStatus color="error" textShow={record.status} />
@@ -103,7 +101,7 @@ const EmployeeTable = (props: Props) => {
       title: "สาขา",
       dataIndex: ["branch", "name"],
       key: "branch",
-      className: "",
+      className: "min-w-[150px]",
     },
     {
       title: "สิทธิ์ผู้ใช้งาน",

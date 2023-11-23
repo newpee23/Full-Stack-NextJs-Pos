@@ -125,6 +125,12 @@ export interface fetchTable {
   branchId: number;
   companyId: number;
   status: "Active" | "InActive";
+  index: number;
+  key: string;
+  branch: {
+    id: number;
+    name: string;
+  };
 }
 
 export interface fetchExpenses {
@@ -155,5 +161,9 @@ export interface optionSelect {
 
 export interface fetchOptionAddEmployeeType {
   position: optionSelect[];
+  branch: optionSelect[]; 
+}
+
+export interface fetchOptionAddTables {
   branch: optionSelect[]; 
 }

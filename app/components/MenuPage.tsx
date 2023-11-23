@@ -38,7 +38,7 @@ const MenuPage = ({ onMenuClick }: MenuPageProps) => {
 
     getItem("Option 1", "1", <PieChartOutlined />),
     getItem("สาขา", "2", <DesktopOutlined />),
-    getItem("Option 3", "3", <ContainerOutlined />),
+    getItem("โต๊ะ", "3", <ContainerOutlined />),
 
     getItem("ข้อมูลผู้ใช้", "sub1", <MailOutlined />, [
       getItem("ตำแหน่ง", "5"),

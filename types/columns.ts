@@ -24,6 +24,22 @@ export interface DataTypeEmployee {
   index: number;
   key: string;
   name: string;
+  subname: string;
+  position: string;
+  userName: string;
+  passWord: string;
+  role: string;
   companyId: number;
   status: "Active" | "InActive";
 }
+
+export interface DataTypeTables {
+  index: number;
+  key: string;
+  name: string;
+  stoves: number;
+  people: number;
+  expiration: number;
+  status: "Active" | "InActive";
+}
+

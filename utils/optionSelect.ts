@@ -1,40 +1,68 @@
 import { prisma } from "@/pages/lib/prismaDB";
-import { fetchOptionAddEmployeeType, optionSelect } from "@/types/fetchData";
+import { fetchOptionAddEmployeeType, fetchOptionAddTables, optionSelect } from "@/types/fetchData";
 
-export const fetchOptionAddEmployee = async (companyId: number): Promise<fetchOptionAddEmployeeType> => {
+const fetchPositions = async (companyId: number): Promise<optionSelect[]> => {
     try {
-        // option positions
         const positions = await prisma.position.findMany({
             where: {
                 companyId: companyId,
                 status: "Active"
             },
-            orderBy: { id: 'asc', },
+            orderBy: { id: 'asc' },
         });
-        // Transform data to fit the Option interface
-        const positionOptions: optionSelect[] = positions.map((position) => ({
+
+        return positions.map((position) => ({
             value: position.id,
             label: position.name,
         }));
-        // option branchs
+    } catch (error) {
+        console.error('Error fetching positions:', error);
+        return [];
+    }
+};
+
+const fetchBranches = async (companyId: number): Promise<optionSelect[]> => {
+    try {
         const branches = await prisma.branch.findMany({
             where: {
                 companyId: companyId,
                 status: "Active"
             },
-            orderBy: { id: 'asc', },
+            orderBy: { id: 'asc' },
         });
 
-        const branchOptions: optionSelect[] = branches.map((branch: any) => ({
+        return branches.map((branch: any) => ({
             value: branch.id,
             label: branch.name,
         }));
+    } catch (error) {
+        console.error('Error fetching branches:', error);
+        return [];
+    }
+};
+
+export const fetchOptionAddEmployee = async (companyId: number): Promise<fetchOptionAddEmployeeType> => {
+    try {
+        const positionOptions = await fetchPositions(companyId);
+        const branchOptions = await fetchBranches(companyId);
 
         return { position: positionOptions, branch: branchOptions };
     } catch (error) {
-        // Handle any errors here or log them
         console.error('Error fetching optionAddEmployee:', error);
         return { position: [], branch: [] };
+    } finally {
+        await prisma.$disconnect();
+    }
+};
+
+export const fetchOptionTables = async (companyId: number): Promise<fetchOptionAddTables> => {
+    try {
+        const branchOptions = await fetchBranches(companyId);
+
+        return { branch: branchOptions };
+    } catch (error) {
+        console.error('Error fetching optionAddTables:', error);
+        return { branch: [] };
     } finally {
         await prisma.$disconnect();
     }

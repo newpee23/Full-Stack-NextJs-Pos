@@ -92,6 +92,14 @@ export const fetchTableById = async (id: string): Promise<fetchTable | null> => 
             where: {
                 id: id
             }
+            ,include: {
+                branch: {
+                    select: {
+                        id: true,
+                        name: true,
+                    },
+                }
+            }
         });
 
         if (!tables) return null;
@@ -108,9 +116,16 @@ export const fetchTableById = async (id: string): Promise<fetchTable | null> => 
 export const fetchTableBranchId = async (branchId: number): Promise<fetchTable[] | null> => {
     try {
         const tables = await prisma.tables.findMany({
-            where: {
-                branchId: branchId
+            where: { branchId: branchId }
+            ,include: {
+                branch: {
+                    select: {
+                        id: true,
+                        name: true,
+                    },
+                }
             }
+            , orderBy: { id: 'asc', } 
         });
 
         if (!tables) return null;
@@ -127,13 +142,28 @@ export const fetchTableBranchId = async (branchId: number): Promise<fetchTable[]
 export const fetchTableCompanyId = async (companyId: number): Promise<fetchTable[] | null> => {
     try {
         const tables = await prisma.tables.findMany({
-            where: {
-                companyId: companyId
+            where: { companyId: companyId }
+            ,include: {
+                branch: {
+                    select: {
+                        id: true,
+                        name: true,
+                    },
+                }
             }
+            ,orderBy: { id: 'asc', },
         });
 
         if (!tables) return null;
-        return tables as fetchTable[];
+         // สร้าง key เพื่อเอาไปใส่ table และ แปลง date เป็น str
+        const tablesWithKey: fetchTable[] = tables.map((tables, index) => ({
+            ...tables,
+            index: (index + 1),
+            key: tables.id.toString(),
+        }));
+       
+        if (tablesWithKey.length === 0) return null;
+        return tablesWithKey;
     } catch (error) {
         // Handle any errors here or log them
         console.error('Error fetching tables:', error);
@@ -145,7 +175,7 @@ export const fetchTableCompanyId = async (companyId: number): Promise<fetchTable
 
 export const fetchAllTable = async (): Promise<fetchTable[] | null> => {
     try {
-        const tables = await prisma.tables.findMany({});
+        const tables = await prisma.tables.findMany();
 
         if (!tables) return null;
         return tables as fetchTable[];

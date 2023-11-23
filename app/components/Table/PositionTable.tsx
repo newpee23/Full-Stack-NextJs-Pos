@@ -11,7 +11,6 @@ import RefreshBtn from '../UI/RefreshBtn';
 import PositionFrom from '../ฺFrom/PositionFrom';
 import DeleteBtn from '../UI/DeleteBtn';
 
-
 const PositionTable = () => {
     const [messageApi, contextHolder] = message.useMessage();
     const { data: session } = useSession();
@@ -35,7 +34,7 @@ const PositionTable = () => {
         const branch = await deleteDataPosition.mutateAsync({ token, id });
   
         if (!branch) {
-          showMessage({ status: "error", text: "ลบข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง" });
+          showMessage({ status: "error", text: "ไม่สามารถลบข้อมูลได้เนื่องจากมีการนำไปใช้งานแล้ว" });
         } else {
           showMessage({ status: "success", text: "ลบข้อมูลตำแหน่งพนักงานสำเร็จ" });
         }

@@ -14,7 +14,6 @@ import "@/app/components/Table/table.css";
 import DeleteBtn from "../UI/DeleteBtn";
 import RefreshBtn from "../UI/RefreshBtn";
 
-
 const BranchTable = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const { data: session } = useSession();
@@ -25,9 +24,9 @@ const BranchTable = () => {
     try {
       const token = session?.user.accessToken;
       const branch = await deleteDataBranch.mutateAsync({ token, id });
-
+  
       if (!branch) {
-        showMessage({ status: "error", text: "ลบข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง" });
+        showMessage({ status: "error", text: "ไม่สามารถลบข้อมูลได้เนื่องจากมีการนำไปใช้งานแล้ว" });
       } else {
         const branchName: string = "ลบข้อมูลสาขาสำเร็จ";
         showMessage({ status: "success", text: branchName });
