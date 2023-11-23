@@ -97,13 +97,18 @@ export const fetchExpensesById = async (id: number): Promise<fetchExpenses | nul
 export const fetchExpensesByCompanyId = async (companyId: number): Promise<fetchExpenses[] | null> => {
     try {
         const expenses = await prisma.expenses.findMany({
-            where: {
-                companyId: companyId
-            }
+            where: { companyId: companyId }
+            ,orderBy: { id: 'asc', },
         });
 
-        if (!expenses) return null;
-        return expenses as fetchExpenses[];
+        const expensesWithKey: fetchExpenses[] = expenses.map((expenses, index) => ({
+            ...expenses,
+            index: (index + 1),
+            key: expenses.id.toString(),
+        }));
+
+        if (expensesWithKey.length === 0) return null;
+        return expensesWithKey;
     } catch (error) {
         // Handle any errors here or log them
         console.error('Error fetching expenses:', error);
@@ -115,7 +120,7 @@ export const fetchExpensesByCompanyId = async (companyId: number): Promise<fetch
 
 export const fetchAllExpenses = async (): Promise<fetchExpenses[] | null> => {
     try {
-        const expenses = await prisma.expenses.findMany({});
+        const expenses = await prisma.expenses.findMany();
 
         if (!expenses) return null;
         return expenses as fetchExpenses[];

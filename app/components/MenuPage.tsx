@@ -45,13 +45,11 @@ const MenuPage = ({ onMenuClick }: MenuPageProps) => {
       getItem("พนักงาน", "6"),
     ]),
 
-    getItem("Navigation Two", "sub2", <AppstoreOutlined />, [
-      getItem("Option 9", "9"),
-      getItem("Option 10", "10"),
-
-      getItem("Submenu", "sub3", null, [getItem("Option 11", "11"), getItem("Option 12", "12")]),
+    getItem("ค่าใช้จ่าย", "sub2", <AppstoreOutlined />, [
+      getItem("หัวข้อค่าใช้จ่าย", "7"),
+      getItem("บันทึกค่าใช้จ่าย", "8"),
     ]),
-
+    getItem("Submenu", "sub3", null, [getItem("Option 11", "11"), getItem("Option 12", "12")]),
     getItem("LogOut", "13", <ContainerOutlined />),
   ];
 

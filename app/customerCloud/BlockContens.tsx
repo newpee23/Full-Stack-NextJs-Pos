@@ -6,6 +6,7 @@ import BranchTable from '../components/Table/BranchTable';
 import PositionTable from '../components/Table/PositionTable';
 import EmployeeTable from '../components/Table/EmployeeTable';
 import TablesTable from '../components/Table/TablesTable';
+import ExpensesTable from '../components/Table/ExpensesTable';
 
 type Props = { idComponents: React.Key | null; };
 
@@ -29,6 +30,9 @@ const BlockContens = (props: Props) => {
           break;
         case '6':
           setComponent(<EmployeeTable />);
+          break;
+        case '7':
+          setComponent(<ExpensesTable />);
           break;
         // เพิ่ม case ตามต้องการ
         default:

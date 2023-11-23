@@ -135,6 +135,8 @@ export interface fetchTable {
 
 export interface fetchExpenses {
   id: number;
+  index: number;
+  key: string;
   name: string;
   companyId: number;
   status: "Active" | "InActive";

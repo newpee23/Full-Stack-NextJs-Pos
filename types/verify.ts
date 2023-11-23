@@ -112,7 +112,6 @@ export interface dataVerifyExpenses {
   id?: number;
   name: string;
   companyId: number;
-  expensesId: number;
   status: "Active" | "InActive";
 }
 

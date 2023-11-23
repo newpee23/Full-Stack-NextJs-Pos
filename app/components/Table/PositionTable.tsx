@@ -12,98 +12,97 @@ import PositionFrom from '../ฺFrom/PositionFrom';
 import DeleteBtn from '../UI/DeleteBtn';
 
 const PositionTable = () => {
-    const [messageApi, contextHolder] = message.useMessage();
-    const { data: session } = useSession();
-    const { data, isLoading, isError, refetch, remove } = useDataPosition(session?.user.accessToken, session?.user.company_id);
-    const deleteDataPosition = useDeleteDataPosition();
+  const [messageApi, contextHolder] = message.useMessage();
+  const { data: session } = useSession();
+  const { data, isLoading, isError, refetch, remove } = useDataPosition(session?.user.accessToken, session?.user.company_id);
+  const deleteDataPosition = useDeleteDataPosition();
 
-    const showMessage = ({ status, text }: { status: string, text: string }) => {
-        if (status === 'success') { messageApi.success(text);} 
-        else if (status === 'error') { messageApi.error(text);} 
-        else if (status === 'warning') { messageApi.warning(text);}
-    };
+  const showMessage = ({ status, text }: { status: string, text: string }) => {
+    if (status === 'success') { messageApi.success(text); }
+    else if (status === 'error') { messageApi.error(text); }
+    else if (status === 'warning') { messageApi.warning(text); }
+  };
 
-    const handleRefresh = async () => {
-        remove();
-        return await refetch();
-    };
+  const handleRefresh = async () => {
+    remove();
+    return await refetch();
+  };
 
-    const handleDeleteClick = async (id: string) => {
-      try {
-        const token = session?.user.accessToken;
-        const position = await deleteDataPosition.mutateAsync({ token, id });
-  
-        if (!position) return showMessage({ status: "error", text: "ไม่สามารถลบข้อมูลได้เนื่องจากมีการนำไปใช้งานแล้ว" });
-        return showMessage({ status: "success", text: "ลบข้อมูลสำเร็จ" });
-      } catch (error) {
-        showMessage({ status: "error", text: "ลบข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง" });
-      } finally {
-        setTimeout(() => {handleRefresh(); }, 1500);
-      }
-    };
+  const handleDeleteClick = async (id: string) => {
+    try {
+      const token = session?.user.accessToken;
+      const position = await deleteDataPosition.mutateAsync({ token, id });
 
-    if (isLoading) {
-        return <SkeletonTable />;
+      if (!position) return showMessage({ status: "error", text: "ไม่สามารถลบข้อมูลได้เนื่องจากมีการนำไปใช้งานแล้ว" });
+      return showMessage({ status: "success", text: "ลบข้อมูลสำเร็จ" });
+    } catch (error) {
+      showMessage({ status: "error", text: "ลบข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง" });
+    } finally {
+      setTimeout(() => { handleRefresh(); }, 1500);
     }
-    
-    if (isError) {
-        return <ErrPage onClick={handleRefresh} />;
-     }
+  };
 
-    const columnsPosition: ColumnsType<DataTypePosition> = [
-   
-        {
-          title: "ลำดับ",
-          dataIndex: "index",
-          className: "text-center",
-          key: "index",
-          sorter: {
-            compare: (a, b) => a.index - b.index,
-            multiple: 1,
-          },
-        },
-        {
-          title: "ชื่อตำแหน่ง",
-          dataIndex: "name",
-          key: "name",
-          className: "min-w-[200px]",
-        },
-        {
-          title: "ฐานเงินเดือน",
-          dataIndex: "salary",
-          key: "salary",
-          className: "min-w-[150px] text-center",
-          align: "center",
-          render: (text) => parseFloat(text).toLocaleString('en-US', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          }),
-        },
-        {
-          title: "สถานะ",
-          key: "status",
-          className: "text-center min-w-[100px]",
-          render: (_, record) => (
-            (record.status === "Active") ? <TagStatus color="success" textShow={record.status} /> : <TagStatus color="error" textShow={record.status} />
-          ),
-        },
-        {
-          title: "จัดการข้อมูล",
-          key: "action",
-          className: "text-center",
-          render: (_, record) => (
-            <Space size="middle">
-              <PositionFrom onClick={handleRefresh} editData={record}  title="แก้ไขข้อมูลสาขา" statusAction="update"/>
-              <DeleteBtn name={record.name} onClick={() => handleDeleteClick(record.key)} label="ลบข้อมูล" />
-            </Space>
-          ),
-        },
-    ];
+  if (isLoading) {
+    return <SkeletonTable />;
+  }
+
+  if (isError) {
+    return <ErrPage onClick={handleRefresh} />;
+  }
+
+  const columnsPosition: ColumnsType<DataTypePosition> = [
+    {
+      title: "ลำดับ",
+      dataIndex: "index",
+      className: "text-center",
+      key: "index",
+      sorter: {
+        compare: (a, b) => a.index - b.index,
+        multiple: 1,
+      },
+    },
+    {
+      title: "ชื่อตำแหน่ง",
+      dataIndex: "name",
+      key: "name",
+      className: "min-w-[200px]",
+    },
+    {
+      title: "ฐานเงินเดือน",
+      dataIndex: "salary",
+      key: "salary",
+      className: "min-w-[150px] text-center",
+      align: "center",
+      render: (text) => parseFloat(text).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }),
+    },
+    {
+      title: "สถานะ",
+      key: "status",
+      className: "text-center min-w-[100px]",
+      render: (_, record) => (
+        (record.status === "Active") ? <TagStatus color="success" textShow={record.status} /> : <TagStatus color="error" textShow={record.status} />
+      ),
+    },
+    {
+      title: "จัดการข้อมูล",
+      key: "action",
+      className: "text-center",
+      render: (_, record) => (
+        <Space size="middle">
+          <PositionFrom onClick={handleRefresh} editData={record} title="แก้ไขข้อมูลสาขา" statusAction="update" />
+          <DeleteBtn name={record.name} onClick={() => handleDeleteClick(record.key)} label="ลบข้อมูล" />
+        </Space>
+      ),
+    },
+  ];
 
   return (
-     <div>
+    <div>
       <div className="flex items-center justify-between">
-        <PositionFrom onClick={handleRefresh} statusAction="add" title="เพิ่มข้อมูลตำแหน่งพนักงาน"/>
+        <PositionFrom onClick={handleRefresh} statusAction="add" title="เพิ่มข้อมูลตำแหน่งพนักงาน" />
         <RefreshBtn label="Refresh Data" onClick={handleRefresh} />
       </div>
       <div className="overflow-x-auto m-3">

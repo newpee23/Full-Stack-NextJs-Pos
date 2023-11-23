@@ -1,69 +1,29 @@
-import { fetchOptionAddTables, fetchTable } from "@/types/fetchData";
-import { dataVerifyTable } from "@/types/verify";
+import { fetchExpenses } from "@/types/fetchData";
+import { dataVerifyExpenses } from "@/types/verify";
 import axios, { AxiosError } from "axios";
 import { useMutation, useQuery } from "react-query";
 
-interface addTablesType {
+interface addExpenses {
     message: { message: string }[] | string
-    , tables: null
+    , branch: null
     , status: boolean
 }
 
-const fetchTableData = async (token: string | undefined, company_id: number | undefined): Promise<fetchTable[]> => {
+const fetchExpensesData = async (token: string | undefined, companyId: number | undefined): Promise<fetchExpenses[]> => {
     try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/table?companyId=${company_id}`, {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/expenses?companyId=${companyId}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         });
 
         if (!response.data) {
-            console.error('Failed to fetch table data');
+            console.error('Failed to fetch expenses data');
             return [];
         }
 
-        const tables: fetchTable[] = response.data.tables;
-        return tables;
-    } catch (error: unknown) {
-        if (axios.AxiosError) {
-            // The error is an instance of AxiosError
-            const axiosError = error as AxiosError;
-
-            if (axiosError.response) {
-                // Server responded with a status code that falls out the range of 2xx
-                console.error("Error data: ", axiosError.response.data);
-                console.error("Error status: ", axiosError.response.status);
-                console.error("Error headers: ", axiosError.response.headers);
-            } else if (axiosError.request) {
-                // Request was made but no response was received
-                console.error("Error request: ", axiosError.request);
-            } else {
-                // Something happened in setting up the request that triggered an Error
-                console.error("Error message: ", axiosError.message);
-            }
-        } else {
-            // Handel non-Axios error
-            console.error("Unexpected error: ", error);
-        }
-        return [];
-    }
-};
-
-const fetchOptions = async (token: string | undefined, companyId: number | undefined): Promise<fetchOptionAddTables> => {
-    try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/selectOption/optionTables?companyId=${companyId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-
-        if (!response.data) {
-            console.error('Failed to fetch options data');
-            return { branch: [] };
-        }
-
-        const optionTables: fetchOptionAddTables = response.data.optionTables;
-        return optionTables;
+        const expenses: fetchExpenses[] = response.data.expenses;
+        return expenses;
     } catch (error: unknown) {
         if (axios.AxiosError) {
             // The error is an instance of AxiosError
@@ -89,11 +49,11 @@ const fetchOptions = async (token: string | undefined, companyId: number | undef
     }
 };
 
-const addTable = async (token: string | undefined, tablesData: dataVerifyTable, setLoadingQuery: React.Dispatch<React.SetStateAction<number>>): Promise<addTablesType | null> => {
+const addExpenses = async (token: string | undefined, expensesData: dataVerifyExpenses, setLoadingQuery: React.Dispatch<React.SetStateAction<number>>): Promise<addExpenses | null> => {
     try {
         const response = await axios.post(
-            `${process.env.NEXT_PUBLIC_BASE_URL}/table`,
-            tablesData,
+            `${process.env.NEXT_PUBLIC_BASE_URL}/expenses`,
+            expensesData,
             {
                 onDownloadProgress: progressEvent => {
                     if (progressEvent.total) {
@@ -107,8 +67,8 @@ const addTable = async (token: string | undefined, tablesData: dataVerifyTable, 
             }
         );
 
-        const table: addTablesType = response.data;
-        return table;
+        const expenses: addExpenses = response.data;
+        return expenses;
     } catch (error) {
         if (axios.isAxiosError(error)) {
             // The error is an instance of AxiosError
@@ -116,7 +76,7 @@ const addTable = async (token: string | undefined, tablesData: dataVerifyTable, 
 
             if (axiosError.response) {
                 // Server responded with a status code that falls outside the range of 2xx
-                const message: addTablesType = axiosError.response.data;
+                const message: addExpenses = axiosError.response.data;
 
                 console.error("Error data: ", axiosError.response.data);
                 console.error("Error status: ", axiosError.response.status);
@@ -137,10 +97,10 @@ const addTable = async (token: string | undefined, tablesData: dataVerifyTable, 
     }
 };
 
-const deleteTables = async (token: string | undefined, itemId: string): Promise<fetchTable | null> => {
+const deleteExpenses = async (token: string | undefined, itemId: string): Promise<addExpenses | null> => {
     try {
         const response = await axios.delete(
-            `${process.env.NEXT_PUBLIC_BASE_URL}/table?id=${itemId}`,
+            `${process.env.NEXT_PUBLIC_BASE_URL}/expenses?id=${itemId}`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -149,11 +109,11 @@ const deleteTables = async (token: string | undefined, itemId: string): Promise<
         );
 
         if (!response.data) {
-            console.error("Failed to delete position data");
+            console.error("Failed to delete expenses data");
             return null;
         }
 
-        const position: fetchTable = response.data.tables;
+        const position: addExpenses = response.data.expenses;
         return position;
     } catch (error: unknown) {
         if (axios.AxiosError) {
@@ -180,11 +140,11 @@ const deleteTables = async (token: string | undefined, itemId: string): Promise<
     }
 };
 
-const updateTables = async (token: string | undefined, tablesData: dataVerifyTable, setLoadingQuery: React.Dispatch<React.SetStateAction<number>>): Promise<addTablesType | null> => {
+const updateExpenses = async (token: string | undefined, expensesData: dataVerifyExpenses, setLoadingQuery: React.Dispatch<React.SetStateAction<number>>): Promise<addExpenses | null> => {
     try {
         const response = await axios.put(
-            `${process.env.NEXT_PUBLIC_BASE_URL}/table`,
-            tablesData,
+            `${process.env.NEXT_PUBLIC_BASE_URL}/expenses`,
+            expensesData,
             {
                 onDownloadProgress: progressEvent => {
                     if (progressEvent.total) {
@@ -198,8 +158,8 @@ const updateTables = async (token: string | undefined, tablesData: dataVerifyTab
             }
         );
 
-        const table: addTablesType = response.data;
-        return table;
+        const expenses: addExpenses = response.data;
+        return expenses;
     } catch (error) {
         if (axios.isAxiosError(error)) {
             // The error is an instance of AxiosError
@@ -207,7 +167,7 @@ const updateTables = async (token: string | undefined, tablesData: dataVerifyTab
 
             if (axiosError.response) {
                 // Server responded with a status code that falls outside the range of 2xx
-                const message: addTablesType = axiosError.response.data;
+                const message: addExpenses = axiosError.response.data;
 
                 console.error("Error data: ", axiosError.response.data);
                 console.error("Error status: ", axiosError.response.status);
@@ -229,38 +189,32 @@ const updateTables = async (token: string | undefined, tablesData: dataVerifyTab
 };
 
 // function React Query
-export const useUpdateDataTables = () => {
+export const useUpdateDataExpenses = () => {
     return useMutation(
-        (variables: {
-            token: string | undefined;
-            tablesData: dataVerifyTable;
-            setLoadingQuery: React.Dispatch<React.SetStateAction<number>>;
-        }) => updateTables(variables.token, variables.tablesData, variables.setLoadingQuery)
+      (variables: {
+        token: string | undefined;
+        expensesData: dataVerifyExpenses;
+        setLoadingQuery: React.Dispatch<React.SetStateAction<number>>;
+      }) => updateExpenses(variables.token, variables.expensesData, variables.setLoadingQuery)
     );
-};
+  };
 
-export const useDeleteDataTables = () => {
-    return useMutation((variables: { token: string | undefined; id: string }) => deleteTables(variables.token, variables.id));
-};
-
-export const useDataTables = (token: string | undefined, company_id: number | undefined) => {
-    return useQuery('dataTables', () => fetchTableData(token, company_id), {
+export const useDataExpenses = (token: string | undefined, companyId: number | undefined) => {
+    return useQuery('dataExpenses', () => fetchExpensesData(token, companyId), {
         refetchOnWindowFocus: false,
     });
 };
 
-export const useSelectOpTables = (token: string | undefined, companyId: number | undefined) => {
-    return useQuery('selectOpAddTables', () => fetchOptions(token, companyId), {
-        refetchOnWindowFocus: false,
-    });
+export const useDeleteDataExpenses = () => {
+    return useMutation((variables: { token: string | undefined; id: string }) => deleteExpenses(variables.token, variables.id));
 };
 
-export const useAddDataTables = () => {
+export const useAddDataExpenses = () => {
     return useMutation(
         (variables: {
             token: string | undefined;
-            tablesData: dataVerifyTable;
+            expensesData: dataVerifyExpenses;
             setLoadingQuery: React.Dispatch<React.SetStateAction<number>>;
-        }) => addTable(variables.token, variables.tablesData, variables.setLoadingQuery)
+        }) => addExpenses(variables.token, variables.expensesData, variables.setLoadingQuery)
     );
 };
