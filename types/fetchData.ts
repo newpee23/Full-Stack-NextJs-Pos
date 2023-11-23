@@ -150,6 +150,8 @@ export interface fetchItemExpenses {
 }
 
 export interface fetchProductType {
+  index: number;
+  key: string;
   id: number;
   name: string;
   companyId: number;

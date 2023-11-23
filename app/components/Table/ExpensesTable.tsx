@@ -31,9 +31,9 @@ const ExpensesTable = () => {
     const handleDeleteClick = async (id: string) => {
         try {
             const token = session?.user.accessToken;
-            const position = await deleteDataExpenses.mutateAsync({ token, id });
+            const expenses = await deleteDataExpenses.mutateAsync({ token, id });
 
-            if (!position) return showMessage({ status: "error", text: "ไม่สามารถลบข้อมูลได้เนื่องจากมีการนำไปใช้งานแล้ว" });
+            if (!expenses) return showMessage({ status: "error", text: "ไม่สามารถลบข้อมูลได้เนื่องจากมีการนำไปใช้งานแล้ว" });
             return showMessage({ status: "success", text: "ลบข้อมูลสำเร็จ" });
         } catch (error) {
             showMessage({ status: "error", text: "ลบข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง" });

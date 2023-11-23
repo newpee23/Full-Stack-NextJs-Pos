@@ -120,9 +120,18 @@ export const fetchProductTypeByCompanyId = async (companyId: number): Promise<fe
             where: {
                 companyId: companyId
             }
+            ,orderBy: { id: 'asc', },
         });
 
         if (productType.length === 0) return null;
+      // สร้าง key เพื่อเอาไปใส่ table และ แปลง date เป็น str
+      const productTypesWithKey: fetchProductType[] = productType.map((productType, index) => ({
+        ...productType,
+        index: (index + 1),
+        key: productType.id.toString(),
+      }));
+
+    return productTypesWithKey;
         return productType as fetchProductType[];
     } catch (error: unknown) {
         // Handle any errors here or log them

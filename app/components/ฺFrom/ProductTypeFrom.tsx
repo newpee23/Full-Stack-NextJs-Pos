@@ -1,36 +1,36 @@
 import { setLoading } from '@/app/store/slices/loadingSlice';
 import { useAppDispatch } from '@/app/store/store';
+import { fetchProductType } from '@/types/fetchData';
 import { Col, Form, Input, Row, Select, message } from 'antd';
 import { useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react'
-import SaveBtn from '../UI/SaveBtn';
-import ProgressBar from '../UI/ProgressBar';
 import { optionStatus, validateWhitespace } from './validate/validate';
+import ProgressBar from '../UI/ProgressBar';
+import SaveBtn from '../UI/SaveBtn';
 import DrawerActionData from '../DrawerActionData';
-import { useAddDataExpenses, useUpdateDataExpenses } from '@/app/api/expenses';
-import { fetchExpenses } from '@/types/fetchData';
+import { useAddDataProductType, useUpdateDataProductType } from '@/app/api/productType';
 
 type Props = {
   onClick: () => void;
-  editData?: fetchExpenses;
+  editData?: fetchProductType;
   title: string;
   statusAction: "add" | "update";
 }
 
-interface expensesSubmit {
+interface productTypeSubmit {
   name: string;
   status: string;
 }
 
-const ExpensesTable = ({ onClick, title, statusAction, editData }: Props) => {
+const ProductTypeFrom = ({ onClick, statusAction, title, editData }: Props) => {
   const dispatch = useAppDispatch();
   const { data: session } = useSession();
+  const addDataProductTypeMutation = useAddDataProductType();
+  const updateDataProductTypeMutation = useUpdateDataProductType();
   const [messageApi, contextHolder] = message.useMessage();
-  const addDataExpensesMutation = useAddDataExpenses();
-  const updateDataExpensesMutation = useUpdateDataExpenses();
   const [messageError, setMessageError] = useState<{ message: string }[]>([]);
   const [loadingQuery, setLoadingQuery] = useState<number>(0);
-  const [formValues, setFormValues] = useState<expensesSubmit>({
+  const [formValues, setFormValues] = useState<productTypeSubmit>({
     name: "",
     status: "Active",
   });
@@ -54,7 +54,7 @@ const ExpensesTable = ({ onClick, title, statusAction, editData }: Props) => {
   };
 
   const handleSubmit = async (values: object) => {
-    const dataFrom = values as expensesSubmit;
+    const dataFrom = values as productTypeSubmit;
     setLoadingQuery(0);
     dispatch(setLoading({ loadingAction: 0, showLoading: true }));
 
@@ -62,11 +62,11 @@ const ExpensesTable = ({ onClick, title, statusAction, editData }: Props) => {
       if (!session?.user.company_id) {
         return showMessage({ status: "error", text: "พบข้อผิดพลาดกรุณาเข้าสู่ระบบใหม่อีกครั้ง" });
       }
-      // updatePosition
+      // update ProductType
       if (editData?.key) {
-        const updateExpenses = await updateDataExpensesMutation.mutateAsync({
+        const updateProductType = await updateDataProductTypeMutation.mutateAsync({
           token: session?.user.accessToken,
-          expensesData: {
+          productTypeData: {
             id: parseInt(editData.key, 10),
             name: dataFrom.name,
             companyId: session?.user.company_id,
@@ -75,18 +75,18 @@ const ExpensesTable = ({ onClick, title, statusAction, editData }: Props) => {
           setLoadingQuery: setLoadingQuery
         });
 
-        if (updateExpenses === null) return showMessage({ status: "error", text: "แก้ไขข้อมูลหัวข้อค่าใช้จ่ายไม่สำเร็จ กรุณาลองอีกครั้ง" });
-        if (updateExpenses?.status === true) {
+        if (updateProductType === null) return showMessage({ status: "error", text: "แก้ไขข้อมูลประเภทสินค้าไม่สำเร็จ กรุณาลองอีกครั้ง" });
+        if (updateProductType?.status === true) {
           setTimeout(() => { onClick(); }, 1500);
-          return showMessage({ status: "success", text: "แก้ไขข้อมูลหัวข้อค่าใช้จ่ายสำเร็จ" });
+          return showMessage({ status: "success", text: "แก้ไขข้อมูลประเภทสินค้าสำเร็จ" });
         }
-        if (typeof updateExpenses.message !== 'string') setMessageError(updateExpenses.message);
-        return showMessage({ status: "error", text: "แก้ไขข้อมูลหัวข้อค่าใช้จ่ายไม่สำเร็จ กรุณาแก้ไขข้อผิดพลาด" });
+        if (typeof updateProductType.message !== 'string') setMessageError(updateProductType.message);
+        return showMessage({ status: "error", text: "แก้ไขข้อมูลประเภทสินค้าไม่สำเร็จ กรุณาแก้ไขข้อผิดพลาด" });
       }
-      // Insert Expenses
-      const addExpenses = await addDataExpensesMutation.mutateAsync({
+      // Insert ProductType
+      const addProductType = await addDataProductTypeMutation.mutateAsync({
         token: session?.user.accessToken,
-        expensesData: {
+        productTypeData: {
           name: dataFrom.name,
           companyId: session?.user.company_id,
           status: dataFrom.status === "Active" ? "Active" : "InActive",
@@ -94,13 +94,13 @@ const ExpensesTable = ({ onClick, title, statusAction, editData }: Props) => {
         setLoadingQuery: setLoadingQuery
       });
 
-      if (addExpenses === null) return showMessage({ status: "error", text: "เพิ่มข้อมูลหัวข้อค่าใช้จ่ายไม่สำเร็จ กรุณาลองอีกครั้ง" });
-      if (addExpenses?.status === true) {
+      if (addProductType === null) return showMessage({ status: "error", text: "เพิ่มข้อมูลประเภทสินค้าไม่สำเร็จ กรุณาลองอีกครั้ง" });
+      if (addProductType?.status === true) {
         setTimeout(() => { onClick(); }, 1500);
-        return showMessage({ status: "success", text: "เพิ่มข้อมูลหัวข้อค่าใช้จ่ายสำเร็จ" });
+        return showMessage({ status: "success", text: "เพิ่มข้อมูลประเภทสินค้าสำเร็จ" });
       }
-      if (typeof addExpenses.message !== 'string') setMessageError(addExpenses.message);
-      return showMessage({ status: "error", text: "เพิ่มข้อมูลหัวข้อค่าใช้จ่าย กรุณาแก้ไขข้อผิดพลาด" });
+      if (typeof addProductType.message !== 'string') setMessageError(addProductType.message);
+      return showMessage({ status: "error", text: "เพิ่มข้อมูลประเภทสินค้า กรุณาแก้ไขข้อผิดพลาด" });
     } catch (error: unknown) {
       console.error('Failed to add data:', error);
     }
@@ -116,12 +116,12 @@ const ExpensesTable = ({ onClick, title, statusAction, editData }: Props) => {
 
   const MyForm = ({ onFinish }: { onFinish: (values: object) => void }): React.JSX.Element => {
     return (
-      <Form layout="vertical" onFinish={(values) => { setFormValues(values as expensesSubmit); onFinish(values); }} initialValues={formValues}>
+      <Form layout="vertical" onFinish={(values) => { setFormValues(values as productTypeSubmit); onFinish(values); }} initialValues={formValues}>
         <Row gutter={16}>
           <Col span={12}>
-            <Form.Item name="name" label="ชื่อตำแหน่งพนักงาน"
+            <Form.Item name="name" label="ชื่อประเภทสินค้า"
               rules={[
-                { required: true, message: "กรุณาระบุชื่อตำแหน่งพนักงาน" }
+                { required: true, message: "กรุณาระบุชื่อประเภทสินค้า" }
                 , {
                   pattern: /^[^!@#\$%\^\&*\(\)_\+\{\}\[\]:;<>,\.\?~\\\/-]+$/,
                   message: "ไม่สามารถระบุอักขระพิเศษได้",
@@ -129,7 +129,7 @@ const ExpensesTable = ({ onClick, title, statusAction, editData }: Props) => {
                 { validator: validateWhitespace },
               ]}
             >
-              <Input placeholder="ระบุชื่อตำแหน่งพนักงาน" />
+              <Input placeholder="ระบุชื่อประเภทสินค้า" />
             </Form.Item>
           </Col>
           <Col span={12}>
@@ -162,4 +162,4 @@ const ExpensesTable = ({ onClick, title, statusAction, editData }: Props) => {
   )
 }
 
-export default ExpensesTable
+export default ProductTypeFrom;
