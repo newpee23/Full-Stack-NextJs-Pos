@@ -14,7 +14,6 @@ const Navbar = () => {
 
   const [isScrolling, setIsScrolling] = useState(false);
 
-
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 0 && !isScrolling) {
@@ -39,7 +38,7 @@ const Navbar = () => {
           <Image
             src={logo}
             width={150}
-            height={undefined}
+            height={150}
             priority 
             alt="logo"
           />

@@ -95,10 +95,18 @@ export const fetchProductByCompanyId = async (companyId: number): Promise<fetchP
             where: {
                 companyId: companyId
             }
+            , orderBy: { id: 'asc', },
         });
 
         if (!product) return null;
-        return product as fetchProduct[];
+        // สร้าง key เพื่อเอาไปใส่ table และ แปลง date เป็น str
+        const productWithKey: fetchProduct[] = product.map((product, index) => ({
+            ...product,
+            index: (index + 1),
+            key: product.id.toString(),
+            img: product.img ? product.img : null
+        }));
+        return productWithKey;
     } catch (error: unknown) {
         // Handle any errors here or log them
         console.error('Error fetching productType:', error);

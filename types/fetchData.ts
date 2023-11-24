@@ -86,12 +86,14 @@ export interface fetchUnit {
 }
 
 export interface fetchProduct {
+  index: number;
+  key: string;
   id: number;
   name: string;
   cost: number;
   price: number;
   stock: number;
-  img: string;
+  img: string | null;
   unitId: number;
   productTypeId: number;
   companyId: number;
