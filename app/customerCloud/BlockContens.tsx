@@ -8,6 +8,7 @@ import EmployeeTable from '../components/Table/EmployeeTable';
 import TablesTable from '../components/Table/TablesTable';
 import ExpensesTable from '../components/Table/ExpensesTable';
 import ProductTypeTable from '../components/Table/ProductTypeTable';
+import UnitTable from '../components/Table/UnitTable';
 
 type Props = { idComponents: React.Key | null; };
 
@@ -38,6 +39,9 @@ const BlockContens = (props: Props) => {
           case '11':
             setComponent(<ProductTypeTable />);
             break;
+            case '12':
+              setComponent(<UnitTable />);
+              break;
         // เพิ่ม case ตามต้องการ
         default:
           setComponent(null);

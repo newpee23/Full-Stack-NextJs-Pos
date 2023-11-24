@@ -77,6 +77,8 @@ export interface fetchEmployee {
 }
 
 export interface fetchUnit {
+  key: string;
+  index: number;
   id: number;
   name: string;
   companyId: number;

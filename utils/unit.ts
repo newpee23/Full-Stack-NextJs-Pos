@@ -109,10 +109,16 @@ export const fetchUnitByCompanyId = async (companyId: number): Promise<fetchUnit
             where: {
                 companyId: companyId
             },
+            orderBy: { id: 'asc', },
         });
 
         if (!unit) return null;
-        return unit as fetchUnit[];
+        const unitsWithKey: fetchUnit[] = unit.map((unit, index) => ({
+            ...unit,
+            index: (index + 1),
+            key: unit.id.toString(),
+        }));
+        return unitsWithKey;
     } catch (error: unknown) {
         // Handle any errors here or log them
         console.error('Error fetching unit:', error);
