@@ -5,11 +5,11 @@ import TagStatus from '../UI/TagStatus';
 import { Space, Table, message } from 'antd';
 import { useSession } from 'next-auth/react';
 import { useDataPosition, useDeleteDataPosition } from '@/app/api/position';
-import SkeletonTable from '../UI/SkeletonTable';
+import SkeletonTable from '../UI/loading/SkeletonTable';
 import ErrPage from '../ErrPage';
-import RefreshBtn from '../UI/RefreshBtn';
+import RefreshBtn from '../UI/btn/RefreshBtn';
 import PositionFrom from '../ฺFrom/PositionFrom';
-import DeleteBtn from '../UI/DeleteBtn';
+import DeleteBtn from '../UI/btn/DeleteBtn';
 
 const PositionTable = () => {
   const [messageApi, contextHolder] = message.useMessage();

@@ -2,13 +2,13 @@ import { useDataUnits, useDeleteDataUnit } from '@/app/api/unit';
 import { Space, Table, message } from 'antd';
 import { useSession } from 'next-auth/react';
 import React from 'react'
-import SkeletonTable from '../UI/SkeletonTable';
+import SkeletonTable from '../UI/loading/SkeletonTable';
 import ErrPage from '../ErrPage';
 import { ColumnsType } from 'antd/lib/table';
 import { fetchUnit } from '@/types/fetchData';
 import TagStatus from '../UI/TagStatus';
-import DeleteBtn from '../UI/DeleteBtn';
-import RefreshBtn from '../UI/RefreshBtn';
+import DeleteBtn from '../UI/btn/DeleteBtn';
+import RefreshBtn from '../UI/btn/RefreshBtn';
 import UnitFrom from '../ฺFrom/UnitFrom';
 
 const UnitTable = () => {

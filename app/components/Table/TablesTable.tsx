@@ -2,14 +2,14 @@ import { useDataTables, useDeleteDataTables } from '@/app/api/table';
 import { Space, Table, message } from 'antd';
 import { useSession } from 'next-auth/react';
 import React from 'react'
-import SkeletonTable from '../UI/SkeletonTable';
+import SkeletonTable from '../UI/loading/SkeletonTable';
 import ErrPage from '../ErrPage';
-import RefreshBtn from '../UI/RefreshBtn';
+import RefreshBtn from '../UI/btn/RefreshBtn';
 import { DataTypeTables } from '@/types/columns';
 import { ColumnsType } from 'antd/lib/table';
 import TagStatus from '../UI/TagStatus';
 import TablesFrom from '../ฺFrom/TablesFrom';
-import DeleteBtn from '../UI/DeleteBtn';
+import DeleteBtn from '../UI/btn/DeleteBtn';
 import { fetchTable } from '@/types/fetchData';
 
 const TablesTable = () => {

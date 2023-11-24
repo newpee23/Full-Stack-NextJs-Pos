@@ -3,7 +3,7 @@ import moment, { Moment } from "moment";
 
 export const validateWhitespace = (rule: Rule, value: string): Promise<void> => {
     if (value && value.trim() !== value) {
-        return Promise.reject("ชื่อสาขาไม่ควรมีช่องว่างด้านหน้าหรือด้านหลัง");
+        return Promise.reject("ข้อมูลไม่ควรมีช่องว่างด้านหน้าหรือด้านหลัง");
     }
     return Promise.resolve();
 };

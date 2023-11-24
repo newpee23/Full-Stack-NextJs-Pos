@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
-import { Form, Modal, Upload } from 'antd';
+import { Col, Form, Modal, Upload } from 'antd';
 import type { RcFile, UploadProps } from 'antd/es/upload';
 import type { UploadFile } from 'antd/es/upload/interface';
 
@@ -12,7 +12,12 @@ const getBase64 = (file: RcFile): Promise<string> =>
         reader.onerror = (error) => reject(error);
     });
 
-const UploadImg: React.FC = () => {
+    type Props = {
+        name: string;
+        label: string;
+    }
+
+const UploadImg = ({ name, label }: Props) => {
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [previewTitle, setPreviewTitle] = useState('');
@@ -36,27 +41,29 @@ const UploadImg: React.FC = () => {
         </div>
     );
     return (
-        <>
-            <Form.Item
-                name="image"
-                label="เพิ่มรูปภาพสินค้า"
-                valuePropName="fileList"
-                getValueFromEvent={(e) => e.fileList}
-            >
-
-                <Upload
-                    listType="picture-card"
-                    maxCount={1} // Set the maximum number of images allowed to be selected
-                    beforeUpload={() => false}
-                    onPreview={handlePreview}
+        <div className="grid gap-3 grid-cols-1 sml:grid-cols-2">
+            <Col>
+                <Form.Item
+                    name={name}
+                    label={label}
+                    valuePropName="fileList"
+                    getValueFromEvent={(e) => e.fileList}
                 >
-                    {uploadButton}
-                </Upload>
-            </Form.Item>
-            <Modal open={previewOpen} title="" footer={null} onCancel={handleCancel}>
-                <img alt="example" style={{ width: '100%' }} src={previewImage} />
-            </Modal>
-        </>
+
+                    <Upload
+                        listType="picture-card"
+                        maxCount={1} // Set the maximum number of images allowed to be selected
+                        beforeUpload={() => false}
+                        onPreview={handlePreview}
+                    >
+                        {uploadButton}
+                    </Upload>
+                </Form.Item>
+                <Modal open={previewOpen} className="text-orange-600" title="รูปภาพตัวอย่าง" footer={null} onCancel={handleCancel}>
+                    <img alt="example" style={{ width: '100%' }} src={previewImage} />
+                </Modal>
+            </Col>
+        </div>
     );
 };
 

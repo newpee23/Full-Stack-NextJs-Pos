@@ -2,7 +2,7 @@ import React from 'react';
 import { Empty } from 'antd';
 import { useSession } from 'next-auth/react';
 import { useDataEmployee } from '../api/employee';
-import SkeletonTable from './UI/SkeletonTable';
+import SkeletonTable from './UI/loading/SkeletonTable';
 import ErrPage from './ErrPage';
 import { useRouter } from 'next/navigation';
 

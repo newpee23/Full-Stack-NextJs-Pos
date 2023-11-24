@@ -5,14 +5,14 @@ import { ColumnsType } from "antd/es/table";
 import BranchFrom from "../ฺFrom/BranchFrom";
 
 import { useSession } from "next-auth/react";
-import SkeletonTable from "../UI/SkeletonTable";
+import SkeletonTable from "../UI/loading/SkeletonTable";
 import TagStatus from "../UI/TagStatus";
 import ErrPage from "../ErrPage";
 import { DataTypeBranch } from "@/types/columns";
 import { useDataBranch, useDeleteDataBranch } from "@/app/api/branch";
 import "@/app/components/Table/table.css";
-import DeleteBtn from "../UI/DeleteBtn";
-import RefreshBtn from "../UI/RefreshBtn";
+import DeleteBtn from "../UI/btn/DeleteBtn";
+import RefreshBtn from "../UI/btn/RefreshBtn";
 
 const BranchTable = () => {
   const [messageApi, contextHolder] = message.useMessage();

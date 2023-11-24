@@ -2,14 +2,14 @@ import { useDataExpenses, useDeleteDataExpenses } from '@/app/api/expenses';
 import { Space, Table, message } from 'antd';
 import { useSession } from 'next-auth/react';
 import React from 'react'
-import SkeletonTable from '../UI/SkeletonTable';
+import SkeletonTable from '../UI/loading/SkeletonTable';
 import ErrPage from '../ErrPage';
 import { ColumnsType } from 'antd/lib/table';
 import { fetchExpenses } from '@/types/fetchData';
 import TagStatus from '../UI/TagStatus';
-import RefreshBtn from '../UI/RefreshBtn';
+import RefreshBtn from '../UI/btn/RefreshBtn';
 import ExpensesFrom from '../ฺFrom/ExpensesFrom';
-import DeleteBtn from '../UI/DeleteBtn';
+import DeleteBtn from '../UI/btn/DeleteBtn';
 
 const ExpensesTable = () => {
     const [messageApi, contextHolder] = message.useMessage();

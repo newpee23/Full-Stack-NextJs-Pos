@@ -4,7 +4,10 @@ th.ant-table-cell {
   font-size: 14px;
 }
 
-
+button.ant-btn.css-dev-only-do-not-override-1adbn6x.ant-btn-primary.ant-btn-sm {
+  background-color: #ea580c;
+  border-color: #ea580c;
+}
 
 :where(.css-dev-only-do-not-override-1adbn6x).ant-tag-success , :where(.css-dev-only-do-not-override-1adbn6x).ant-tag-error{
   width: 80px;

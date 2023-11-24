@@ -2,16 +2,18 @@ import React, { useEffect, useState } from "react";
 import { Col, DatePicker, Form, Input, message, Row, Select } from "antd";
 
 import { convertStatusToOption, optionStatus, parseDateStringToMoment, validateExpirationDate, validateWhitespace } from "./validate/validate";
-import SaveBtn from "../UI/SaveBtn";
+import SaveBtn from "../UI/btn/SaveBtn";
 import moment, { Moment } from "moment";
 
 import { useSession } from "next-auth/react";
 import { useAddDataBranch, useUpdateDataBranch } from "@/app/api/branch";
 import { useAppDispatch } from "@/app/store/store";
 import { setLoading } from "@/app/store/slices/loadingSlice";
-import ProgressBar from "../UI/ProgressBar";
+import ProgressBar from "../UI/loading/ProgressBar";
 import { DataTypeBranch } from "@/types/columns";
 import DrawerActionData from "../DrawerActionData";
+import InputFrom from "../UI/InputFrom";
+import StatusFrom from "../UI/select/StatusFrom";
 
 interface branchSubmit {
     name: string;
@@ -141,90 +143,25 @@ const BranchFrom = ({ onClick, editData, title, statusAction }: Props) => {
     const MyForm = ({ onFinish }: { onFinish: (values: object) => void }): React.JSX.Element => {
         return (
             <Form layout="vertical" onFinish={(values) => { setFormValues(values as branchSubmit); onFinish(values); }} initialValues={formValues}>
-                <Row gutter={16}>
-                    <Col span={12}>
-                        <Form.Item name="name" label="ชื่อสาขา"
-                            rules={[
-                                { required: true, message: "กรุณาระบุชื่อสาขา" }
-                                , {
-                                    pattern: /^[^!@#\$%\^\&*\(\)_\+\{\}\[\]:;<>,\.\?~\\\/-]+$/,
-                                    message: "ไม่สามารถระบุอักขระพิเศษได้",
-                                },
-                                { validator: validateWhitespace },
-                            ]}
-                        >
-                            <Input placeholder="ระบุรหัสสาขา" />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item name="codeReceipt" label="รหัสใบเสร็จ"
-                            rules={[
-                                { required: true, message: "กรุณาระบุรหัสใบเสร็จ" }
-                                , {
-                                    pattern: /^[^!@#\$%\^\&*\(\)_\+\{\}\[\]:;<>,\.\?~\\\/-]+$/,
-                                    message: "ไม่สามารถระบุอักขระพิเศษได้",
-                                },
-                                { validator: validateWhitespace },
-                            ]}
-                        >
-                            <Input placeholder="ระบุรหัสใบเสร็จ" />
-                        </Form.Item>
-                    </Col>
-                </Row>
-                <Row gutter={16}>
-                    <Col span={24}>
-                        <Form.Item name="address" label="ที่อยู่สาขา"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "ไม่ระบุกรุณากรอก -",
-                                },
-                                { validator: validateWhitespace },
-                            ]}
-                        >
-                            <Input.TextArea rows={4} placeholder="ที่อยู่สาขา ไม่ระบุกรอก -" />
-                        </Form.Item>
-                    </Col>
-                </Row>
-                <Row gutter={16}>
-                    <Col span={12}>
-                        <Form.Item name="expiration" label="วันหมดอายุสาขา"
-                            rules={[
-                                { required: true, message: "กรุณาเลือกวันหมดอายุสาขา" },
-                                { validator: validateExpirationDate },
-                            ]}
-                        >
-                            <DatePicker style={{ width: "100%" }} showTime={{ format: "HH:mm" }} format="YYYY-MM-DD HH:mm" getPopupContainer={(trigger) => trigger.parentElement!} placeholder="ว/ด/ป เวลา" />
-                        </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                        <Form.Item name="phone" label="เบอร์โทรศัพท์"
-                            rules={[
-                                { required: true, message: "กรุณาระบุเบอร์โทรศัพท์" },
-                                { pattern: /^[0-9]*$/, message: "กรุณาระบุเบอร์โทรศัพท์เป็นตัวเลขเท่านั้น" },
-                            ]}
-                        >
-                            <Input placeholder="ระบุเบอร์โทรศัพท์" />
-                        </Form.Item>
-                    </Col>
-                </Row>
-                <Row gutter={16}>
-                    <Col span={12}>
-                        <Form.Item name="status" label="สถานะ"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "กรุณาเลือกสถานะ",
-                                },
-                            ]}
-                        >
-                            <Select
-                                options={optionStatus}
-                                placeholder="เลือกสถานะ"
-                            />
-                        </Form.Item>
-                    </Col>
-                </Row>
+               {/* ชื่อสาขา,รหัสใบเสร็จ */}
+               <div className="grid gap-3 grid-cols-1 sml:grid-cols-2">
+                    <InputFrom label="ชื่อสาขา" name="name" required={true} type="text"/>
+                    <InputFrom label="รหัสใบเสร็จ" name="codeReceipt" required={true} type="text"/>
+               </div>
+                {/* ที่อยู่สาขา */}
+                <div className="grid gap-3 grid-cols-1 sml:grid-cols-1">
+                    <InputFrom label="ที่อยู่สาขา" name="address" required={true} type="textArea"/>
+                </div>
+                {/* วันหมดอายุสาขา,เบอร์โทรศัพท์ */}
+                <div className="grid gap-3 grid-cols-1 sml:grid-cols-2">
+                    <InputFrom label="วันหมดอายุสาขา" name="expiration" required={true} type="datePicker"/>
+                    <InputFrom label="เบอร์โทรศัพท์" name="phone" required={true} type="number"/>
+                </div>
+                {/* สถานะ */}
+                <div className="grid gap-3 grid-cols-1 sml:grid-cols-2">
+                    <StatusFrom label="สถานะ" name="status" />
+                </div>
+                
                 <ProgressBar />
                 <SaveBtn label="บันทึกข้อมูล" />
             </Form>

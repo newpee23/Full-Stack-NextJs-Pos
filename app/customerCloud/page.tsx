@@ -8,7 +8,7 @@ import MenuPage from "../components/MenuPage";
 import BlockContens from "./BlockContens";
 import Navbar from "../components/Navbar";
 import "@/app/customerCloud/page.css"
-import FloatBtn from "../components/UI/FloatBtn";
+import FloatBtn from "../components/UI/btn/FloatBtn";
 
 const HomeCloudPage = () => {
   const { data: session, status } = useSession();

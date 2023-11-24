@@ -4,12 +4,14 @@ import { fetchProduct } from '@/types/fetchData';
 import { Col, Form, Upload, Select, message, Button } from 'antd';
 import { useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
-import ProgressBar from '../UI/ProgressBar';
-import SaveBtn from '../UI/SaveBtn';
+import ProgressBar from '../UI/loading/ProgressBar';
+import SaveBtn from '../UI/btn/SaveBtn';
 import { optionStatus, validateWhitespace } from './validate/validate';
 import DrawerActionData from '../DrawerActionData';
 import { PlusOutlined } from '@ant-design/icons';
 import UploadImg from '../UI/UploadImg';
+import StatusFrom from '../UI/select/StatusFrom';
+import InputFrom from '../UI/InputFrom';
 
 interface Props {
   onClick: () => void;
@@ -40,7 +42,7 @@ const ProductFrom = ({ onClick, editData, title, statusAction }: Props) => {
     // Perform your form submission logic here
   };
 
-  const handleRefresh = () => {};
+  const handleRefresh = () => { };
 
   const resetForm = () => {
     console.log('resetForm');
@@ -60,23 +62,19 @@ const ProductFrom = ({ onClick, editData, title, statusAction }: Props) => {
   const MyForm = ({ onFinish }: { onFinish: (values: object) => void }): React.JSX.Element => {
     return (
       <Form layout="vertical" onFinish={(values) => onFinish(values)}>
-        <div className="grid gap-3 grid-cols-1 sml:grid-cols-2">
-          <Col>
-            {/* เลือกรูปภาพ */}
-            <UploadImg/>
-          </Col>
+        {/* เลือกรูปภาพ */}
+        <div className="grid gap-3 grid-cols-1 sml:grid-cols-1">
+          <UploadImg label="เพิ่มรูปภาพสินค้า" name="productImg" />
         </div>
+        {/* ชื่อสินค้า */}
         <div className="grid gap-3 grid-cols-1 sml:grid-cols-2">
-          <Col>
-            <Form.Item
-              name="status"
-              label="สถานะ"
-              rules={[{ required: true, message: 'กรุณาเลือกสถานะ' }]}
-            >
-              <Select options={optionStatus} placeholder="เลือกสถานะ" />
-            </Form.Item>
-          </Col>
+          <InputFrom label="ชื่อสินค้า" name="name" required={true} type="text" />
         </div>
+        {/* สถานะ */}
+        <div className="grid gap-3 grid-cols-1 sml:grid-cols-2">
+          <StatusFrom label="สถานะ" name="status" />
+        </div>
+
         <ProgressBar />
         <SaveBtn label="บันทึกข้อมูล" />
       </Form>

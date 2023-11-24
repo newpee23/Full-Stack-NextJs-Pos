@@ -1,8 +1,8 @@
 import { Button, Drawer, Space } from "antd";
 import { ReactNode, useState } from "react"
-import AddBtn from "./UI/AddBtn";
+import AddBtn from "./UI/btn/AddBtn";
 import ErrFrom from "./ErrFrom";
-import EditBtn from "./UI/EditBtn";
+import EditBtn from "./UI/btn/EditBtn";
 
 type DrawerAddProps = {
     formContent: ReactNode; // ให้ DrawerAdd รับ prop ชื่อ formContent ที่มี type เป็น ReactNode

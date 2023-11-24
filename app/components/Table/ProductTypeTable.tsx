@@ -1,15 +1,15 @@
 import { useDataProductType, useDeleteDataProductType } from '@/app/api/productType';
 import { useSession } from 'next-auth/react';
 import React from 'react'
-import SkeletonTable from '../UI/SkeletonTable';
+import SkeletonTable from '../UI/loading/SkeletonTable';
 import ErrPage from '../ErrPage';
 import { Space, Table, message } from 'antd';
 import { fetchProductType } from '@/types/fetchData';
 import { ColumnsType } from 'antd/lib/table';
 import TagStatus from '../UI/TagStatus';
-import RefreshBtn from '../UI/RefreshBtn';
+import RefreshBtn from '../UI/btn/RefreshBtn';
 import ProductTypeFrom from '../ฺFrom/ProductTypeFrom';
-import DeleteBtn from '../UI/DeleteBtn';
+import DeleteBtn from '../UI/btn/DeleteBtn';
 
 const ProductTypeTable = () => {
   const { data: session } = useSession();

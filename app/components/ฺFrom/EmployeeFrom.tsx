@@ -4,8 +4,8 @@ import { Col, Form, Input, Row, Select, Skeleton, message } from "antd";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react"
 import { optionRole, optionStatus, validateWhitespace } from "./validate/validate";
-import ProgressBar from "../UI/ProgressBar";
-import SaveBtn from "../UI/SaveBtn";
+import ProgressBar from "../UI/loading/ProgressBar";
+import SaveBtn from "../UI/btn/SaveBtn";
 import DrawerActionData from "../DrawerActionData";
 import { useAddDataEmployee, useSelectOpEmployee, useUpdateDataEmployee } from "@/app/api/employee";
 import ErrPage from "../ErrPage";
