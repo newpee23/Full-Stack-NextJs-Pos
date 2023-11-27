@@ -1,3 +1,5 @@
+import { RcFile } from "antd/lib/upload";
+
 export interface tokenType {
   id: string;
   username: string;
@@ -70,7 +72,7 @@ export interface dataVerifyProduct {
   cost: number;
   price: number;
   stock: number;
-  img?: string;
+  img?: RcFile | undefined;
   unitId: number;
   productTypeId: number;
   companyId: number;
@@ -124,4 +126,9 @@ export interface dataVerifyItemExpenses {
 
 export interface promiseDataVerify {
   message: string;
+}
+
+export interface uploadImagesType {
+  fileName: string;
+  originFileObj: RcFile;
 }

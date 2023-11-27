@@ -175,3 +175,8 @@ export interface fetchOptionAddEmployeeType {
 export interface fetchOptionAddTables {
   branch: optionSelect[]; 
 }
+
+export interface fetchOptionAddProduct {
+  unit: optionSelect[]; 
+  productType: optionSelect[]; 
+}

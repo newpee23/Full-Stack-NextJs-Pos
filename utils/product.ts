@@ -1,4 +1,5 @@
 import { prisma } from "@/pages/lib/prismaDB";
+import { s3UploadImages } from "@/pages/lib/s3";
 import { fetchProduct } from "@/types/fetchData";
 import { dataVerifyProduct, promiseDataVerify } from "@/types/verify";
 import { Prisma } from "@prisma/client";
@@ -29,7 +30,6 @@ export const verifyProductBody = (data: dataVerifyProduct): promiseDataVerify[] 
 
     // ตรวจสอบความถูกต้องของข้อมูล
     if (data.name.length > 50) verifyStatus.push(pushData("กรุณาระบุ : name ไม่เกิน 50 อักษร"));
-    if (data.img) if (data.img.length > 50) verifyStatus.push(pushData("กรุณาระบุ : img ไม่เกิน 50 อักษร"));
     if (isNaN(Number(data.cost))) verifyStatus.push(pushData("กรุณาระบุ : cost เป็นตัวเลขเท่านั้น"));
     if (isNaN(Number(data.price))) verifyStatus.push(pushData("กรุณาระบุ : price เป็นตัวเลขเท่านั้น"));
     if (isNaN(Number(data.stock))) verifyStatus.push(pushData("กรุณาระบุ : stock เป็นตัวเลขเท่านั้น"));
@@ -131,15 +131,30 @@ export const fetchAllProduct = async (): Promise<fetchProduct[] | null> => {
     }
 }
 
-export const insertaddProduct = async (body: dataVerifyProduct): Promise<promiseDataVerify[] | null> => {
+export const insertAddProduct = async (body: dataVerifyProduct): Promise<promiseDataVerify[] | null> => {
     const verifyStatus: promiseDataVerify[] = [];
-
+     
     try {
         const addProduct = await prisma.product.create({
-            data: body,
+            data: {
+                name: body.name,
+                stock: body.stock,
+                cost: body.cost,
+                price: body.price,
+                unitId: body.unitId,
+                productTypeId: body.productTypeId,
+                companyId: body.companyId,
+                status: body.status
+            },
         });
 
         if (!addProduct) return null;
+        // uploadImg
+        if(body.img){
+            const fileName: string = `product/pd_${addProduct.id}_${Date.now()}_${addProduct.companyId}`;
+            const uploadImg = await s3UploadImages({ fileName: fileName, originFileObj: body.img });
+            console.log(uploadImg); 
+        }
         verifyStatus.push(pushData(`Create a productType ${addProduct.name} accomplished and received id: ${addProduct.id}`));
     } catch (error: unknown) {
         console.error(`Database connection error: ${error}`);

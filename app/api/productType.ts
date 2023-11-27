@@ -5,7 +5,7 @@ import { useMutation, useQuery } from "react-query";
 
 interface addProductType {
     message: { message: string }[] | string
-    , branch: null
+    , productType: null
     , status: boolean
 }
 

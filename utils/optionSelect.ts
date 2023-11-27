@@ -1,5 +1,5 @@
 import { prisma } from "@/pages/lib/prismaDB";
-import { fetchOptionAddEmployeeType, fetchOptionAddTables, optionSelect } from "@/types/fetchData";
+import { fetchOptionAddEmployeeType, fetchOptionAddProduct, fetchOptionAddTables, optionSelect } from "@/types/fetchData";
 
 const fetchPositions = async (companyId: number): Promise<optionSelect[]> => {
     try {
@@ -41,6 +41,46 @@ const fetchBranches = async (companyId: number): Promise<optionSelect[]> => {
     }
 };
 
+const fetchUnits = async (companyId: number): Promise<optionSelect[]> => {
+    try {
+        const units = await prisma.unit.findMany({
+            where: {
+                companyId: companyId,
+                status: "Active"
+            },
+            orderBy: { id: 'asc' },
+        });
+
+        return units.map((item: any) => ({
+            value: item.id,
+            label: item.name,
+        }));
+    } catch (error) {
+        console.error('Error fetching branches:', error);
+        return [];
+    }
+};
+
+const fetchProductType = async (companyId: number): Promise<optionSelect[]> => {
+    try {
+        const productType = await prisma.productType.findMany({
+            where: {
+                companyId: companyId,
+                status: "Active"
+            },
+            orderBy: { id: 'asc' },
+        });
+
+        return productType.map((item: any) => ({
+            value: item.id,
+            label: item.name,
+        }));
+    } catch (error) {
+        console.error('Error fetching branches:', error);
+        return [];
+    }
+};
+
 export const fetchOptionAddEmployee = async (companyId: number): Promise<fetchOptionAddEmployeeType> => {
     try {
         const positionOptions = await fetchPositions(companyId);
@@ -63,6 +103,19 @@ export const fetchOptionTables = async (companyId: number): Promise<fetchOptionA
     } catch (error) {
         console.error('Error fetching optionAddTables:', error);
         return { branch: [] };
+    } finally {
+        await prisma.$disconnect();
+    }
+};
+
+export const fetchOptionProduct = async (companyId: number): Promise<fetchOptionAddProduct> => {
+    try {
+        const unitOptions = await fetchUnits(companyId);
+        const productTypeOptions = await fetchProductType(companyId);
+        return { unit: unitOptions , productType: productTypeOptions };
+    } catch (error) {
+        console.error('Error fetching optionAddTables:', error);
+        return { unit: [] , productType: [] };
     } finally {
         await prisma.$disconnect();
     }

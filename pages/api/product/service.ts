@@ -1,6 +1,6 @@
 import { dataVerifyProduct } from "@/types/verify";
 import { getCompanyById } from "@/utils/company";
-import { deleteDataProduct, fetchAllProduct, fetchProductByCompanyId, fetchProductById, fetchProductByName, insertaddProduct, updateDataProduct, verifyProductBody } from "@/utils/product";
+import { deleteDataProduct, fetchAllProduct, fetchProductByCompanyId, fetchProductById, fetchProductByName, insertAddProduct, updateDataProduct, verifyProductBody } from "@/utils/product";
 import { fetchProductTypeById } from "@/utils/productType";
 import { fetchUnitById } from "@/utils/unit";
 import { NextApiResponse } from "next";
@@ -22,7 +22,7 @@ export const handleAddProduct = async (body: dataVerifyProduct, res: NextApiResp
     const checkName = await fetchProductByName(body.name, body.companyId);
     if (checkName) return res.status(404).json({ message: `Found information name : ${body.name} has already been used in the system.`, product: null, status: false });
     // addProduct
-    const addProduct = await insertaddProduct(body);
+    const addProduct = await insertAddProduct(body);
     if (!addProduct) return res.status(404).json({ message: "An error occurred saving data.", product: null, status: false });
 
     return res.status(200).json({ message: "Data saved successfully.", product: addProduct, status: true });

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { Col, Form, Modal, Upload } from 'antd';
-import type { RcFile, UploadProps } from 'antd/es/upload';
+import type { RcFile } from 'antd/es/upload';
 import type { UploadFile } from 'antd/es/upload/interface';
 
 const getBase64 = (file: RcFile): Promise<string> =>
