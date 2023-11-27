@@ -51,19 +51,30 @@ const fetchProductData = async (token: string | undefined, companyId: number | u
 
 const addProduct = async (token: string | undefined, productData: dataVerifyProduct, setLoadingQuery: React.Dispatch<React.SetStateAction<number>>): Promise<addProduct | null> => {
   try {
-      const response = await axios.post(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/product`,
+        const formData = new FormData();
+        if(productData.img) formData.append("file", productData.img);
+        formData.append("name", productData.name);
+        formData.append("cost", String(productData.cost));
+        formData.append("price", String(productData.price));
+        formData.append("stock", String(productData.stock));
+        formData.append("unitId", String(productData.unitId));
+        formData.append("productTypeId", String(productData.productTypeId));
+        formData.append("companyId", String(productData.companyId));
+        formData.append("status", productData.status);
+        
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/product`,
           productData,
           {
-              onDownloadProgress: progressEvent => {
-                  if (progressEvent.total) {
-                      const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                      setLoadingQuery(progress);
-                  }
-              },
               headers: {
+                "Content-Type": "multipart/form-data",
                   Authorization: `Bearer ${token}`,
               },
+              onDownloadProgress: progressEvent => {
+                if (progressEvent.total) {
+                    const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                    setLoadingQuery(progress);
+                }
+            },
           }
       );
 

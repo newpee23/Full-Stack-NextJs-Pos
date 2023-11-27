@@ -26,7 +26,6 @@ interface Props {
 }
 
 interface productSubmit {
-  img: RcFile | undefined;
   name: string;
   cost: string | undefined;
   price: string | undefined;
@@ -43,10 +42,11 @@ const ProductFrom = ({ onClick, editData, title, statusAction }: Props) => {
   const { data: session } = useSession();
   const { data, isLoading, isError, refetch, remove } = useSelectOpProduct(session?.user.accessToken, session?.user.company_id);
   const addDataProductMutation = useAddDataProduct();
+  const [image, setImage] = useState<File | null>(null);
   const [messageError, setMessageError] = useState<{ message: string }[]>([]);
   const [loadingQuery, setLoadingQuery] = useState<number>(0);
   const [formValues, setFormValues] = useState<productSubmit>({
-    img: undefined,
+
     name: "",
     cost: undefined,
     price: undefined,
@@ -108,7 +108,7 @@ const ProductFrom = ({ onClick, editData, title, statusAction }: Props) => {
       const addProduct = await addDataProductMutation.mutateAsync({
         token: session?.user.accessToken,
         productData: {
-          img: dataFrom.img ? dataFrom.img : undefined,
+          img: image ? image : undefined,
           name: dataFrom.name,
           cost: parseInt(dataFrom.cost, 10),
           price: parseInt(dataFrom.price, 10),
@@ -160,13 +160,13 @@ const ProductFrom = ({ onClick, editData, title, statusAction }: Props) => {
   if (isError) {
     return <ErrPage onClick={handleRefresh} />;
   }
-  console.log(data)
+
   const MyForm = ({ onFinish }: { onFinish: (values: object) => void }): React.JSX.Element => {
     return (
       <Form layout="vertical" onFinish={(values) => { setFormValues(values as productSubmit); onFinish(values); }} initialValues={formValues}>
         {/* เลือกรูปภาพ */}
         <div className="grid gap-3 grid-cols-1 sml:grid-cols-1">
-          <UploadImg label="เพิ่มรูปภาพสินค้า" name="img" />
+          <UploadImg label="เพิ่มรูปภาพสินค้า" name="img" setImage={setImage}/>
         </div>
         {/* ชื่อสินค้า,  */}
         <div className="grid gap-3 grid-cols-1 sml:grid-cols-2">

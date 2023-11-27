@@ -72,7 +72,7 @@ export interface dataVerifyProduct {
   cost: number;
   price: number;
   stock: number;
-  img?: RcFile | undefined;
+  img?: File | undefined;
   unitId: number;
   productTypeId: number;
   companyId: number;
@@ -130,5 +130,5 @@ export interface promiseDataVerify {
 
 export interface uploadImagesType {
   fileName: string;
-  originFileObj: RcFile;
+  originFileObj: File;
 }
