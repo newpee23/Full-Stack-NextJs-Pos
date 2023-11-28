@@ -130,5 +130,5 @@ export interface promiseDataVerify {
 
 export interface uploadImagesType {
   fileName: string;
-  originFileObj: File;
+  originFileObj: RcFile;
 }

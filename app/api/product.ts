@@ -81,12 +81,12 @@ const addProduct = async (token: string | undefined, productData: dataVerifyProd
             const hours = currentDate.getHours().toString().padStart(2, '0');
             const minutes = currentDate.getMinutes().toString().padStart(2, '0');
 
-            const imageData: uploadImagesType = { 
-                originFileObj: productData.img, 
-                fileName: `PD_${productMessage}_${year}${month}${day}${hours}${minutes}`
-            };
+            // const imageData: uploadImagesType = { 
+            //     originFileObj: productData.img, 
+            //     fileName: `PD_${productMessage}_${year}${month}${day}${hours}${minutes}`
+            // };
          
-            await s3UploadImages(imageData);
+            // await s3UploadImages(imageData);
         }
         return product;
     } catch (error) {

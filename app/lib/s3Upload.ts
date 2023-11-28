@@ -1,13 +1,13 @@
 import { s3Client } from "@/pages/lib/s3";
-import { uploadImagesType } from "@/types/verify";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-export const s3UploadImages = async (data: uploadImagesType): Promise<string> => {
+export const s3UploadImages = async (data: any): Promise<string> => {
 	try {
-		const file = data.originFileObj;
-		const fileName: string = file.name;
-		const fileExtension: string = fileName.split('.').pop() || '';
+		const { fileName, originFileObj } = data;
+		const file = originFileObj.file;
+		const fileNameS3: string = file.name;
+		const fileExtension: string = fileNameS3.split('.').pop() || '';
 
 		// Check file size
 		const fileSize = file.size / (1024 * 1024); // Convert to megabytes
@@ -17,8 +17,8 @@ export const s3UploadImages = async (data: uploadImagesType): Promise<string> =>
 
 		const params = {
 			Bucket: process.env.S3_BUCKET!,
-			Key: `product/${data.fileName}.${fileExtension}`,
-			Body: data.originFileObj,
+			Key: `product/eeeee${data.fileName}.${fileExtension}`,
+			Body: file,
 			ContentType: `image/${fileExtension}`
 		};
 

@@ -1,12 +1,14 @@
 import { setLoading } from '@/app/store/slices/loadingSlice';
 import { useAppDispatch } from '@/app/store/store';
 import { fetchProduct } from '@/types/fetchData';
-import { Form, message, Skeleton } from 'antd';
+import { Col, Form, Upload, Select, message, Button, Skeleton } from 'antd';
 import { useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
 import ProgressBar from '../UI/loading/ProgressBar';
 import SaveBtn from '../UI/btn/SaveBtn';
+import { optionStatus, validateWhitespace } from './validate/validate';
 import DrawerActionData from '../DrawerActionData';
+import { PlusOutlined } from '@ant-design/icons';
 import UploadImg from '../UI/UploadImg';
 import StatusFrom from '../UI/select/StatusFrom';
 import InputFrom from '../UI/InputFrom';
@@ -15,6 +17,9 @@ import ErrPage from '../ErrPage';
 import SelectProductType from '../UI/select/SelectProductType';
 import SelectUnit from '../UI/select/SelectUnit';
 import { RcFile } from 'antd/lib/upload';
+import UploadAnt from '../UI/UploadAnt';
+import { uploadImagesType } from '@/types/verify';
+import { s3UploadImages } from '@/app/lib/s3Upload';
 
 interface Props {
   onClick: () => void;
@@ -24,6 +29,7 @@ interface Props {
 }
 
 interface productSubmit {
+  img: RcFile | undefined;
   name: string;
   cost: string | undefined;
   price: string | undefined;
@@ -44,7 +50,7 @@ const ProductFrom = ({ onClick, editData, title, statusAction }: Props) => {
   const [messageError, setMessageError] = useState<{ message: string }[]>([]);
   const [loadingQuery, setLoadingQuery] = useState<number>(0);
   const [formValues, setFormValues] = useState<productSubmit>({
-
+    img: undefined,
     name: "",
     cost: undefined,
     price: undefined,
@@ -67,68 +73,77 @@ const ProductFrom = ({ onClick, editData, title, statusAction }: Props) => {
 
   const handleSubmit = async (values: object) => {
     const dataFrom = values as productSubmit;
+    console.log(dataFrom);
     setLoadingQuery(0);
-    try {
-
-      if (!session?.user.company_id) return showMessage({ status: "error", text: "พบข้อผิดพลาดกรุณาเข้าสู่ระบบใหม่อีกครั้ง" });
-      if (!dataFrom.cost) return showMessage({ status: "error", text: "กรุณาระบุต้นทุนสินค้า" });
-      if (!dataFrom.price) return showMessage({ status: "error", text: "กรุณาระบุราคาขายสินค้า" });
-      if (!dataFrom.stock) return showMessage({ status: "error", text: "กรุณาระบุจำนวนสต็อคสินค้า" });
-      if (!dataFrom.productTypeId) return showMessage({ status: "error", text: "กรุณาเลือกประเภทสินค้า" });
-      if (!dataFrom.unitId) return showMessage({ status: "error", text: "กรุณาเลือกหน่วยนับสินค้า" });
-      dispatch(setLoading({ loadingAction: 0, showLoading: true }));
-      // Update Tables
-      // if (editData?.key) {
-      //   const updateTables = await updateDataTablesMutation.mutateAsync({
-      //     token: session?.user.accessToken,
-      //     tablesData: {
-      //       id: editData.key,
-      //       name: dataFrom.name,
-      //       stoves: parseInt(dataFrom.stoves, 10),
-      //       people: parseInt(dataFrom.people, 10),
-      //       expiration: parseInt(dataFrom.expiration, 10),
-      //       branchId: dataFrom.branch,
-      //       companyId: session?.user.company_id,
-      //       status: dataFrom.status === "Active" ? "Active" : "InActive",
-      //     },
-      //     setLoadingQuery: setLoadingQuery
-      //   });
-
-      //   if (updateTables === null) return showMessage({ status: "error", text: "แก้ไขข้อมูลสินค้าไม่สำเร็จ กรุณาลองอีกครั้ง" });
-      //   if (updateTables?.status === true) {
-      //     setTimeout(() => { onClick(); }, 1500);
-      //     return showMessage({ status: "success", text: "แก้ไขข้อมูลสินค้าสำเร็จ" });
-      //   }
-      //   if (typeof updateTables.message !== 'string') setMessageError(updateTables.message);
-      //   return showMessage({ status: "error", text: "แก้ไขข้อมูลสินค้าไม่สำเร็จ กรุณาแก้ไขข้อผิดพลาด" });
-      // }
-      // Insert Product
-      const addProduct = await addDataProductMutation.mutateAsync({
-        token: session?.user.accessToken,
-        productData: {
-          img: image ? image : undefined,
-          name: dataFrom.name,
-          cost: parseInt(dataFrom.cost, 10),
-          price: parseInt(dataFrom.price, 10),
-          stock: parseInt(dataFrom.stock, 10),
-          unitId: parseInt(dataFrom.unitId, 10),
-          productTypeId: parseInt(dataFrom.productTypeId, 10),
-          companyId: session?.user.company_id,
-          status: dataFrom.status === "Active" ? "Active" : "InActive",
-        },
-        setLoadingQuery: setLoadingQuery
-      });
-
-      if (addProduct === null) return showMessage({ status: "error", text: "เพิ่มข้อมูลสินค้าไม่สำเร็จ กรุณาลองอีกครั้ง" });
-      if (addProduct?.status === true) {
-        setTimeout(() => { onClick(); }, 1500);
-        return showMessage({ status: "success", text: "เพิ่มข้อมูลสินค้าสำเร็จ" });
-      }
-      if (typeof addProduct.message !== 'string') setMessageError(addProduct.message);
-      return showMessage({ status: "error", text: "เพิ่มข้อมูลสินค้าไม่สำเร็จ กรุณาแก้ไขข้อผิดพลาด" });
-    } catch (error: unknown) {
-      console.error('Failed to add data:', error);
+    if(dataFrom.img){
+      const imageData: uploadImagesType = { 
+        originFileObj: dataFrom.img, 
+        fileName: `PD`
+    };
+  
+    await s3UploadImages(imageData);
     }
+    // try {
+
+    //   if (!session?.user.company_id) return showMessage({ status: "error", text: "พบข้อผิดพลาดกรุณาเข้าสู่ระบบใหม่อีกครั้ง" });
+    //   if (!dataFrom.cost) return showMessage({ status: "error", text: "กรุณาระบุต้นทุนสินค้า" });
+    //   if (!dataFrom.price) return showMessage({ status: "error", text: "กรุณาระบุราคาขายสินค้า" });
+    //   if (!dataFrom.stock) return showMessage({ status: "error", text: "กรุณาระบุจำนวนสต็อคสินค้า" });
+    //   if (!dataFrom.productTypeId) return showMessage({ status: "error", text: "กรุณาเลือกประเภทสินค้า" });
+    //   if (!dataFrom.unitId) return showMessage({ status: "error", text: "กรุณาเลือกหน่วยนับสินค้า" });
+    //   dispatch(setLoading({ loadingAction: 0, showLoading: true }));
+    //   // Update Tables
+    //   // if (editData?.key) {
+    //   //   const updateTables = await updateDataTablesMutation.mutateAsync({
+    //   //     token: session?.user.accessToken,
+    //   //     tablesData: {
+    //   //       id: editData.key,
+    //   //       name: dataFrom.name,
+    //   //       stoves: parseInt(dataFrom.stoves, 10),
+    //   //       people: parseInt(dataFrom.people, 10),
+    //   //       expiration: parseInt(dataFrom.expiration, 10),
+    //   //       branchId: dataFrom.branch,
+    //   //       companyId: session?.user.company_id,
+    //   //       status: dataFrom.status === "Active" ? "Active" : "InActive",
+    //   //     },
+    //   //     setLoadingQuery: setLoadingQuery
+    //   //   });
+
+    //   //   if (updateTables === null) return showMessage({ status: "error", text: "แก้ไขข้อมูลสินค้าไม่สำเร็จ กรุณาลองอีกครั้ง" });
+    //   //   if (updateTables?.status === true) {
+    //   //     setTimeout(() => { onClick(); }, 1500);
+    //   //     return showMessage({ status: "success", text: "แก้ไขข้อมูลสินค้าสำเร็จ" });
+    //   //   }
+    //   //   if (typeof updateTables.message !== 'string') setMessageError(updateTables.message);
+    //   //   return showMessage({ status: "error", text: "แก้ไขข้อมูลสินค้าไม่สำเร็จ กรุณาแก้ไขข้อผิดพลาด" });
+    //   // }
+    //   // Insert Product
+    //   const addProduct = await addDataProductMutation.mutateAsync({
+    //     token: session?.user.accessToken,
+    //     productData: {
+    //       img: image ? image : undefined,
+    //       name: dataFrom.name,
+    //       cost: parseInt(dataFrom.cost, 10),
+    //       price: parseInt(dataFrom.price, 10),
+    //       stock: parseInt(dataFrom.stock, 10),
+    //       unitId: parseInt(dataFrom.unitId, 10),
+    //       productTypeId: parseInt(dataFrom.productTypeId, 10),
+    //       companyId: session?.user.company_id,
+    //       status: dataFrom.status === "Active" ? "Active" : "InActive",
+    //     },
+    //     setLoadingQuery: setLoadingQuery
+    //   });
+
+    //   if (addProduct === null) return showMessage({ status: "error", text: "เพิ่มข้อมูลสินค้าไม่สำเร็จ กรุณาลองอีกครั้ง" });
+    //   if (addProduct?.status === true) {
+    //     setTimeout(() => { onClick(); }, 1500);
+    //     return showMessage({ status: "success", text: "เพิ่มข้อมูลสินค้าสำเร็จ" });
+    //   }
+    //   if (typeof addProduct.message !== 'string') setMessageError(addProduct.message);
+    //   return showMessage({ status: "error", text: "เพิ่มข้อมูลสินค้าไม่สำเร็จ กรุณาแก้ไขข้อผิดพลาด" });
+    // } catch (error: unknown) {
+    //   console.error('Failed to add data:', error);
+    // }
   };
 
   const handleRefresh = () => {
@@ -165,6 +180,7 @@ const ProductFrom = ({ onClick, editData, title, statusAction }: Props) => {
         {/* เลือกรูปภาพ */}
         <div className="grid gap-3 grid-cols-1 sml:grid-cols-1">
           <UploadImg label="เพิ่มรูปภาพสินค้า" name="img" setImage={setImage}/>
+          <UploadAnt label="เพิ่มรูปภาพสินค้า" name="img"/>
         </div>
         {/* ชื่อสินค้า,  */}
         <div className="grid gap-3 grid-cols-1 sml:grid-cols-2">
