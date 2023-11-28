@@ -1,14 +1,12 @@
 import { setLoading } from '@/app/store/slices/loadingSlice';
 import { useAppDispatch } from '@/app/store/store';
 import { fetchProduct } from '@/types/fetchData';
-import { Col, Form, Upload, Select, message, Button, Skeleton } from 'antd';
+import { Form, message, Skeleton } from 'antd';
 import { useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
 import ProgressBar from '../UI/loading/ProgressBar';
 import SaveBtn from '../UI/btn/SaveBtn';
-import { optionStatus, validateWhitespace } from './validate/validate';
 import DrawerActionData from '../DrawerActionData';
-import { PlusOutlined } from '@ant-design/icons';
 import UploadImg from '../UI/UploadImg';
 import StatusFrom from '../UI/select/StatusFrom';
 import InputFrom from '../UI/InputFrom';

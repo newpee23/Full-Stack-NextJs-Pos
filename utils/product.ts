@@ -133,34 +133,27 @@ export const fetchAllProduct = async (): Promise<fetchProduct[] | null> => {
 
 export const insertAddProduct = async (body: dataVerifyProduct): Promise<promiseDataVerify[] | null> => {
     const verifyStatus: promiseDataVerify[] = [];
-    console.log(body)
-    // try {
-    //     const addProduct = await prisma.product.create({
-    //         data: {
-    //             name: body.name,
-    //             stock: body.stock,
-    //             cost: body.cost,
-    //             price: body.price,
-    //             unitId: body.unitId,
-    //             productTypeId: body.productTypeId,
-    //             companyId: body.companyId,
-    //             status: body.status
-    //         },
-    //     });
+    try {
+        const addProduct = await prisma.product.create({
+            data: {
+                name: body.name,
+                stock: body.stock,
+                cost: body.cost,
+                price: body.price,
+                unitId: body.unitId,
+                productTypeId: body.productTypeId,
+                companyId: body.companyId,
+                status: body.status
+            },
+        });
 
-    //     if (!addProduct) return null;
-    //     // uploadImg
-    //     if(body.img){
-    //         const fileName: string = `product/pd_${addProduct.id}_${Date.now()}_${addProduct.companyId}`;
-    //         const uploadImg = await s3UploadImages({ fileName: fileName, originFileObj: body.img });
-    //         console.log(uploadImg); 
-    //     }
-    //     verifyStatus.push(pushData(`Create a productType ${addProduct.name} accomplished and received id: ${addProduct.id}`));
-    // } catch (error: unknown) {
-    //     console.error(`Database connection error: ${error}`);
-    // } finally {
-    //     await prisma.$disconnect();
-    // }
+        if (!addProduct) return null;   
+        verifyStatus.push(pushData(`${addProduct.id}`));
+    } catch (error: unknown) {
+        console.error(`Database connection error: ${error}`);
+    } finally {
+        await prisma.$disconnect();
+    }
     return verifyStatus;
 };
 
