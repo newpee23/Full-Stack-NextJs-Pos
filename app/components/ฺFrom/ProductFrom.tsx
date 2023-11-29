@@ -23,7 +23,7 @@ interface Props {
   statusAction: 'add' | 'update';
 }
 
-interface productSubmit {
+export interface productSubmit {
   img: RcFile | undefined;
   imageUrl: string | undefined;
   name: string;
@@ -183,7 +183,7 @@ const ProductFrom = ({ onClick, editData, title, statusAction }: Props) => {
       <Form layout="vertical" onFinish={(values) => { setFormValues(values as productSubmit); onFinish(values); }} initialValues={formValues}>
         {/* เลือกรูปภาพ */}
         <div className="grid gap-3 grid-cols-1 sml:grid-cols-1">
-          <UploadAnt label="เพิ่มรูปภาพสินค้า" name="img" imageUrl={formValues.imageUrl} addImage={formValues.img} />
+          <UploadAnt label="เพิ่มรูปภาพสินค้า" name="img" imageUrl={formValues.imageUrl} addImage={formValues.img} setFormValues={setFormValues}/>
           <InputFrom label="imageUrl" name="imageUrl" required={false} type="hidden" />
         </div>
         {/* ชื่อสินค้า,  */}

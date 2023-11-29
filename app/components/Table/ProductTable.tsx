@@ -29,13 +29,8 @@ const ProductTable = () => {
         return await refetch();
     };
 
-    const handleDeleteClick = async (id: string, img: string | null) => {
-        try {
-            if(img){
-                const deleteImg = await deleteImageS3(img);
-                if(!deleteImg) return showMessage({ status: "error", text: "เกิดข้อผิดพลาดการลบรูปภาพ กรุณาลองอีกครั้ง" });
-            }
-            
+    const handleDeleteClick = async (id: string) => {
+        try { 
             const token = session?.user.accessToken;
             const product = await deleteDataProduct.mutateAsync({ token, id });
 
@@ -120,7 +115,7 @@ const ProductTable = () => {
             render: (_, record) => (
                 <Space size="middle">
                     <ProductFrom onClick={handleRefresh} editData={record} title="แก้ไขข้อมูลสาขา" statusAction="update" />
-                    <DeleteBtn name={record.name} onClick={() => handleDeleteClick(record.key, record.img)} label="ลบข้อมูล" />
+                    <DeleteBtn name={record.name} onClick={() => handleDeleteClick(record.key)} label="ลบข้อมูล" />
                 </Space>
             ),
         },
@@ -129,7 +124,7 @@ const ProductTable = () => {
     return (
         <div>
             <div className="flex items-center justify-between">
-                <ProductFrom onClick={() => console.log("ss")} statusAction="add" title="เพิ่มข้อมูลสินค้า" />
+                <ProductFrom onClick={handleRefresh} statusAction="add" title="เพิ่มข้อมูลสินค้า" />
                 <RefreshBtn label="Refresh Data" onClick={handleRefresh} />
             </div>
             <div className="overflow-x-auto m-3">
