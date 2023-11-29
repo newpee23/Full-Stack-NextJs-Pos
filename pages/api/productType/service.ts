@@ -63,3 +63,7 @@ export const handleDeleteProductType = async (res: NextApiResponse, id: number) 
 
     return res.status(200).json({ message: "Successfully deleted data", productType: deleteProductType, status: true });
 }
+
+export const handleUpdateImage =async () => {
+    
+}

@@ -36,6 +36,7 @@ const GET = async (req: NextApiRequest, res: NextApiResponse) => {
 const POST = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const body: dataVerifyProduct = await req.body;
+ 
     // Verify/Add Product
     return await handleAddProduct(body, res);
   } catch (error: unknown) {

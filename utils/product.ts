@@ -1,7 +1,6 @@
 import { prisma } from "@/pages/lib/prismaDB";
-import { s3UploadImages } from "@/pages/lib/s3";
 import { fetchProduct } from "@/types/fetchData";
-import { dataVerifyProduct, promiseDataVerify } from "@/types/verify";
+import { dataUpdateImg, dataVerifyProduct, promiseDataVerify } from "@/types/verify";
 import { Prisma } from "@prisma/client";
 
 const pushData = (message: string) => {
@@ -46,6 +45,24 @@ export const verifyProductBody = (data: dataVerifyProduct): promiseDataVerify[] 
     if (!Number.isInteger(data.productTypeId) || data.productTypeId <= 0) verifyStatus.push(pushData("กรุณาระบุ : productTypeId เป็นตัวเลขจำนวนเต็มเท่านั้น"));
     if (!Number.isInteger(data.companyId) || data.companyId <= 0) verifyStatus.push(pushData("กรุณาระบุ : companyId เป็นตัวเลขจำนวนเต็มเท่านั้น"));
 
+    // Return
+    return verifyStatus;
+};
+
+export const VerifyUpdateImage = (data: dataUpdateImg): promiseDataVerify[] => {
+    const verifyStatus: promiseDataVerify[] = [];
+    if (!data.fileName) verifyStatus.push(pushData("ไม่พบข้อมูล : fileName"));
+    if (!data.pdId) verifyStatus.push(pushData("ไม่พบข้อมูล : pdId"));
+    if (!data.companyId) verifyStatus.push(pushData("ไม่พบข้อมูล : companyId"));
+
+    // Return
+    if (verifyStatus.length > 0) return verifyStatus;
+
+    // ตรวจสอบความถูกต้องของข้อมูล
+    if (!data.fileName.trim()) verifyStatus.push(pushData("กรุณาระบุ : fileName"));
+    if (data.fileName.length > 50) verifyStatus.push(pushData("กรุณาระบุ : fileName ไม่เกิน 50 อักษร"));
+    if (!Number.isInteger(data.companyId) || data.companyId <= 0) verifyStatus.push(pushData("กรุณาระบุ : companyId เป็นตัวเลขจำนวนเต็มเท่านั้น"));
+    if (!Number.isInteger(data.pdId) || data.pdId <= 0) verifyStatus.push(pushData("กรุณาระบุ : pdId เป็นตัวเลขจำนวนเต็มเท่านั้น"));
     // Return
     return verifyStatus;
 };
@@ -95,6 +112,20 @@ export const fetchProductByCompanyId = async (companyId: number): Promise<fetchP
             where: {
                 companyId: companyId
             }
+            ,include: {
+                productType: {
+                    select: {
+                        id: true,
+                        name: true,
+                    },
+                },
+                unit: {
+                    select: {
+                        id: true,
+                        name: true,
+                    },
+                }
+            }      
             , orderBy: { id: 'asc', },
         });
 
@@ -147,7 +178,7 @@ export const insertAddProduct = async (body: dataVerifyProduct): Promise<promise
             },
         });
 
-        if (!addProduct) return null;   
+        if (!addProduct) return null;
         verifyStatus.push(pushData(`${addProduct.id}`));
     } catch (error: unknown) {
         console.error(`Database connection error: ${error}`);
@@ -187,6 +218,25 @@ export const deleteDataProduct = async (id: number): Promise<fetchProduct | null
         const product = await prisma.product.delete({
             where: {
                 id: id,
+            },
+        });
+
+        if (!product) return null;
+        return product as fetchProduct;
+    } catch (error) {
+        console.error('Error updating product:', error);
+        return null;
+    } finally {
+        await prisma.$disconnect();
+    }
+}
+
+export const updateDataImage = async (body: dataUpdateImg, id: number) => {
+    try {
+        const product = await prisma.product.update({
+            where: { id },
+            data: {
+               img: body.fileName
             },
         });
 

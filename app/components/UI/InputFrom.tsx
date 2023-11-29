@@ -6,7 +6,7 @@ type Props = {
     name: string;
     label: string;
     required: boolean;
-    type: "text" | "textArea" | "number" | "datePicker" | "float";
+    type: "text" | "textArea" | "number" | "datePicker" | "float" | "hidden";
 };
 
 const InputFrom: React.FC<Props> = ({ name, label, required, type }) => {
@@ -66,6 +66,27 @@ const InputFrom: React.FC<Props> = ({ name, label, required, type }) => {
     if (type === "float") {
         return (
             <Col>
+                <Form.Item
+                    name={name}
+                    label={label}
+                    rules={[
+                        { required, message: `กรุณาระบุ${label}` },
+                        {
+                            pattern: /^\d+(\.\d{1,2})?$/,
+                            message: "กรุณาระบุตัวเลขและทศนิยมไม่เกิน 2 ตำแหน่ง",
+                        },
+                        { validator: validateWhitespace },
+                    ]}
+                >
+                    <Input type="number" step={0.01} placeholder={`ระบุ${label}`} />
+                </Form.Item>
+            </Col>
+        );
+    }
+
+    if (type === "hidden") {
+        return (
+            <Col className="hidden">
                 <Form.Item
                     name={name}
                     label={label}

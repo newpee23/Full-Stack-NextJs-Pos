@@ -1,13 +1,15 @@
 import { s3Client } from "@/pages/lib/s3";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { uploadImagesType } from "@/types/verify";
+import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-export const s3UploadImages = async (data: any): Promise<string> => {
+export const s3UploadImages = async (data: uploadImagesType): Promise<string> => {
 	try {
 		const { fileName, originFileObj } = data;
 		const file = originFileObj.file;
 		const fileNameS3: string = file.name;
 		const fileExtension: string = fileNameS3.split('.').pop() || '';
+		const type = `image/${fileExtension}`
 
 		// Check file size
 		const fileSize = file.size / (1024 * 1024); // Convert to megabytes
@@ -15,11 +17,12 @@ export const s3UploadImages = async (data: any): Promise<string> => {
 			throw new Error("File size exceeds the maximum limit of 5 MB.");
 		}
 
+		const fileNameUploadS3 = `product/${fileName}.${fileExtension}`
 		const params = {
 			Bucket: process.env.S3_BUCKET!,
-			Key: `product/eeeee${data.fileName}.${fileExtension}`,
+			Key: fileNameUploadS3,
 			Body: file,
-			ContentType: `image/${fileExtension}`
+			ContentType: type
 		};
 
 		const command = new PutObjectCommand(params);
@@ -32,7 +35,7 @@ export const s3UploadImages = async (data: any): Promise<string> => {
 			method: "PUT",
 			body: file,
 			headers: {
-				"Content-Type": `image/${fileExtension}`
+				"Content-Type": type
 			},
 		};
 
@@ -40,13 +43,26 @@ export const s3UploadImages = async (data: any): Promise<string> => {
 
 		if (uploadResponse.ok) {
 			// Return a more informative message or the S3 URL if needed
-			return `Upload successful! File: ${fileName}, Pre-signed URL: ${preSignedUrl}`;
+			return fileNameUploadS3;
 		} else {
 			console.error("File upload failed.");
-			throw new Error("Failed to upload to S3");
+			return "";
 		}
 	} catch (error) {
 		console.error("S3 upload failed:", error);
-		throw new Error("Failed to upload to S3");
+		return "";
 	}
 };
+
+export const deleteImageS3 = async (fileName: string): Promise<boolean> => {
+    try {
+        const command = new DeleteObjectCommand({ Bucket: "nextpos-s3", Key: "product/PD_72_202311291656.jpg" });
+        await s3Client.send(command);
+
+        // console.log(`S3 delete: ${fileName} successfully`);
+		return true;
+    } catch (error) {
+        console.error("S3 delete failed:", error);
+		return false;
+    }
+}

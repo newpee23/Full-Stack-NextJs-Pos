@@ -97,6 +97,14 @@ export interface fetchProduct {
   unitId: number;
   productTypeId: number;
   companyId: number;
+  productType: {
+    id: number;
+    name: string;
+  };
+  unit: {
+    id: number;
+    name: string;
+  };
   status: "Active" | "InActive";
 }
 

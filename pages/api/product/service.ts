@@ -1,6 +1,6 @@
-import { dataVerifyProduct } from "@/types/verify";
+import { dataUpdateImg, dataVerifyProduct } from "@/types/verify";
 import { getCompanyById } from "@/utils/company";
-import { deleteDataProduct, fetchAllProduct, fetchProductByCompanyId, fetchProductById, fetchProductByName, insertAddProduct, updateDataProduct, verifyProductBody } from "@/utils/product";
+import { VerifyUpdateImage, deleteDataProduct, fetchAllProduct, fetchProductByCompanyId, fetchProductById, fetchProductByName, insertAddProduct, updateDataImage, updateDataProduct, verifyProductBody } from "@/utils/product";
 import { fetchProductTypeById } from "@/utils/productType";
 import { fetchUnitById } from "@/utils/unit";
 import { NextApiResponse } from "next";
@@ -80,4 +80,18 @@ export const handleDeleteProduct = async (res: NextApiResponse, id: number) => {
     if (!deleteProduct) return res.status(404).json({ message: "An error occurred deleting data.", product: null, status: false });
 
     return res.status(200).json({ message: "Successfully deleted data", product: deleteProduct, status: true });
+}
+
+export const handleUpdateImage = async (body: dataUpdateImg, res: NextApiResponse) => {
+    // VerifyUpdateImage
+    const verifyData = VerifyUpdateImage(body);
+    if (verifyData.length > 0) return res.status(404).json({ message: verifyData, updateImg: null, status: false });
+    // check companyId
+    const checkCompanyId = await getCompanyById(body.companyId);
+    if (!checkCompanyId) return res.status(404).json({ message: `No company found with companyId : ${body.companyId}`, updateImg: null, status: false });
+    // updateImage
+    const updateImage = await updateDataImage(body, body.pdId);
+    if (!updateImage) return res.status(404).json({ message: "An error occurred saving data.", updateImg: null, status: false });
+    
+    return res.status(200).json({ message: "Data saved successfully.", updateImg: updateImage, status: true });
 }

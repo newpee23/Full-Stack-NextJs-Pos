@@ -130,5 +130,16 @@ export interface promiseDataVerify {
 
 export interface uploadImagesType {
   fileName: string;
-  originFileObj: RcFile;
+  originFileObj: any;
+}
+
+export interface dataVerifyUpdateImgPd {
+  companyId: number;
+  fileName: string;
+}
+
+export interface dataUpdateImg {
+  fileName: string;
+  companyId: number;
+  pdId: number;
 }
