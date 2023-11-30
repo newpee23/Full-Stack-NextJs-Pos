@@ -6,7 +6,6 @@ import type { RcFile, UploadProps } from "antd/es/upload";
 import type { UploadFile } from "antd/es/upload/interface";
 import { productSubmit } from "../ฺFrom/ProductFrom";
 import { getBase64 } from "@/app/lib/getLocalBase64";
-import bgLoading from "@/public/images/loadBg.jpg";
 
 type Props = {
     name: string;

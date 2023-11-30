@@ -10,7 +10,6 @@ import { ColumnsType } from 'antd/lib/table';
 import { fetchProduct } from '@/types/fetchData';
 import TagStatus from '../UI/TagStatus';
 import DeleteBtn from '../UI/btn/DeleteBtn';
-import { deleteImageS3 } from '@/app/lib/s3PreSignedUrl';
 
 const ProductTable = () => {
     const [messageApi, contextHolder] = message.useMessage();
@@ -72,13 +71,13 @@ const ProductTable = () => {
             title: "ประเภทสินค้า",
             dataIndex: ["productType", "name"],
             key: "productType",
-            className: "min-w-[200px]",
+            className: "min-w-[200px] text-center",
         },
         {
             title: "จำนวนสินค้าในคลัง",
             dataIndex: "stock",
             key: "stock",
-            className: "min-w-[200px]",
+            className: "min-w-[200px] text-center",
             render: (text) => parseFloat(text).toLocaleString('en-US', {
                 minimumFractionDigits: 0,
                 maximumFractionDigits: 0,
@@ -88,13 +87,13 @@ const ProductTable = () => {
             title: "หน่วยนับ",
             dataIndex: ["unit", "name"],
             key: "unit",
-            className: "min-w-[200px]",
+            className: "min-w-[200px] text-center",
         },
         {
             title: "ราคาขาย",
             dataIndex: "price",
             key: "price",
-            className: "min-w-[200px]",
+            className: "min-w-[200px] text-center",
             render: (text) => parseFloat(text).toLocaleString('en-US', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
@@ -128,7 +127,7 @@ const ProductTable = () => {
                 <RefreshBtn label="Refresh Data" onClick={handleRefresh} />
             </div>
             <div className="overflow-x-auto m-3">
-                <Table columns={columnsProduct} dataSource={data || []} bordered title={() => "ฐานข้อมูลข้อมูลตำแหน่งพนักงาน"} />
+                <Table columns={columnsProduct} dataSource={data || []} bordered title={() => "ฐานข้อมูลข้อมูลสินค้า"} />
             </div>
             {contextHolder}
         </div>
