@@ -73,6 +73,7 @@ export interface dataVerifyProduct {
   price: number;
   stock: number;
   img?: File | undefined;
+  imageUrl?: string;
   unitId: number;
   productTypeId: number;
   companyId: number;

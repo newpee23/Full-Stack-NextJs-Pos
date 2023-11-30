@@ -17,7 +17,7 @@ export const s3UploadImages = async (data: uploadImagesType): Promise<string> =>
 			throw new Error("File size exceeds the maximum limit of 5 MB.");
 		}
 
-		const fileNameUploadS3 = `product/${fileName}.${fileExtension}`
+		const fileNameUploadS3 = `${fileName}.${fileExtension}`
 		const params = {
 			Bucket: process.env.S3_BUCKET!,
 			Key: fileNameUploadS3,

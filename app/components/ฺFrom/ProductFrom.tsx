@@ -9,7 +9,7 @@ import SaveBtn from '../UI/btn/SaveBtn';
 import DrawerActionData from '../DrawerActionData';
 import StatusFrom from '../UI/select/StatusFrom';
 import InputFrom from '../UI/InputFrom';
-import { useAddDataProduct, useSelectOpProduct } from '@/app/api/product';
+import { useAddDataProduct, useSelectOpProduct, useUpdateDataProduct } from '@/app/api/product';
 import ErrPage from '../ErrPage';
 import SelectProductType from '../UI/select/SelectProductType';
 import SelectUnit from '../UI/select/SelectUnit';
@@ -42,6 +42,7 @@ const ProductFrom = ({ onClick, editData, title, statusAction }: Props) => {
   const { data: session } = useSession();
   const { data, isLoading, isError, refetch, remove } = useSelectOpProduct(session?.user.accessToken, session?.user.company_id);
   const addDataProductMutation = useAddDataProduct();
+  const updateDataProductMutation = useUpdateDataProduct();
   const [messageError, setMessageError] = useState<{ message: string }[]>([]);
   const [loadingQuery, setLoadingQuery] = useState<number>(0);
   const [formValues, setFormValues] = useState<productSubmit>({
@@ -70,10 +71,7 @@ const ProductFrom = ({ onClick, editData, title, statusAction }: Props) => {
   const handleSubmit = async (values: object) => {
     setLoadingQuery(0);
     let dataFrom = values as productSubmit;
-    if (editData) dataFrom = formValues;
- 
     try {
-
       if (!session?.user.company_id) return showMessage({ status: "error", text: "พบข้อผิดพลาดกรุณาเข้าสู่ระบบใหม่อีกครั้ง" });
       if (!dataFrom.cost) return showMessage({ status: "error", text: "กรุณาระบุต้นทุนสินค้า" });
       if (!dataFrom.price) return showMessage({ status: "error", text: "กรุณาระบุราคาขายสินค้า" });
@@ -82,30 +80,34 @@ const ProductFrom = ({ onClick, editData, title, statusAction }: Props) => {
       if (!dataFrom.unitId) return showMessage({ status: "error", text: "กรุณาเลือกหน่วยนับสินค้า" });
       dispatch(setLoading({ loadingAction: 0, showLoading: true }));
       // Update Tables
-      // if (editData?.key) {
-      //   const updateTables = await updateDataTablesMutation.mutateAsync({
-      //     token: session?.user.accessToken,
-      //     tablesData: {
-      //       id: editData.key,
-      //       name: dataFrom.name,
-      //       stoves: parseInt(dataFrom.stoves, 10),
-      //       people: parseInt(dataFrom.people, 10),
-      //       expiration: parseInt(dataFrom.expiration, 10),
-      //       branchId: dataFrom.branch,
-      //       companyId: session?.user.company_id,
-      //       status: dataFrom.status === "Active" ? "Active" : "InActive",
-      //     },
-      //     setLoadingQuery: setLoadingQuery
-      //   });
+      if (editData?.key) {
 
-      //   if (updateTables === null) return showMessage({ status: "error", text: "แก้ไขข้อมูลสินค้าไม่สำเร็จ กรุณาลองอีกครั้ง" });
-      //   if (updateTables?.status === true) {
-      //     setTimeout(() => { onClick(); }, 1500);
-      //     return showMessage({ status: "success", text: "แก้ไขข้อมูลสินค้าสำเร็จ" });
-      //   }
-      //   if (typeof updateTables.message !== 'string') setMessageError(updateTables.message);
-      //   return showMessage({ status: "error", text: "แก้ไขข้อมูลสินค้าไม่สำเร็จ กรุณาแก้ไขข้อผิดพลาด" });
-      // }
+        const updateProduct = await updateDataProductMutation.mutateAsync({
+          token: session?.user.accessToken,
+          productData: {
+            id: parseInt(editData.key, 10),
+            img: dataFrom.img ? dataFrom.img : undefined,
+            imageUrl: dataFrom.imageUrl,
+            name: dataFrom.name,
+            cost: parseInt(dataFrom.cost, 10),
+            price: parseInt(dataFrom.price, 10),
+            stock: parseInt(dataFrom.stock, 10),
+            unitId: parseInt(dataFrom.unitId, 10),
+            productTypeId: parseInt(dataFrom.productTypeId, 10),
+            companyId: session?.user.company_id,
+            status: dataFrom.status === "Active" ? "Active" : "InActive",
+          },
+          setLoadingQuery: setLoadingQuery
+        });
+
+        if (updateProduct === null) return showMessage({ status: "error", text: "แก้ไขข้อมูลสินค้าไม่สำเร็จ กรุณาลองอีกครั้ง" });
+        if (updateProduct?.status === true) {
+          setTimeout(() => { onClick(); }, 1500);
+          return showMessage({ status: "success", text: "แก้ไขข้อมูลสินค้าสำเร็จ" });
+        }
+        if (typeof updateProduct.message !== 'string') setMessageError(updateProduct.message);
+        return showMessage({ status: "error", text: "แก้ไขข้อมูลสินค้าไม่สำเร็จ กรุณาแก้ไขข้อผิดพลาด" });
+      }
       // Insert Product
       const addProduct = await addDataProductMutation.mutateAsync({
         token: session?.user.accessToken,
@@ -183,7 +185,7 @@ const ProductFrom = ({ onClick, editData, title, statusAction }: Props) => {
       <Form layout="vertical" onFinish={(values) => { setFormValues(values as productSubmit); onFinish(values); }} initialValues={formValues}>
         {/* เลือกรูปภาพ */}
         <div className="grid gap-3 grid-cols-1 sml:grid-cols-1">
-          <UploadAnt label="เพิ่มรูปภาพสินค้า" name="img" imageUrl={formValues.imageUrl} addImage={formValues.img} setFormValues={setFormValues}/>
+          <UploadAnt label="เพิ่มรูปภาพสินค้า" name="img" imageUrl={formValues.imageUrl} addImage={formValues.img} setFormValues={setFormValues} status={editData ? "update" : "add"} />
           <InputFrom label="imageUrl" name="imageUrl" required={false} type="hidden" />
         </div>
         {/* ชื่อสินค้า,  */}

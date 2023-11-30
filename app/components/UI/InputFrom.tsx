@@ -87,18 +87,7 @@ const InputFrom: React.FC<Props> = ({ name, label, required, type }) => {
     if (type === "hidden") {
         return (
             <Col className="hidden">
-                <Form.Item
-                    name={name}
-                    label={label}
-                    rules={[
-                        { required, message: `กรุณาระบุ${label}` },
-                        {
-                            pattern: /^\d+(\.\d{1,2})?$/,
-                            message: "กรุณาระบุตัวเลขและทศนิยมไม่เกิน 2 ตำแหน่ง",
-                        },
-                        { validator: validateWhitespace },
-                    ]}
-                >
+                <Form.Item name={name} label={label}>
                     <Input type="number" step={0.01} placeholder={`ระบุ${label}`} />
                 </Form.Item>
             </Col>

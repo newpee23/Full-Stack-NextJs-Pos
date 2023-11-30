@@ -194,6 +194,7 @@ export const updateDataProduct = async (body: dataVerifyProduct, id: number): Pr
             where: { id },
             data: {
                 name: body.name,
+                img: body.imageUrl ? body.imageUrl : null,
                 cost: body.cost,
                 price: body.price,
                 stock: body.stock,

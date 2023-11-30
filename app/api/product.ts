@@ -158,18 +158,18 @@ const addProduct = async (token: string | undefined, productData: dataVerifyProd
         if (productData.img) {
             const productId = response.data.product[0]?.message;
             const date = currentDateStrImg();
-            const dataProductImg: uploadImagesType = { 
-                originFileObj: productData.img, 
-                fileName: `PD_${productId}_${date}`
+            const dataProductImg: uploadImagesType = {
+                originFileObj: productData.img,
+                fileName: `product/PD_${productId}_${date}`
             };
-         
+
             const uploadImg = await s3UploadImages(dataProductImg);
             // updateImg
-            if(uploadImg){
-               await updateImageProduct(token,{companyId:productData.companyId, fileName:uploadImg, pdId: typeNumber(productId)});
-               setLoadingQuery(100);
+            if (uploadImg) {
+                await updateImageProduct(token, { companyId: productData.companyId, fileName: uploadImg, pdId: typeNumber(productId) });
+                setLoadingQuery(100);
             }
-        }else{
+        } else {
             setLoadingQuery(100);
         }
         return product;
@@ -205,13 +205,13 @@ const addProduct = async (token: string | undefined, productData: dataVerifyProd
 const updateImageProduct = async (token: string | undefined, dataUpdate: dataUpdateImg) => {
     try {
         const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/product/updateImage`,
-        dataUpdate,
-        {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        }
-    );
+            dataUpdate,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
     } catch (error: unknown) {
         if (axios.AxiosError) {
             // The error is an instance of AxiosError
@@ -237,7 +237,81 @@ const updateImageProduct = async (token: string | undefined, dataUpdate: dataUpd
     }
 }
 
+const updateProduct = async (token: string | undefined, productData: dataVerifyProduct, setLoadingQuery: React.Dispatch<React.SetStateAction<number>>): Promise<addProduct | null> => {
+    try {
+        // upload Img S3
+        if (productData.img) {
+            const productId = productData.id;
+            const date = currentDateStrImg();
+            const dataProductImg: uploadImagesType = {
+                originFileObj: productData.img,
+                fileName: `product/PD_${productId}_${date}`
+            };
+
+            const uploadImg = await s3UploadImages(dataProductImg);
+            // updateImg
+            if (uploadImg) {
+                console.log(uploadImg)
+                productData.imageUrl = uploadImg;
+            }
+        }
+        //  updateData
+        const response = await axios.put(`${process.env.NEXT_PUBLIC_BASE_URL}/product`,
+            productData,
+            {
+                onDownloadProgress: progressEvent => {
+                    if (progressEvent.total) {
+                        const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                        setLoadingQuery(progress);
+                    }
+                },
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+
+        const product: addProduct = response.data;
+        return product;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            // The error is an instance of AxiosError
+            const axiosError = error as any;
+
+            if (axiosError.response) {
+                // Server responded with a status code that falls outside the range of 2xx
+                const message: addProduct = axiosError.response.data;
+
+                console.error("Error data: ", axiosError.response.data);
+                console.error("Error status: ", axiosError.response.status);
+                console.error("Error headers: ", axiosError.response.headers);
+                return message;
+            } else if (axiosError.request) {
+                // Request was made but no response was received
+                console.error("Error request: ", axiosError.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.error("Error message: ", axiosError.message);
+            }
+        } else {
+            // Handle non-Axios error
+            console.error("Unexpected error: ", error);
+        }
+        return null;
+    }
+};
+
 // function React Query
+export const useUpdateDataProduct = () => {
+    return useMutation(
+        (variables: {
+            token: string | undefined;
+            productData: dataVerifyProduct;
+            setLoadingQuery: React.Dispatch<React.SetStateAction<number>>;
+        }) => updateProduct(variables.token, variables.productData, variables.setLoadingQuery)
+    );
+};
+
 export const useDataProduct = (token: string | undefined, companyId: number | undefined) => {
     return useQuery('dataProduct', () => fetchDataProduct(token, companyId), {
         refetchOnWindowFocus: false,

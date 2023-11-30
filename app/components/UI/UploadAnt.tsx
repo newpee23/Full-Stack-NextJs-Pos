@@ -13,14 +13,15 @@ type Props = {
     label: string;
     imageUrl: string | undefined;
     addImage: any;
+    status: "update" | "add";
     setFormValues: React.Dispatch<React.SetStateAction<productSubmit>>;
 }
 
-const UploadAnt = ({ name, label, imageUrl, addImage, setFormValues }: Props) => {
+const UploadAnt = ({ name, label, imageUrl, addImage, setFormValues, status }: Props) => {
     const [previewOpen, setPreviewOpen] = useState<boolean>(false);
     const [previewImage, setPreviewImage] = useState<string>("");
     const [fileList, setFileList] = useState<UploadFile[]>([]);
-    
+
     const handleCancel = () => setPreviewOpen(false);
 
     const handlePreview = async (file: UploadFile) => {
@@ -74,7 +75,7 @@ const UploadAnt = ({ name, label, imageUrl, addImage, setFormValues }: Props) =>
 
     useEffect(() => {
         const loadSetFileList = async () => {
-            if (addImage) {
+            if (addImage && status === "update") {
                 const file: UploadFile = addImage.fileList[0];
                 if (!file.url && !file.preview) {
                     const imageBase64 = await getBase64(file.originFileObj as RcFile);
@@ -89,7 +90,6 @@ const UploadAnt = ({ name, label, imageUrl, addImage, setFormValues }: Props) =>
                 }
             }
         };
-
         // Return void instead of an async function
         return () => {
             loadSetFileList();
@@ -106,13 +106,13 @@ const UploadAnt = ({ name, label, imageUrl, addImage, setFormValues }: Props) =>
             <Modal open={previewOpen} title="รูปภาพสินค้า" footer={null} onCancel={handleCancel}>
             <Image
                 src={previewImage}
-                layout="responsive"
-                width={100}
-                height={100}
+                className="w-full h-auto rounded-md mx-auto"
+                width={650}
+                height={366}
+                sizes="(min-width:720px) 650px, calc(95.5vw - 19px)"
                 alt="productImage"
-                priority
             />
-           
+
             </Modal>
         </>
     );
