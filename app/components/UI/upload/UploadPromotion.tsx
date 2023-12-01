@@ -4,8 +4,8 @@ import { PlusOutlined } from "@ant-design/icons";
 import { Form, Modal, Upload } from "antd";
 import type { RcFile, UploadProps } from "antd/es/upload";
 import type { UploadFile } from "antd/es/upload/interface";
-import { productSubmit } from "../ฺFrom/ProductFrom";
 import { getBase64 } from "@/app/lib/getLocalBase64";
+import { promotionSubmit } from "../../ฺFrom/PromotionFrom";
 
 type Props = {
     name: string;
@@ -13,10 +13,10 @@ type Props = {
     imageUrl: string | undefined;
     addImage: any;
     status: "update" | "add";
-    setFormValues: React.Dispatch<React.SetStateAction<productSubmit>>;
+    setFormValues: React.Dispatch<React.SetStateAction<promotionSubmit>>;
 }
 
-const UploadAnt = ({ name, label, imageUrl, addImage, setFormValues, status }: Props) => {
+const UploadPromotion = ({ name, label, imageUrl, addImage, setFormValues, status }: Props) => {
     const [previewOpen, setPreviewOpen] = useState<boolean>(false);
     const [previewImage, setPreviewImage] = useState<string>("");
     const [fileList, setFileList] = useState<UploadFile[]>([]);
@@ -74,7 +74,7 @@ const UploadAnt = ({ name, label, imageUrl, addImage, setFormValues, status }: P
 
     useEffect(() => {
         const loadSetFileList = async () => {
-            if (addImage && status === "update") {
+            if (addImage?.fileList[0]) {
                 const file: UploadFile = addImage.fileList[0];
                 if (!file.url && !file.preview) {
                     const imageBase64 = await getBase64(file.originFileObj as RcFile);
@@ -117,4 +117,4 @@ const UploadAnt = ({ name, label, imageUrl, addImage, setFormValues, status }: P
     );
 };
 
-export default UploadAnt;
+export default UploadPromotion;

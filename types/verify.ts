@@ -87,7 +87,8 @@ export interface dataVerifyPromotion {
   promotionalPrice: number;
   startDate: Date;
   endDate: Date;
-  img?: string;
+  img?: File | undefined;
+  imageUrl?: string;
   companyId: number;
   status: "Active" | "InActive";
 }
@@ -143,4 +144,10 @@ export interface dataUpdateImg {
   fileName: string;
   companyId: number;
   pdId: number;
+}
+
+export interface dataUpdateImgPromotion {
+  fileName: string;
+  companyId: number;
+  promotionId: number;
 }

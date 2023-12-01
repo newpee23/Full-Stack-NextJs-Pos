@@ -109,12 +109,14 @@ export interface fetchProduct {
 }
 
 export interface fetchPromotion {
+  index: number;
+  key: string;
   id: number;
   name: string;
   detail: string;
   promotionalPrice: number;
-  startDate: Date;
-  endDate: Date;
+  startDate: string | Date;
+  endDate: string | Date;
   img: string;
   companyId: number;
   status: "Active" | "InActive";

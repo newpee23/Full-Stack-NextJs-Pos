@@ -1,20 +1,27 @@
 import { fetchPromotion } from '@/types/fetchData';
-import { Form, Modal, Upload, UploadFile, UploadProps, message } from 'antd';
-import React, { useState } from 'react'
+import { Form, Input, Modal, Upload, UploadFile, UploadProps, message } from 'antd';
+import React, { useEffect, useState } from 'react'
 import InputFrom from '../UI/InputFrom';
 import ProgressBar from '../UI/loading/ProgressBar';
 import SaveBtn from '../UI/btn/SaveBtn';
 import StatusFrom from '../UI/select/StatusFrom';
 import DrawerActionData from '../DrawerActionData';
-import UploadAnt from '../UI/UploadAnt';
+import UploadAnt from '../UI/upload/UploadProduct';
 import { RcFile } from 'antd/lib/upload';
 import { Moment } from 'moment';
 import Image from "next/image";
 import { PlusOutlined } from '@ant-design/icons';
 import { getBase64 } from '@/app/lib/getLocalBase64';
+import UploadPromotion from '../UI/upload/UploadPromotion';
+import { useAddDataPromotion, useUpdateDataPromotion } from '@/app/api/promotion';
+import { useAppDispatch } from '@/app/store/store';
+import { setLoading } from '@/app/store/slices/loadingSlice';
+import { useSession } from 'next-auth/react';
+import { parseDateStringToMoment } from './validate/validate';
+import { QueryObserverResult } from 'react-query';
 
 type Props = {
-    onClick: () => Promise<void>;
+    onClick: () => Promise<QueryObserverResult<fetchPromotion[], unknown>>;
     editData?: fetchPromotion;
     title: string;
     statusAction: "add" | "update";
@@ -33,11 +40,14 @@ export interface promotionSubmit {
 }
 
 const PromotionFrom = ({ onClick, editData, statusAction, title }: Props) => {
-    const [previewOpen, setPreviewOpen] = useState<boolean>(false);
-    const [previewImage, setPreviewImage] = useState<string>("");
-    const [fileList, setFileList] = useState<UploadFile[]>([]);
+    
+    const dispatch = useAppDispatch();
+    const { data: session } = useSession();
     const [messageApi, contextHolder] = message.useMessage();
+    const addDataPromotionMutation = useAddDataPromotion();
+    const updateDataPromotionMutation = useUpdateDataPromotion();
     const [messageError, setMessageError] = useState<{ message: string }[]>([]);
+    const [loadingQuery, setLoadingQuery] = useState<number>(0);
     const [formValues, setFormValues] = useState<promotionSubmit>({
         img: undefined,
         imageUrl: undefined,
@@ -49,67 +59,119 @@ const PromotionFrom = ({ onClick, editData, statusAction, title }: Props) => {
         companyId: undefined,
         status: "Active",
     });
-
-    const resetForm = () => {
-        console.log("resetForm")
-    }
-
-    const handleSubmit = async (values: object) => {
-        console.log(values);
-    };
-
-    const handleCancel = () => setPreviewOpen(false);
-
-    const uploadButton = (
-        <div>
-            <PlusOutlined />
-            <div style={{ marginTop: 8 }}>Upload</div>
-        </div>
-    );
-
-    const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
-        setFileList(newFileList);
-    }
-
-    const handlePreview = async (file: UploadFile) => {
-        if (!file.url && !file.preview) {
-            file.preview = await getBase64(file.originFileObj as RcFile);
-        }
-
-        setPreviewImage(file.url || (file.preview as string));
-        setPreviewOpen(true);
-    };
-
-    const handleRemove = () => {
-        setFormValues(prevData => ({
-            ...prevData,
-            imageUrl: undefined,
-        }));
-    };
     
-    const MyForm = ({ onFinish }: { onFinish: (values: object) => void }): React.JSX.Element => {
+  
+    const resetForm = () => {
+      if (statusAction === "update") {
+        if (editData?.key) {
+          setFormValues({
+            img: undefined,
+            imageUrl: editData.img,
+            name: editData.name,
+            detail: editData.detail,
+            promotionalPrice: editData.promotionalPrice.toString(),
+            startDate: parseDateStringToMoment(editData.startDate.toString()),
+            endDate: parseDateStringToMoment(editData.endDate.toString()),
+            companyId: editData.companyId,
+            status: "Active",
+          });
+        }
+        if (messageError.length > 0) setMessageError([]);
+      }
+    }
+
+    const showMessage = ({ status, text }: { status: string; text: string }) => {
+        if (status === 'success') {
+          messageApi.success(text);
+        } else if (status === 'error') {
+          messageApi.error(text);
+        } else if (status === 'warning') {
+          messageApi.warning(text);
+        }
+      };
+  
+    const handleSubmit = async (values: promotionSubmit) => {
+        setFormValues(values);
+        setLoadingQuery(0);
+        try {
+            if (!session?.user.company_id) return showMessage({ status: "error", text: "พบข้อผิดพลาดกรุณาเข้าสู่ระบบใหม่อีกครั้ง" });
+            if (!values.startDate) return showMessage({ status: "error", text: "กรุณาระบุวันที่เริ่มโปรโมชั่น" });
+            if (!values.endDate) return showMessage({ status: "error", text: "กรุณาระบุวันที่หมดโปรโมชั่น" });
+
+            dispatch(setLoading({ loadingAction: 0, showLoading: true }));
+            // Update Promotion
+            if (editData?.key) {
+      
+              const updatePromotion = await updateDataPromotionMutation.mutateAsync({
+                token: session?.user.accessToken,
+                promotionData: {
+                  id: parseInt(editData.key, 10),
+                  img: values.img ? values.img : undefined,
+                  imageUrl: values.imageUrl,
+                  name: values.name,
+                  detail: values.detail,
+                  promotionalPrice: parseInt(values.promotionalPrice, 10),
+                  startDate: values.startDate.toDate(),
+                  endDate: values.endDate.toDate(),
+                  companyId: session?.user.company_id,
+                  status: values.status === "Active" ? "Active" : "InActive",
+                },
+                setLoadingQuery: setLoadingQuery
+              });
+      
+              if (updatePromotion === null) return showMessage({ status: "error", text: "แก้ไขข้อมูลโปรโมชั่นไม่สำเร็จ กรุณาลองอีกครั้ง" });
+              if (updatePromotion?.status === true) {
+                setTimeout(() => { onClick(); }, 1500);
+                return showMessage({ status: "success", text: "แก้ไขข้อมูลโปรโมชั่นสำเร็จ" });
+              }
+              if (typeof updatePromotion.message !== 'string') setMessageError(updatePromotion.message);
+              return showMessage({ status: "error", text: "แก้ไขข้อมูลโปรโมชั่นไม่สำเร็จ กรุณาแก้ไขข้อผิดพลาด" });
+            }
+            // Insert Promotion
+            const addPromotion = await addDataPromotionMutation.mutateAsync({
+              token: session?.user.accessToken,
+              promotionData: {
+                img: values.img ? values.img : undefined,
+                name: values.name,
+                detail: values.detail,
+                promotionalPrice: parseInt(values.promotionalPrice, 10),
+                startDate: values.startDate.toDate(),
+                endDate: values.endDate.toDate(),
+                companyId: session?.user.company_id,
+                status: values.status === "Active" ? "Active" : "InActive",
+              },
+              setLoadingQuery: setLoadingQuery
+            });
+      
+            if (addPromotion === null) return showMessage({ status: "error", text: "เพิ่มข้อมูลโปรโมชั่นไม่สำเร็จ กรุณาลองอีกครั้ง" });
+            if (addPromotion?.status === true) {
+              setTimeout(() => { onClick(); }, 1500);
+              return showMessage({ status: "success", text: "เพิ่มข้อมูลโปรโมชั่นสำเร็จ" });
+            }
+            if (typeof addPromotion.message !== 'string') setMessageError(addPromotion.message);
+            return showMessage({ status: "error", text: "เพิ่มข้อมูลโปรโมชั่นไม่สำเร็จ กรุณาแก้ไขข้อผิดพลาด" });
+          } catch (error: unknown) {
+            console.error('Failed to add data:', error);
+          }
+    };
+
+    useEffect(() => {
+        const loadComponents = () => {
+          if (loadingQuery > 0) {
+            dispatch(setLoading({ loadingAction: loadingQuery, showLoading: true }));
+          }
+        };
+    
+        loadComponents();
+      }, [loadingQuery]);
+  
+    const MyForm = (): React.JSX.Element => {
         return (
-            <Form layout="vertical" onFinish={(values) => { setFormValues(values as promotionSubmit); onFinish(values); }} initialValues={formValues}>
+            <Form layout="vertical" onFinish={(values) => { handleSubmit(values as promotionSubmit); }} initialValues={formValues}>
                 {/* เลือกรูปภาพ */}
                 <div className="grid gap-3 grid-cols-1 sml:grid-cols-1">
-                    <Form.Item name="img" label="รูปภาพโปรโมชั่น">
-                        <Upload maxCount={1} listType="picture-card" fileList={fileList} onRemove={handleRemove} onPreview={handlePreview} onChange={handleChange} beforeUpload={() => false} accept="image/*">
-                            {fileList.length >= 8 ? null : uploadButton}
-                        </Upload>
-                    </Form.Item>
-                    <Modal open={previewOpen} title="รูปภาพโปรโมชั่น" footer={null} onCancel={handleCancel}>
-                        <Image
-                            src={previewImage}
-                            className="w-full h-auto rounded-md mx-auto"
-                            width={650}
-                            height={366}
-                            sizes="(min-width:720px) 650px, calc(95.5vw - 19px)"
-                            alt="productImage"
-                        />
-
-                    </Modal>
-                    
-                    <InputFrom label="imageUrl" name="imageUrl" required={false} type="hidden" />
+                <UploadPromotion label="เพิ่มรูปภาพโปรโมชั่น" name="img" imageUrl={formValues.imageUrl} addImage={formValues.img} setFormValues={setFormValues} status={editData ? "update" : "add"} />
+                    {/* <InputFrom label="imageUrl" name="imageUrl" required={false} type="hidden" /> */}
                 </div>
                 {/* ชื่อโปรโมชั่น */}
                 <div className="grid gap-3 grid-cols-1 sml:grid-cols-2">
@@ -143,7 +205,7 @@ const PromotionFrom = ({ onClick, editData, statusAction, title }: Props) => {
     return (
         <div>
             {contextHolder}
-            <DrawerActionData resetForm={resetForm} formContent={<MyForm onFinish={handleSubmit} />} title={title} showError={messageError} statusAction={statusAction} />
+            <DrawerActionData resetForm={resetForm} formContent={<MyForm />} title={title} showError={messageError} statusAction={statusAction} />
         </div>
     )
 }

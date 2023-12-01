@@ -1,5 +1,5 @@
-import { dataVerifyPromotion, promiseDataVerify } from "@/types/verify";
-import { checkDate1translate2, dateTimeIso, isDate, isValidDate } from "./timeZone";
+import { dataUpdateImgPromotion, dataVerifyPromotion, promiseDataVerify } from "@/types/verify";
+import { checkDate1translate2, dateTimeIso, formatDate, isDate, isValidDate } from "./timeZone";
 import { fetchPromotion } from "@/types/fetchData";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/pages/lib/prismaDB";
@@ -25,7 +25,6 @@ export const verifyPromotionBody = (data: dataVerifyPromotion): promiseDataVerif
     // ตรวจสอบการ trim เพื่อป้องกันการกรอกช่องว่าง
     if (!data.name.trim()) verifyStatus.push(pushData("กรุณาระบุ : name"));
     if (!data.detail.trim()) verifyStatus.push(pushData("กรุณาระบุ : detail"));
-    if (data.img) if (!data.img.trim()) verifyStatus.push(pushData("กรุณาระบุ : img"));
 
     // Return
     if (verifyStatus.length > 0) return verifyStatus;
@@ -37,7 +36,6 @@ export const verifyPromotionBody = (data: dataVerifyPromotion): promiseDataVerif
     if (!isDate(data.startDate)) verifyStatus.push(pushData("รูปแบบไม่ถูกต้อง : startDate"));
     if (!isDate(data.endDate)) verifyStatus.push(pushData("รูปแบบไม่ถูกต้อง : endDate"));
     if (!checkDate1translate2(data.startDate, data.endDate)) verifyStatus.push(pushData("กรุณาระบุ : endDate ให้มากกว่า startDate"));
-    if (data.img) if (data.img.length > 50) verifyStatus.push(pushData("กรุณาระบุ : img ไม่เกิน 50 อักษร"));
     if (isNaN(Number(data.companyId))) verifyStatus.push(pushData("กรุณาระบุ : companyId เป็นตัวเลขเท่านั้น"));
     if (data.status !== "Active" && data.status !== "InActive") verifyStatus.push(pushData("กรุณาระบุ : status เป็น Active หรือ InActive เท่านั้น"));
 
@@ -47,6 +45,24 @@ export const verifyPromotionBody = (data: dataVerifyPromotion): promiseDataVerif
     // ตรวจสอบว่าเป็นจำนวนเต็มเท่านั้น
     if (!Number.isInteger(data.companyId) || data.companyId <= 0) verifyStatus.push(pushData("กรุณาระบุ : companyId เป็นตัวเลขจำนวนเต็มเท่านั้น"));
 
+    // Return
+    return verifyStatus;
+};
+
+export const VerifyUpdateImagePromotion = (data: dataUpdateImgPromotion): promiseDataVerify[] => {
+    const verifyStatus: promiseDataVerify[] = [];
+    if (!data.fileName) verifyStatus.push(pushData("ไม่พบข้อมูล : fileName"));
+    if (!data.promotionId) verifyStatus.push(pushData("ไม่พบข้อมูล : promotionId"));
+    if (!data.companyId) verifyStatus.push(pushData("ไม่พบข้อมูล : companyId"));
+
+    // Return
+    if (verifyStatus.length > 0) return verifyStatus;
+
+    // ตรวจสอบความถูกต้องของข้อมูล
+    if (!data.fileName.trim()) verifyStatus.push(pushData("กรุณาระบุ : fileName"));
+    if (data.fileName.length > 50) verifyStatus.push(pushData("กรุณาระบุ : fileName ไม่เกิน 50 อักษร"));
+    if (!Number.isInteger(data.companyId) || data.companyId <= 0) verifyStatus.push(pushData("กรุณาระบุ : companyId เป็นตัวเลขจำนวนเต็มเท่านั้น"));
+    if (!Number.isInteger(data.promotionId) || data.promotionId <= 0) verifyStatus.push(pushData("กรุณาระบุ : promotionId เป็นตัวเลขจำนวนเต็มเท่านั้น"));
     // Return
     return verifyStatus;
 };
@@ -81,14 +97,13 @@ export const insertPromotion = async (body: dataVerifyPromotion): Promise<promis
                 promotionalPrice: body.promotionalPrice,
                 startDate: dateTimeIso(body.startDate),
                 endDate: dateTimeIso(body.endDate),
-                img: body.img,
                 companyId: body.companyId,
                 status: body.status
             },
         });
 
         if (!addPromotion) return null;
-        verifyStatus.push(pushData(`Create a promotion ${addPromotion.name} accomplished and received id: ${addPromotion.id}`));
+        verifyStatus.push(pushData(`${addPromotion.id}`));
     } catch (error: unknown) {
         console.error(`Database connection error: ${error}`);
     } finally {
@@ -125,7 +140,16 @@ export const fetchPromotionByCompanyId = async (companyId: number): Promise<fetc
         });
 
         if (!promotion) return null;
-        return promotion as fetchPromotion[];
+        // สร้าง key เพื่อเอาไปใส่ table และ แปลง date เป็น str
+        const promotionWithKey: fetchPromotion[] = promotion.map((promotion, index) => ({
+            ...promotion,
+            index: (index + 1),
+            key: promotion.id.toString(),
+            img: promotion.img ? promotion.img : "",
+            startDate: formatDate(promotion.startDate),
+            endDate: formatDate(promotion.endDate),
+        }));
+        return promotionWithKey;
     } catch (error) {
         // Handle any errors here or log them
         console.error('Error fetching promotion:', error);
@@ -157,6 +181,7 @@ export const updateDataPromotion = async (body: dataVerifyPromotion, id: number)
             data: {
                 name: body.name,
                 detail: body.detail,
+                img: body.imageUrl,
                 promotionalPrice: body.promotionalPrice,
                 startDate: dateTimeIso(body.startDate),
                 endDate: dateTimeIso(body.endDate),
@@ -187,6 +212,25 @@ export const deleteDataPromotion = async (id: number): Promise<fetchPromotion | 
     } catch (error: unknown) {
         // จัดการข้อผิดพลาดที่เกิดขึ้น
         console.error('An error occurred deleting data.:', error);
+        return null;
+    } finally {
+        await prisma.$disconnect();
+    }
+}
+
+export const updateDataImagePromotion = async (body: dataUpdateImgPromotion, id: number): Promise<fetchPromotion | null> => {
+    try {
+        const promotion = await prisma.promotion.update({
+            where: { id },
+            data: {
+               img: body.fileName
+            },
+        });
+
+        if (!promotion) return null;
+        return promotion as fetchPromotion;
+    } catch (error) {
+        console.error('Error updating promotion:', error);
         return null;
     } finally {
         await prisma.$disconnect();

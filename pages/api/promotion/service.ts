@@ -1,6 +1,6 @@
-import { dataVerifyPromotion } from "@/types/verify";
+import { dataUpdateImgPromotion, dataVerifyPromotion } from "@/types/verify";
 import { getCompanyById } from "@/utils/company";
-import { deleteDataPromotion, fetchAllPromotion, fetchPromotionByCompanyId, fetchPromotionById, fetchPromotionNameByCompanyId, insertPromotion, updateDataPromotion, verifyPromotionBody } from "@/utils/promotion";
+import { VerifyUpdateImagePromotion, deleteDataPromotion, fetchAllPromotion, fetchPromotionByCompanyId, fetchPromotionById, fetchPromotionNameByCompanyId, insertPromotion, updateDataImagePromotion, updateDataPromotion, verifyPromotionBody } from "@/utils/promotion";
 import { NextApiResponse } from "next";
 
 export const handleAddPromotion = async (body: dataVerifyPromotion, res: NextApiResponse) => {
@@ -31,7 +31,7 @@ export const handleGetPromotionByCompanyId = async (res: NextApiResponse, compan
     const promotion = await fetchPromotionByCompanyId(companyId);
     if (!promotion || (Array.isArray(promotion) && promotion.length === 0)) return res.status(404).json({ message: `No promotion found with companyId : ${companyId}`, promotion: null, status: false });
 
-    return res.status(200).json({ message: "Promotion found", product: promotion, status: true });
+    return res.status(200).json({ message: "Promotion found", promotion: promotion, status: true });
 }
 
 export const handleGetAllPromotion = async (res: NextApiResponse) => {
@@ -69,4 +69,18 @@ export const handleDeletePromotion = async (res: NextApiResponse, id: number) =>
     if (!deletePromotion) return res.status(404).json({ message: "An error occurred deleting data.", promotion: null, status: false });
 
     return res.status(200).json({ message: "Successfully deleted data", promotion: deletePromotion, status: true });
+}
+
+export const handleUpdateImage = async (body: dataUpdateImgPromotion, res: NextApiResponse) => {
+    // VerifyUpdateImage
+    const verifyData = VerifyUpdateImagePromotion(body);
+    if (verifyData.length > 0) return res.status(404).json({ message: verifyData, updateImg: null, status: false });
+    // check companyId
+    const checkCompanyId = await getCompanyById(body.companyId);
+    if (!checkCompanyId) return res.status(404).json({ message: `No company found with companyId : ${body.companyId}`, updateImg: null, status: false });
+    // updateImage
+    const updateImage = await updateDataImagePromotion(body, body.promotionId);
+    if (!updateImage) return res.status(404).json({ message: "An error occurred saving data.", updateImg: null, status: false });
+    
+    return res.status(200).json({ message: "Data saved successfully.", updateImg: updateImage, status: true });
 }

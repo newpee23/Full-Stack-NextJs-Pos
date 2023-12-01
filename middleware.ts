@@ -4,6 +4,7 @@ import { getToken } from "next-auth/jwt"
 
 export async function middleware(request: NextRequest) {
 
+   try {
     const token = await getToken({ req: request });
 
     if(!token){
@@ -19,6 +20,11 @@ export async function middleware(request: NextRequest) {
         );
     }
 
+   } catch (error) {
+    return NextResponse.rewrite(
+        new URL("/auth", request.url)
+    );
+   }
 }
  
 // See "Matching Paths" below to learn more

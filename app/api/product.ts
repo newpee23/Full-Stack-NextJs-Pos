@@ -138,6 +138,10 @@ const fetchProductData = async (token: string | undefined, companyId: number | u
 
 const addProduct = async (token: string | undefined, productData: dataVerifyProduct, setLoadingQuery: React.Dispatch<React.SetStateAction<number>>): Promise<addProduct | null> => {
     try {
+        const productDataImg = productData.img;
+        if(productDataImg){
+            productData.img = undefined;
+        }
         const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/product`,
             productData,
             {
@@ -155,11 +159,11 @@ const addProduct = async (token: string | undefined, productData: dataVerifyProd
         const product: addProduct = response.data;
 
         // upload Img S3
-        if (productData.img) {
+        if (productDataImg) {
             const productId = response.data.product[0]?.message;
             const date = currentDateStrImg();
             const dataProductImg: uploadImagesType = {
-                originFileObj: productData.img,
+                originFileObj: productDataImg,
                 fileName: `product/PD_${productId}_${date}`
             };
 
@@ -251,9 +255,10 @@ const updateProduct = async (token: string | undefined, productData: dataVerifyP
             const uploadImg = await s3UploadImages(dataProductImg);
             // updateImg
             if (uploadImg) {
-                console.log(uploadImg)
                 productData.imageUrl = uploadImg;
             }
+
+            productData.img = undefined;
         }
         //  updateData
         const response = await axios.put(`${process.env.NEXT_PUBLIC_BASE_URL}/product`,
