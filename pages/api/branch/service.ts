@@ -12,7 +12,7 @@ export const handleGetBranchById = async (res: NextApiResponse, id: number) => {
 
 export const handleGetBranchByCompanyId = async (res: NextApiResponse, companyId: number) => {
     const branch = await getBranchByCompanyId(companyId);
-    if (!branch || branch?.length === 0) return res.status(404).json({ message: [{ message: `ไม่พบสาขาที่มีรหัสบริษัท : ${companyId}` }], branch: null, status: false });
+    if (!branch || branch?.length === 0) return res.status(200).json({ message: [{ message: `ไม่พบสาขาที่มีรหัสบริษัท : ${companyId}` }], branch: null, status: false });
 
     return res.status(200).json({ message: [{ message: "พบข้อมูลสาขา" }], branch: branch, status: true });
 }

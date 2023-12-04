@@ -34,6 +34,7 @@ export interface productSubmit {
   productTypeId: string | undefined;
   companyId: number | undefined;
   status: string;
+  statusSail: string;
 }
 
 const ProductFrom = ({ onClick, editData, title, statusAction }: Props) => {
@@ -56,6 +57,7 @@ const ProductFrom = ({ onClick, editData, title, statusAction }: Props) => {
     productTypeId: undefined,
     companyId: undefined,
     status: "Active",
+    statusSail: "Active"
   });
 
   const showMessage = ({ status, text }: { status: string; text: string }) => {
@@ -96,6 +98,7 @@ const ProductFrom = ({ onClick, editData, title, statusAction }: Props) => {
             productTypeId: parseInt(dataFrom.productTypeId, 10),
             companyId: session?.user.company_id,
             status: dataFrom.status === "Active" ? "Active" : "InActive",
+            statusSail: dataFrom.statusSail === "Active" ? "Active" : "InActive",
           },
           setLoadingQuery: setLoadingQuery
         });
@@ -121,6 +124,7 @@ const ProductFrom = ({ onClick, editData, title, statusAction }: Props) => {
           productTypeId: parseInt(dataFrom.productTypeId, 10),
           companyId: session?.user.company_id,
           status: dataFrom.status === "Active" ? "Active" : "InActive",
+          statusSail: dataFrom.statusSail === "Active" ? "Active" : "InActive",
         },
         setLoadingQuery: setLoadingQuery
       });
@@ -156,6 +160,7 @@ const ProductFrom = ({ onClick, editData, title, statusAction }: Props) => {
           productTypeId: editData.productTypeId ? editData.productTypeId.toString() : undefined,
           companyId: editData.companyId,
           status: editData.status,
+          statusSail: editData.statusSail,
         });
       }
       if (messageError.length > 0) setMessageError([]);
@@ -205,6 +210,7 @@ const ProductFrom = ({ onClick, editData, title, statusAction }: Props) => {
         </div>
         {/* สถานะ */}
         <div className="grid gap-3 grid-cols-1 sml:grid-cols-2">
+          <StatusFrom label="การขายสินค้า" name="statusSail" />
           <StatusFrom label="สถานะ" name="status" />
         </div>
 

@@ -77,6 +77,7 @@ export interface dataVerifyProduct {
   unitId: number;
   productTypeId: number;
   companyId: number;
+  statusSail: "Active" | "InActive";
   status: "Active" | "InActive";
 }
 
@@ -123,7 +124,9 @@ export interface dataVerifyItemExpenses {
   id?: number;
   price: number;
   orderDate: Date;
-  expensesId: number
+  expensesId: number;
+  branchId: number;
+  status: "Active" | "InActive";
 }
 
 export interface promiseDataVerify {

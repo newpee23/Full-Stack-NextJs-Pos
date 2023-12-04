@@ -105,6 +105,7 @@ export interface fetchProduct {
     id: number;
     name: string;
   };
+  statusSail: "Active" | "InActive";
   status: "Active" | "InActive";
 }
 
@@ -160,7 +161,9 @@ export interface fetchItemExpenses {
   id: number;
   price: number;
   orderDate: Date;
-  expensesId: number
+  expensesId: number;
+  branchId: number;
+  status: "Active" | "InActive";
 }
 
 export interface fetchProductType {
@@ -189,4 +192,8 @@ export interface fetchOptionAddTables {
 export interface fetchOptionAddProduct {
   unit: optionSelect[]; 
   productType: optionSelect[]; 
+}
+
+export interface fetchOptionAddExpensesItem {
+  expenses: optionSelect[]; 
 }

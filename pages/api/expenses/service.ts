@@ -29,14 +29,14 @@ export const handleGetExpensesById = async (res: NextApiResponse, id: number) =>
 
 export const handleGetExpensesByCompanyId = async (res: NextApiResponse, companyId: number) => {
     const expenses = await fetchExpensesByCompanyId(companyId);
-    if (!expenses || (Array.isArray(expenses) && expenses.length === 0)) return res.status(404).json({ message: `No expenses found with companyId : ${companyId}`, expenses: null, status: false });
+    if (!expenses || (Array.isArray(expenses) && expenses.length === 0)) return res.status(200).json({ message: `No expenses found with companyId : ${companyId}`, expenses: null, status: false });
 
     return res.status(200).json({ message: "Expenses found", expenses: expenses, status: true });
 }
 
 export const handleGetAllExpenses = async (res: NextApiResponse) => {
     const expenses = await fetchAllExpenses();
-    if (!expenses || (Array.isArray(expenses) && expenses.length === 0)) return res.status(404).json({ message: `No expenses found`, expenses: null, status: false });
+    if (!expenses || (Array.isArray(expenses) && expenses.length === 0)) return res.status(200).json({ message: `No expenses found`, expenses: null, status: false });
 
     return res.status(200).json({ message: "Expenses found", expenses: expenses, status: true });
 }

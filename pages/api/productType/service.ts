@@ -25,7 +25,7 @@ export const handleGetProductTypeById = async (res: NextApiResponse, id: number)
 
 export const handleGetProductTypeByCompanyId = async (res: NextApiResponse, companyId: number) => {
     const productType = await fetchProductTypeByCompanyId(companyId);
-    if (!productType || (Array.isArray(productType) && productType.length === 0)) return res.status(404).json({ message: `No productType found with companyId : ${companyId}`, productType: null, status: false });
+    if (!productType || (Array.isArray(productType) && productType.length === 0)) return res.status(200).json({ message: `No productType found with companyId : ${companyId}`, productType: null, status: false });
 
     return res.status(200).json({ message: "Position found", productType: productType, status: true });
 }

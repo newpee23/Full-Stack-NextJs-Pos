@@ -3,19 +3,19 @@ import React from 'react'
 import { optionStatus } from '../../ฺFrom/validate/validate'
 
 type Props = {
-    name: string;
     label: string;
+    name: string;
 }
 
-const StatusFrom = ({ name, label }: Props) => {
+const StatusFrom = ({ label, name }: Props) => {
     return (
         <Col>
             <Form.Item
                 name={name}
                 label={label}
-                rules={[{ required: true, message: `กรุณาเลือก${name}` }]}
+                rules={[{ required: true, message: `กรุณาเลือก${label}` }]}
             >
-                <Select options={optionStatus} placeholder={`เลือก${name}`} />
+                <Select options={optionStatus} placeholder={`เลือก${label}`} />
             </Form.Item>
         </Col>
     )

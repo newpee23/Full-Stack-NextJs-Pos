@@ -54,7 +54,6 @@ const InputFrom: React.FC<Props> = ({ name, label, required, type }) => {
             <Form.Item name={name} label={label}
                 rules={[
                     { required, message: `กรุณาเลือก${label}` },
-                    { validator: validateExpirationDate },
                 ]}
             >
                 <DatePicker style={{ width: "100%" }} showTime={{ format: "HH:mm" }} format="YYYY-MM-DD HH:mm" getPopupContainer={(trigger) => trigger.parentElement!} placeholder="ว/ด/ป เวลา" />
@@ -88,7 +87,7 @@ const InputFrom: React.FC<Props> = ({ name, label, required, type }) => {
         return (
             <Col className="hidden">
                 <Form.Item name={name} label={label}>
-                    <Input type="number" step={0.01} placeholder={`ระบุ${label}`} />
+                    <Input placeholder={`ระบุ${label}`} />
                 </Form.Item>
             </Col>
         );

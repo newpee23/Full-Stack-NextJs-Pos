@@ -26,7 +26,7 @@ export const handleGetItemExpensesById = async (res: NextApiResponse, id: number
 
 export const handleGetItemExpensesByExpensesId = async (res: NextApiResponse, expensesId: number) => {
     const ItemExpenses = await fetchItemExpensesByExpensesId(expensesId);
-    if (!ItemExpenses || (Array.isArray(ItemExpenses) && ItemExpenses.length === 0)) return res.status(404).json({ message: `No ItemExpenses found with expensesId : ${expensesId}`, itemExpenses: null, status: false });
+    if (!ItemExpenses || (Array.isArray(ItemExpenses) && ItemExpenses.length === 0)) return res.status(200).json({ message: `No ItemExpenses found with expensesId : ${expensesId}`, itemExpenses: null, status: false });
 
     return res.status(200).json({ message: "itemExpenses found", ItemExpenses: ItemExpenses, status: true });
 }

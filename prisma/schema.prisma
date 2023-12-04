@@ -32,19 +32,20 @@ model Company {
 }
 
 model Branch {
-  id           Int           @id @default(autoincrement())
-  name         String        @db.VarChar(50)
-  codeReceipt  String        @db.VarChar(10)
+  id           Int            @id @default(autoincrement())
+  name         String         @db.VarChar(50)
+  codeReceipt  String         @db.VarChar(10)
   address      String
-  createdAt    DateTime      @default(now())
+  createdAt    DateTime       @default(now())
   expiration   DateTime
-  phone        String        @db.VarChar(10)
-  company      Company       @relation(fields: [companyId], references: [id]) // Foreign Key
+  phone        String         @db.VarChar(10)
+  company      Company        @relation(fields: [companyId], references: [id]) // Foreign Key
   companyId    Int
-  status       enumStatus    @default(Active)
+  status       enumStatus     @default(Active)
   tabless      Tables[]
   transactions Transaction[]
   employees    Employee[]
+  itemExpenses ItemExpenses[]
 }
 
 model Product {
@@ -53,6 +54,7 @@ model Product {
   cost             Float             @default(0.00)
   price            Float             @default(0.00)
   stock            Int
+  statusSail       enumStatus        @default(Active)
   img              String?           @db.VarChar(50)
   unit             Unit              @relation(fields: [unitId], references: [id])
   unitId           Int
@@ -196,6 +198,8 @@ model ItemExpenses {
   orderDate  DateTime @default(now())
   expenses   Expenses @relation(fields: [expensesId], references: [id])
   expensesId Int
+  branchs    Branch   @relation(fields: [branchId], references: [id])
+  branchId   Int
 }
 
 enum enumStatus {

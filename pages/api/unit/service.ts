@@ -32,7 +32,7 @@ export const handleGetUnitById = async (res: NextApiResponse, id: number) => {
 
 export const handleGetUnitByCompanyId = async (res: NextApiResponse, companyId: number) => {
     const unit = await fetchUnitByCompanyId(companyId);
-    if (!unit || (Array.isArray(unit) && unit.length === 0)) return res.status(404).json({ message: `No unit found with companyId : ${companyId}`, unit: null, status: false });
+    if (!unit || (Array.isArray(unit) && unit.length === 0)) return res.status(200).json({ message: `No unit found with companyId : ${companyId}`, unit: null, status: false });
 
     return res.status(200).json({ message: "Unit found", unit: unit, status: true });
 }

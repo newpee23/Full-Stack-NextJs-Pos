@@ -17,7 +17,7 @@ export const verifyProductBody = (data: dataVerifyProduct): promiseDataVerify[] 
     if (!data.productTypeId) verifyStatus.push(pushData("ไม่พบข้อมูล : productTypeId"));
     if (!data.companyId) verifyStatus.push(pushData("ไม่พบข้อมูล : companyId"));
     if (!data.status) verifyStatus.push(pushData("ไม่พบข้อมูล : status"));
-
+    if (!data.statusSail) verifyStatus.push(pushData("ไม่พบข้อมูล : statusSail"));
     // Return
     if (verifyStatus.length > 0) return verifyStatus;
 
@@ -36,7 +36,8 @@ export const verifyProductBody = (data: dataVerifyProduct): promiseDataVerify[] 
     if (isNaN(Number(data.productTypeId))) verifyStatus.push(pushData("กรุณาระบุ : productTypeId เป็นตัวเลขเท่านั้น"));
     if (isNaN(Number(data.companyId))) verifyStatus.push(pushData("กรุณาระบุ : companyId เป็นตัวเลขเท่านั้น"));
     if (data.status !== "Active" && data.status !== "InActive") verifyStatus.push(pushData("กรุณาระบุ : status เป็น Active หรือ InActive เท่านั้น"));
-
+    if (data.statusSail !== "Active" && data.statusSail !== "InActive") verifyStatus.push(pushData("กรุณาระบุ : statusSail เป็น Active หรือ InActive เท่านั้น"));
+    
     // Return
     if (verifyStatus.length > 0) return verifyStatus;
 
@@ -174,6 +175,7 @@ export const insertAddProduct = async (body: dataVerifyProduct): Promise<promise
                 unitId: body.unitId,
                 productTypeId: body.productTypeId,
                 companyId: body.companyId,
+                statusSail: body.statusSail,
                 status: body.status
             },
         });
@@ -200,6 +202,7 @@ export const updateDataProduct = async (body: dataVerifyProduct, id: number): Pr
                 stock: body.stock,
                 unitId: body.unitId,
                 productTypeId: body.productTypeId,
+                statusSail: body.statusSail,
                 status: body.status
             },
         });

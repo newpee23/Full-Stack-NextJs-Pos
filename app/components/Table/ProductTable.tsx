@@ -100,6 +100,14 @@ const ProductTable = () => {
             }),
         },
         {
+            title: "การขาย",
+            key: "statusSail",
+            className: "text-center min-w-[100px]",
+            render: (_, record) => (
+                (record.statusSail === "Active") ? <TagStatus color="success" textShow={record.statusSail} /> : <TagStatus color="error" textShow={record.statusSail} />
+            ),
+        },
+        {
             title: "สถานะ",
             key: "status",
             className: "text-center min-w-[100px]",

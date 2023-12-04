@@ -15,7 +15,7 @@ export const handleGetEmployeeById = async (res: NextApiResponse, id: number) =>
 
 export const handleGetEmployeeByCompanyId = async (res: NextApiResponse, companyId: number) => {
     const employee = await getEmployeeByCompanyId(companyId);
-    if (!employee) return res.status(404).json({ message: [{ message: `ไม่พบพนักงานที่มีรหัสบริษัท : ${companyId}` }], employee: null, status: false });
+    if (!employee) return res.status(200).json({ message: [{ message: `ไม่พบพนักงานที่มีรหัสบริษัท : ${companyId}` }], employee: null, status: false });
 
     return res.status(200).json({ message: [{ message: "พบข้อมูลพนักงาน" }], employee, status: true });
 }

@@ -74,6 +74,7 @@ const UploadAnt = ({ name, label, imageUrl, addImage, setFormValues, status }: P
 
     useEffect(() => {
         const loadSetFileList = async () => {
+            if (addImage?.fileList[0]) {
                 const file: UploadFile = addImage.fileList[0];
                 if (!file.url && !file.preview) {
                     const imageBase64 = await getBase64(file.originFileObj as RcFile);
@@ -87,6 +88,7 @@ const UploadAnt = ({ name, label, imageUrl, addImage, setFormValues, status }: P
                     ]);
                 }
             }
+        }
         // Return void instead of an async function
         return () => {
             loadSetFileList();
@@ -101,14 +103,14 @@ const UploadAnt = ({ name, label, imageUrl, addImage, setFormValues, status }: P
                 </Upload>
             </Form.Item>
             <Modal open={previewOpen} title="รูปภาพสินค้า" footer={null} onCancel={handleCancel}>
-            <Image
-                src={previewImage}
-                className="w-full h-auto rounded-md mx-auto"
-                width={650}
-                height={366}
-                sizes="(min-width:720px) 650px, calc(95.5vw - 19px)"
-                alt="productImage"
-            />
+                <Image
+                    src={previewImage}
+                    className="w-full h-auto rounded-md mx-auto"
+                    width={650}
+                    height={366}
+                    sizes="(min-width:720px) 650px, calc(95.5vw - 19px)"
+                    alt="productImage"
+                />
 
             </Modal>
         </>

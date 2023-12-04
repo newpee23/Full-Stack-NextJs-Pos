@@ -119,9 +119,9 @@ const ExpensesTable = ({ onClick, title, statusAction, editData }: Props) => {
       <Form layout="vertical" onFinish={(values) => { setFormValues(values as expensesSubmit); onFinish(values); }} initialValues={formValues}>
         <Row gutter={16}>
           <Col span={12}>
-            <Form.Item name="name" label="ชื่อตำแหน่งพนักงาน"
+            <Form.Item name="name" label="ชื่อหัวข้อค่าใช้จ่าย"
               rules={[
-                { required: true, message: "กรุณาระบุชื่อตำแหน่งพนักงาน" }
+                { required: true, message: "กรุณาระบุชื่อหัวข้อค่าใช้จ่าย" }
                 , {
                   pattern: /^[^!@#\$%\^\&*\(\)_\+\{\}\[\]:;<>,\.\?~\\\/-]+$/,
                   message: "ไม่สามารถระบุอักขระพิเศษได้",
@@ -129,7 +129,7 @@ const ExpensesTable = ({ onClick, title, statusAction, editData }: Props) => {
                 { validator: validateWhitespace },
               ]}
             >
-              <Input placeholder="ระบุชื่อตำแหน่งพนักงาน" />
+              <Input placeholder="ระบุชื่อหัวข้อค่าใช้จ่าย" />
             </Form.Item>
           </Col>
           <Col span={12}>

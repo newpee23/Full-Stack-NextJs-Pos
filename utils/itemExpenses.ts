@@ -13,15 +13,17 @@ export const verifyItemExpenses = (data: dataVerifyItemExpenses): promiseDataVer
     if (!data.orderDate) verifyStatus.push(pushData("ไม่พบข้อมูล : orderDate"));
     if (!data.price) verifyStatus.push(pushData("ไม่พบข้อมูล : price"));
     if (!data.expensesId) verifyStatus.push(pushData("ไม่พบข้อมูล : expensesId"));
+    if (!data.branchId) verifyStatus.push(pushData("ไม่พบข้อมูล : branchId"));
 
     // Return
     if (verifyStatus.length > 0) return verifyStatus;
 
     // ตรวจสอบความถูกต้องของข้อมูล
     if (!isDate(data.orderDate)) verifyStatus.push(pushData("รูปแบบไม่ถูกต้อง : orderDate"));
+    if (!Number.isInteger(data.branchId) || data.branchId <= 0) verifyStatus.push(pushData("กรุณาระบุ : branchId เป็นตัวเลขจำนวนเต็มเท่านั้น"));
     if (isNaN(Number(data.price))) verifyStatus.push(pushData("กรุณาระบุ : price เป็นตัวเลขเท่านั้น"));
-    if (isNaN(Number(data.expensesId))) verifyStatus.push(pushData("กรุณาระบุ : expensesId เป็นตัวเลขเท่านั้น"));
-
+    if (!Number.isInteger(data.expensesId) || data.expensesId <= 0) verifyStatus.push(pushData("กรุณาระบุ : expensesId เป็นตัวเลขจำนวนเต็มเท่านั้น"));
+    
     return verifyStatus;
 };
 
@@ -32,7 +34,8 @@ export const insertDataItemExpenses = async (body: dataVerifyItemExpenses): Prom
             data: {
                 orderDate: dateTimeIso(body.orderDate),
                 price: body.price,
-                expensesId: body.expensesId
+                expensesId: body.expensesId,
+                branchId: body.branchId
             },
         });
 

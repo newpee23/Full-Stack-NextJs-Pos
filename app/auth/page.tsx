@@ -1,7 +1,7 @@
 
 "use client";
 // Import Next
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SignInResponse, signIn, signOut } from "next-auth/react";
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation'
@@ -42,6 +42,7 @@ const SignIn = () => {
 
     } catch (error) {
       console.log(error);
+      router.refresh();
     } finally {
         messageApi.destroy(key);
     }
@@ -61,6 +62,10 @@ const SignIn = () => {
     if (type === "success") messageApi.open({ type: 'success', content: content, duration: 2, });
     if (type === "loading") messageApi.open({ key, type: 'loading', content: content, duration: 0 });
   }
+
+  useEffect(() => {
+    return () => router.refresh();
+  }, []);
 
   return (
     <section className="flex min-h-screen flex-col items-center justify-center xs:p-5 p-24 bg-background">

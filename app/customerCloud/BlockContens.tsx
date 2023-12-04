@@ -11,6 +11,7 @@ import ProductTypeTable from '../components/Table/ProductTypeTable';
 import UnitTable from '../components/Table/UnitTable';
 import ProductTable from '../components/Table/ProductTable';
 import PromotionTable from '../components/Table/PromotionTable';
+import ExpensesItemFrom from '../components/ฺFrom/ExpensesItemFrom';
 
 type Props = { idComponents: React.Key | null; };
 
@@ -37,6 +38,9 @@ const BlockContens = (props: Props) => {
           break;
         case '7':
           setComponent(<ExpensesTable />);
+          break;
+        case '8':
+          setComponent(<ExpensesItemFrom />);
           break;
         case '11':
           setComponent(<ProductTypeTable />);
