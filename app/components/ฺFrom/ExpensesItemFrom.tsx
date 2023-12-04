@@ -13,6 +13,7 @@ import InputFrom from '../UI/InputFrom';
 import { Moment } from 'moment';
 import { useAppDispatch } from '@/app/store/store';
 import { setLoading } from '@/app/store/slices/loadingSlice';
+import ErrFrom from '../ErrFrom';
 
 interface expensesItemSubmit {
   expensesId: number | undefined;
@@ -116,19 +117,19 @@ const ExpensesItemFrom = () => {
     <div className="p-3">
       <Form layout="vertical" onFinish={(values: expensesItemSubmit) => { setFormValues(values); handleSubmit(values) }} initialValues={formValues}>
         {/* หัวข้อค่าใช้จ่าย */}
-        <div className="grid gap-3 grid-cols-1 sml:grid-cols-2">
+        <div className="grid gap-3 grid-cols-1 sml:grid-cols-2 lgl:grid-cols-4">
           <SelectExpenses option={data} />
           <div className="flex items-center ml-[-0.75rem]">
             <RefreshBtn label="Refresh" onClick={handleRefresh} />
           </div>
         </div>
         {/* ค่าใช้จ่าย, วันที่ */}
-        <div className="grid gap-3 grid-cols-1 sml:grid-cols-2">
+        <div className="grid gap-3 grid-cols-1 sml:grid-cols-2 lgl:grid-cols-4">
           <InputFrom label="ค่าใช้จ่าย" name="price" required={true} type="float" />
           <InputFrom label="วันที่ใช้จ่าย" name="orderDate" required={true} type="datePicker" />
         </div>
         {/* สถานะ */}
-        <div className="grid gap-3 grid-cols-1 sml:grid-cols-2">
+        <div className="grid gap-3 grid-cols-1 sml:grid-cols-2 lgl:grid-cols-4">
           <StatusFrom label="สถานะ" name="status" />
         </div>
 
@@ -136,6 +137,7 @@ const ExpensesItemFrom = () => {
         <SaveBtn label="บันทึกข้อมูล" />
       </Form>
       {contextHolder}
+      {messageError.length > 0 && <ErrFrom showError={messageError}/>}
     </div>
   )
 }

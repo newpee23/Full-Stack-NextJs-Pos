@@ -12,6 +12,7 @@ import UnitTable from '../components/Table/UnitTable';
 import ProductTable from '../components/Table/ProductTable';
 import PromotionTable from '../components/Table/PromotionTable';
 import ExpensesItemFrom from '../components/ฺFrom/ExpensesItemFrom';
+import PromotionItemTable from '../components/Table/PromotionItemTable';
 
 type Props = { idComponents: React.Key | null; };
 
@@ -53,6 +54,9 @@ const BlockContens = (props: Props) => {
           break;
         case '15':
           setComponent(<PromotionTable />);
+          break;
+        case '16':
+          setComponent(<PromotionItemTable />);
           break;
         // เพิ่ม case ตามต้องการ
         default:

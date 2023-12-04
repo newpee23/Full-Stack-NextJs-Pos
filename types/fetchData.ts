@@ -197,3 +197,13 @@ export interface fetchOptionAddProduct {
 export interface fetchOptionAddExpensesItem {
   expenses: optionSelect[]; 
 }
+
+export interface fetchOptionAddPromotionItem {
+  promotion: optionSelect[]; 
+  product: optionSelect[];
+}
+
+export interface optionIdName {
+  id: number;
+  name: string;
+}

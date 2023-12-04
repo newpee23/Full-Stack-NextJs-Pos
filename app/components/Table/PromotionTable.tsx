@@ -107,11 +107,11 @@ const PromotionTable = () => {
     return (
         <div>
             <div className="flex items-center justify-between">
-                <PromotionFrom onClick={handleRefresh} statusAction="add" title="เพิ่มข้อมูลโปรโมชั่น" />
+                <PromotionFrom onClick={handleRefresh} statusAction="add" title="เพิ่มข้อมูลหัวข้อโปรโมชั่น" />
                 <RefreshBtn label="Refresh Data" onClick={handleRefresh} />
             </div>
             <div className="overflow-x-auto m-3">
-                <Table columns={columnsPromotion} dataSource={data || []} bordered title={() => "ฐานข้อมูลประเภทสินค้า"} />
+                <Table columns={columnsPromotion} dataSource={data || []} bordered title={() => "ฐานข้อมูลหัวข้อโปรโมชั่น"} />
             </div>
             {contextHolder}
         </div>

@@ -29,7 +29,7 @@ export const handleGetPromotionById = async (res: NextApiResponse, id: number) =
 
 export const handleGetPromotionByCompanyId = async (res: NextApiResponse, companyId: number) => {
     const promotion = await fetchPromotionByCompanyId(companyId);
-    if (!promotion || (Array.isArray(promotion) && promotion.length === 0)) return res.status(404).json({ message: `No promotion found with companyId : ${companyId}`, promotion: null, status: false });
+    if (!promotion || (Array.isArray(promotion) && promotion.length === 0)) return res.status(200).json({ message: `No promotion found with companyId : ${companyId}`, promotion: null, status: false });
 
     return res.status(200).json({ message: "Promotion found", promotion: promotion, status: true });
 }
