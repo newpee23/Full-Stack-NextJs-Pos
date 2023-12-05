@@ -180,6 +180,12 @@ export interface optionSelect {
   label: string;
 }
 
+export interface optionSelectPromotionItem {
+  value: number;
+  label: string;
+  stock: number;
+}
+
 export interface fetchOptionAddEmployeeType {
   position: optionSelect[];
   branch: optionSelect[]; 

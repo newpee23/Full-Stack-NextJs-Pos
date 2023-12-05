@@ -15,7 +15,7 @@ const StatusFrom = ({ label, name }: Props) => {
                 label={label}
                 rules={[{ required: true, message: `กรุณาเลือก${label}` }]}
             >
-                <Select options={optionStatus} placeholder={`เลือก${label}`} />
+                <Select className="min-w-[180px]" options={optionStatus} placeholder={`เลือก${label}`} />
             </Form.Item>
         </Col>
     )

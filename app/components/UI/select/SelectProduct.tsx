@@ -5,21 +5,22 @@ import React from 'react'
 
 type Props = { 
     option: fetchOptionAddPromotionItem | undefined; 
+    required: boolean
 }
 
-const SelectProduct = ({ option }: Props) => {
+const SelectProduct = ({ option , required }: Props) => {
 
     return (
         <Col>
             <Form.Item name="productId" label="สินค้า"
                 rules={[
                     {
-                        required: true,
+                        required,
                         message: "กรุณาเลือกสินค้า",
                     },
                 ]}
             >
-                <Select mode="multiple" showSearch placeholder="เลือกสินค้า" optionFilterProp="children" options={option?.product} allowClear
+                <Select showSearch placeholder="เลือกสินค้า" optionFilterProp="children" options={option?.product} allowClear
                     filterOption={(input, option) => (option?.label ?? '').includes(input)}
                     filterSort={(optionA, optionB) => (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())}
                 />

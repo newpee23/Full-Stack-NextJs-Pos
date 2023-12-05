@@ -28,7 +28,7 @@ const DrawerActionData = ({ formContent, title, showError, statusAction , resetF
         <div>
             {statusAction === "add" ? <AddBtn onClick={showDrawer} label="เพิ่มข้อมูล" /> : <EditBtn onClick={showDrawer} label="แก้ไขข้อมูล"/>}
             
-            <Drawer title={title} width={800} onClose={onClose} open={open} styles={{ body: { paddingBottom: 80, }, }}
+            <Drawer title={title} width={900} onClose={onClose} open={open} styles={{ body: { paddingBottom: 60, }, }}
                 extra={
                     <Space>
                         <Button onClick={onClose} >ยกเลิก</Button>

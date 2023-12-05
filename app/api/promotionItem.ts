@@ -48,6 +48,7 @@ const fetchOptions = async (token: string | undefined, companyId: number | undef
     }
 };
 
+
 // function React Query
 export const useSelectOpPromotionItem = (token: string | undefined, companyId: number | undefined) => {
     return useQuery('selectOpAddPromotionItem', () => fetchOptions(token, companyId), {

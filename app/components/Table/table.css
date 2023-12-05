@@ -62,4 +62,8 @@ button.ant-btn.css-dev-only-do-not-override-1adbn6x.ant-btn-primary , :where(.cs
   font-size: 17px;
 }
 
+.ant-form-item.css-dev-only-do-not-override-1adbn6x {
+  margin: 0;
+}
+
 
