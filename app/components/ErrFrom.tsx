@@ -16,7 +16,7 @@ const ErrFrom = ({ showError }: Props) => {
                 renderItem={(item, index) => (
                     <List.Item key={index}>
                         <div className="flex items-center">
-                            <CloseCircleOutlined className="mx-2 text-red-700" style={{ fontSize: "24px" }} />
+                            <CloseCircleOutlined className="mr-2 text-red-700" style={{ fontSize: "24px" }} />
                             <p>{item.message}</p>
                         </div>
                     </List.Item>

@@ -1,24 +1,25 @@
 import { dataVerifyItemPromotion } from "@/types/verify";
-import { deleteDataItemPromotion, fetchAllItemPromotion, fetchItemPromotionById, fetchItemPromotionByPromotionId, insertItemPromotion, updateDataItemPromotion, verifyItemPromotionBody } from "@/utils/itemPromotion";
-import { fetchProductById } from "@/utils/product";
-import { fetchPromotionById } from "@/utils/promotion";
+import { checkArrayPdIdInPromotionId, checkArrayProductId, checkArrayPromotionId, deleteDataItemPromotion, fetchAllItemPromotion, fetchItemPromotionById, fetchItemPromotionByPromotionId, insertArrayPromotionItem, insertItemPromotion, updateDataItemPromotion, verifyItemPromotionBody } from "@/utils/itemPromotion";
 import { NextApiResponse } from "next";
 
-export const handleAddItemPromotion = async (body: dataVerifyItemPromotion, res: NextApiResponse) => {
+export const handleAddItemPromotion = async (body: dataVerifyItemPromotion[], res: NextApiResponse) => {
     // VerifyitemPromotionData
     const verifyPromotion = verifyItemPromotionBody(body);
     if (verifyPromotion.length > 0) return res.status(404).json({ message: verifyPromotion, itemPromotion: null, status: false });
     // check promotionId
-    const checkPromotionId = await fetchPromotionById(body.promotionId);
-    if (!checkPromotionId) return res.status(404).json({ message: `No promotion found with promotionId : ${body.promotionId}`, itemPromotion: null, status: false });
+    const checkPromotionId = await checkArrayPromotionId(body);
+    if (checkPromotionId.length > 0) return res.status(404).json({ message: checkPromotionId, itemPromotion: null, status: false });
     // check productId
-    const productId = await fetchProductById(body.productId);
-    if (!productId) return res.status(404).json({ message: `No product found with productId : ${body.productId}`, itemPromotion: null, status: false });
+    const checkProductId = await checkArrayProductId(body);
+    if (checkProductId.length > 0) return res.status(404).json({ message: checkProductId, itemPromotion: null, status: false });
+    // check productId In promotionId
+    const checkPdIdInPromotionId = await checkArrayPdIdInPromotionId(body);
+    if (checkPdIdInPromotionId.length > 0) return res.status(404).json({ message: checkPdIdInPromotionId, itemPromotion: null, status: false });
     // addItemPromotion
-    const addItemPromotion = await insertItemPromotion(body);
-    if (!addItemPromotion) return res.status(404).json({ message: "An error occurred saving data.", itemPromotion: null, status: false });
+    const addItemPromotion = await insertArrayPromotionItem(body);
+    if (addItemPromotion.length > 0) return res.status(404).json({ message: addItemPromotion, itemPromotion: null, status: false });
 
-    return res.status(200).json({ message: "Data saved successfully.", itemPromotion: addItemPromotion, status: true });
+    return res.status(200).json({ message: "บันทึกข้อมูลสำเร็จ", itemPromotion: body, status: true });
 }
 
 export const handleGetItemPromotionById = async (res: NextApiResponse, id: number) => {
@@ -43,24 +44,24 @@ export const handleGetAllItemPromotion = async (res: NextApiResponse) => {
 }
 
 export const handleUpdateItemPromotion = async (body: dataVerifyItemPromotion, res: NextApiResponse) => {
-    if (!body.id || isNaN(Number(body.id))) return res.status(404).json({ message: "Please specify itemPromotionId.", itemPromotion: null, status: false });
-    // VerifyitemPromotionData
-    const verifyPromotion = verifyItemPromotionBody(body);
-    if (verifyPromotion.length > 0) return res.status(404).json({ message: verifyPromotion, itemPromotion: null, status: false });
-    // check itemPromotionId
-    const checkItemPromotionId = await fetchItemPromotionById(body.id);
-    if (!checkItemPromotionId) return res.status(404).json({ message: `No itemPromotion found with id : ${body.id}`, itemPromotion: null, status: false });
-    // check promotionId
-    const checkPromotionId = await fetchPromotionById(body.promotionId);
-    if (!checkPromotionId) return res.status(404).json({ message: `No promotion found with promotionId : ${body.promotionId}`, itemPromotion: null, status: false });
-    // check productId
-    const productId = await fetchProductById(body.productId);
-    if (!productId) return res.status(404).json({ message: `No product found with productId : ${body.productId}`, itemPromotion: null, status: false });
-    // updateItemPromotion
-    const updateItemPromotion = await updateDataItemPromotion(body, body.id);
-    if (!updateItemPromotion) return res.status(404).json({ message: "An error occurred saving data.", itemPromotion: null, status: false });
+    // if (!body.id || isNaN(Number(body.id))) return res.status(404).json({ message: "Please specify itemPromotionId.", itemPromotion: null, status: false });
+    // // VerifyitemPromotionData
+    // const verifyPromotion = verifyItemPromotionBody(body);
+    // if (verifyPromotion.length > 0) return res.status(404).json({ message: verifyPromotion, itemPromotion: null, status: false });
+    // // check itemPromotionId
+    // const checkItemPromotionId = await fetchItemPromotionById(body.id);
+    // if (!checkItemPromotionId) return res.status(404).json({ message: `No itemPromotion found with id : ${body.id}`, itemPromotion: null, status: false });
+    // // check promotionId
+    // const checkPromotionId = await fetchPromotionById(body.promotionId);
+    // if (!checkPromotionId) return res.status(404).json({ message: `No promotion found with promotionId : ${body.promotionId}`, itemPromotion: null, status: false });
+    // // check productId
+    // const productId = await fetchProductById(body.productId);
+    // if (!productId) return res.status(404).json({ message: `No product found with productId : ${body.productId}`, itemPromotion: null, status: false });
+    // // updateItemPromotion
+    // const updateItemPromotion = await updateDataItemPromotion(body, body.id);
+    // if (!updateItemPromotion) return res.status(404).json({ message: "An error occurred saving data.", itemPromotion: null, status: false });
 
-    return res.status(200).json({ message: "Data saved successfully.", itemPromotion: updateItemPromotion, status: true });
+    return res.status(200).json({ message: "Data saved successfully.", itemPromotion: [], status: true });
 }
 
 export const handleDeleteItemPromotion = async (res: NextApiResponse, id: number) => {

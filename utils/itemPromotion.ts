@@ -1,35 +1,82 @@
 import { prisma } from "@/pages/lib/prismaDB";
 import { fetchItemPromotion } from "@/types/fetchData";
 import { dataVerifyItemPromotion, promiseDataVerify } from "@/types/verify";
+import { fetchPromotionById } from "./promotion";
+import { fetchProductById } from "./product";
 
 const pushData = (message: string) => {
     return { message };
 };
 
-export const verifyItemPromotionBody = (data: dataVerifyItemPromotion): promiseDataVerify[] => {
+export const verifyItemPromotionBody = (data: dataVerifyItemPromotion[]): promiseDataVerify[] => {
     const verifyStatus: promiseDataVerify[] = [];
 
-    if (!data.productId) verifyStatus.push(pushData("ไม่พบข้อมูล : productId"));
-    if (!data.stock) verifyStatus.push(pushData("ไม่พบข้อมูล : stock"));
-    if (!data.promotionId) verifyStatus.push(pushData("ไม่พบข้อมูล : promotionId"));
-    if (!data.status) verifyStatus.push(pushData("ไม่พบข้อมูล : status"));
+    data.map((item, index) => {
+        if (!item.promotionId) verifyStatus.push(pushData(`ไม่พบข้อมูล : promotionId แถวที่ ${index + 1}`));
+        if (!item.productId) verifyStatus.push(pushData(`ไม่พบข้อมูล : productId แถวที่ ${index + 1}`));
+        if (!item.stock) verifyStatus.push(pushData(`ไม่พบข้อมูล : stock แถวที่ ${index + 1}`));
+        if (!item.status) verifyStatus.push(pushData(`ไม่พบข้อมูล : status แถวที่ ${index + 1}`));
+    });
 
     // Return
     if (verifyStatus.length > 0) return verifyStatus;
 
     // ตรวจสอบความถูกต้องของข้อมูล
-    if (isNaN(Number(data.productId))) verifyStatus.push(pushData("กรุณาระบุ : productId เป็นตัวเลขเท่านั้น"));
-    if (isNaN(Number(data.stock))) verifyStatus.push(pushData("กรุณาระบุ : productId เป็นตัวเลขเท่านั้น"));
-    if (isNaN(Number(data.promotionId))) verifyStatus.push(pushData("กรุณาระบุ : productId เป็นตัวเลขเท่านั้น"));
-    if (data.status !== "Active" && data.status !== "InActive") verifyStatus.push(pushData("กรุณาระบุ : status เป็น Active หรือ InActive เท่านั้น"));
+    data.forEach((item, index) => {
+        if (!Number.isInteger(item.promotionId) || item.promotionId <= 0) verifyStatus.push(pushData(`กรุณาระบุ : promotionId แถวที่ ${index + 1} เป็นตัวเลขจำนวนเต็มเท่านั้น`));
+        if (!Number.isInteger(item.productId) || item.productId <= 0) verifyStatus.push(pushData(`กรุณาระบุ : productId แถวที่ ${index + 1} เป็นตัวเลขจำนวนเต็มเท่านั้น`));
+        if (isNaN(Number(item.stock))) verifyStatus.push(pushData(`กรุณาระบุ : stock แถวที่ ${index + 1} เป็นตัวเลขเท่านั้น`));
+        if (item.status !== "Active" && item.status !== "InActive") verifyStatus.push(pushData(`กรุณาระบุ : status แถวที่ ${index + 1} เป็น Active หรือ InActive เท่านั้น`));
+    });
 
-    // Return
-    if (verifyStatus.length > 0) return verifyStatus;
+    return verifyStatus;
+};
 
-    // ตรวจสอบว่าเป็นจำนวนเต็มเท่านั้น
-    if (!Number.isInteger(data.productId) || data.productId <= 0) verifyStatus.push(pushData("กรุณาระบุ : productId เป็นตัวเลขจำนวนเต็มเท่านั้น"));
-    if (!Number.isInteger(data.promotionId) || data.promotionId <= 0) verifyStatus.push(pushData("กรุณาระบุ : promotionId เป็นตัวเลขจำนวนเต็มเท่านั้น"));
-    // Return
+export const checkArrayPromotionId = async (data: dataVerifyItemPromotion[]): Promise<promiseDataVerify[]> => {
+    const verifyStatus: promiseDataVerify[] = [];
+
+    for (let index = 0; index < data.length; index++) {
+        const item = data[index];
+        const checkPromotionId = await fetchPromotionById(item.promotionId);
+        if (!checkPromotionId) verifyStatus.push(pushData(`ไม่พบข้อมล : promotionId แถวที่ ${index + 1}`));
+    }
+
+    return verifyStatus;
+};
+
+export const checkArrayProductId = async (data: dataVerifyItemPromotion[]): Promise<promiseDataVerify[]> => {
+    const verifyStatus: promiseDataVerify[] = [];
+
+    for (let index = 0; index < data.length; index++) {
+        const item = data[index];
+        const checkProductId = await fetchProductById(item.productId);
+        if (!checkProductId) verifyStatus.push(pushData(`ไม่พบข้อมล : productId แถวที่ ${index + 1}`));
+    }
+
+    return verifyStatus;
+};
+
+export const checkArrayPdIdInPromotionId = async (data: dataVerifyItemPromotion[]): Promise<promiseDataVerify[]> => {
+    const verifyStatus: promiseDataVerify[] = [];
+
+    for (let index = 0; index < data.length; index++) {
+        const item = data[index];
+        const checkProductId = await fetchProductInItemPromotion(item.productId, item.promotionId);
+        if (checkProductId && checkProductId?.length > 0) verifyStatus.push(pushData(`พบข้อมล : สินค้า แถวที่ ${index + 1} ถูกใช้งานในโปรโมชั่นนี้แล้ว`));
+    }
+
+    return verifyStatus;
+};
+
+export const insertArrayPromotionItem = async (data: dataVerifyItemPromotion[]): Promise<promiseDataVerify[]> => {
+    const verifyStatus: promiseDataVerify[] = [];
+
+    for (let index = 0; index < data.length; index++) {
+        const item = data[index];
+        const insertItem = await insertItemPromotion(item);
+        if (!insertItem) verifyStatus.push(pushData(`บันทึกข้อมูล : itemPromotion ไม่สำเร็จแถวที่ ${index + 1}`));
+    }
+
     return verifyStatus;
 };
 
@@ -136,6 +183,25 @@ export const deleteDataItemPromotion = async (id: number): Promise<fetchItemProm
     } catch (error: unknown) {
         // จัดการข้อผิดพลาดที่เกิดขึ้น
         console.error('An error occurred deleting data.:', error);
+        return null;
+    } finally {
+        await prisma.$disconnect();
+    }
+}
+
+export const fetchProductInItemPromotion  = async (productId: number, promotionId: number): Promise<fetchItemPromotion[] | null> => {
+    try {
+        const product = await prisma.itemPromotion.findMany({
+            where: {
+                productId: productId,
+                promotionId: promotionId
+            }
+        });
+
+        return product as fetchItemPromotion[];
+    } catch (error) {
+        // Handle any errors here or log them
+        console.error('Error fetching productItemPromotion:', error);
         return null;
     } finally {
         await prisma.$disconnect();

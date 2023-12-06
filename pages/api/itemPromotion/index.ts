@@ -4,7 +4,7 @@ import { typeNumber } from "@/utils/utils";
 import { dataVerifyItemPromotion } from "@/types/verify";
 import { handleAddItemPromotion, handleDeleteItemPromotion, handleGetAllItemPromotion, handleGetItemPromotionById, handleGetItemPromotionByPromotionId, handleUpdateItemPromotion } from "./service";
 
-export default authenticate(async (req: NextApiRequest, res: NextApiResponse) => {
+export default async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === "GET") {
         GET(req, res);
     } else if (req.method === "POST") {
@@ -16,7 +16,7 @@ export default authenticate(async (req: NextApiRequest, res: NextApiResponse) =>
     } else {
         res.status(405).end();
     }
-});
+};
 
 const GET = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
@@ -35,7 +35,7 @@ const GET = async (req: NextApiRequest, res: NextApiResponse) => {
 
 const POST = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
-        const body: dataVerifyItemPromotion = await req.body;
+        const body: dataVerifyItemPromotion[] = await req.body;
         // Verify/Add itemPromotion
         return await handleAddItemPromotion(body, res);
     } catch (error: unknown) {

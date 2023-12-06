@@ -128,7 +128,7 @@ export interface fetchItemPromotion {
   productId: number;
   stock: number;
   promotionId: number;
-  expensesId: number;
+  status: "Active" | "InActive";
 }
 
 export interface fetchTable {

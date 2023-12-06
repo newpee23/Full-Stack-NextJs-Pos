@@ -1,5 +1,3 @@
-import { RcFile } from "antd/lib/upload";
-
 export interface tokenType {
   id: string;
   username: string;
