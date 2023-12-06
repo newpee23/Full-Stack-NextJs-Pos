@@ -173,7 +173,7 @@ const EmployeeFrom = ({ onClick, title, statusAction, editData }: Props) => {
     const MyForm = ({ onFinish }: { onFinish: (values: object) => void }): React.JSX.Element => {
         return (
             <Form layout="vertical" onFinish={(values) => { setFormValues(values as employeeSubmit); onFinish(values); }} initialValues={formValues}>
-                <div className="grid gap-3 grid-cols-1 sml:grid-cols-2">
+                <div className="grid gap-3 mb-4 grid-cols-1 sml:grid-cols-2">
                     <Col>
                         <Form.Item name="name" label="ชื่อ"
                             rules={[
@@ -203,7 +203,7 @@ const EmployeeFrom = ({ onClick, title, statusAction, editData }: Props) => {
                         </Form.Item>
                     </Col>
                 </div>
-                <div className="grid gap-3 grid-cols-1 sml:grid-cols-2">
+                <div className="grid gap-3 mb-4 grid-cols-1 sml:grid-cols-2">
                     <Col>
                         <Form.Item name="age" label="อายุ"
                             rules={[
@@ -233,7 +233,7 @@ const EmployeeFrom = ({ onClick, title, statusAction, editData }: Props) => {
                         </Form.Item>
                     </Col>
                 </div>
-                <div className="grid gap-3 grid-cols-1 sml:grid-cols-2">
+                <div className="grid gap-3 mb-4 grid-cols-1 sml:grid-cols-2">
                     <Col>
                         <Form.Item name="userName" label="ผู้ใช้งาน"
                             rules={[
@@ -271,7 +271,7 @@ const EmployeeFrom = ({ onClick, title, statusAction, editData }: Props) => {
                         </Form.Item>
                     </Col>
                 </div>
-                <div className="grid gap-3 grid-cols-1 sml:grid-cols-2">
+                <div className="grid gap-3 mb-4 grid-cols-1 sml:grid-cols-2">
                     <Col>
                         <Form.Item name="position" label="ตำแหน่ง"
                             rules={[
@@ -303,7 +303,7 @@ const EmployeeFrom = ({ onClick, title, statusAction, editData }: Props) => {
                         </Form.Item>
                     </Col>
                 </div>
-                <div className="grid gap-3 grid-cols-1 sml:grid-cols-2">
+                <div className="grid gap-3 mb-4 grid-cols-1 sml:grid-cols-2">
                     <Col>
                         <Form.Item name="role" label="สิทธ์ผู้ใช้งาน"
                             rules={[
@@ -312,7 +312,7 @@ const EmployeeFrom = ({ onClick, title, statusAction, editData }: Props) => {
                         </Form.Item>
                     </Col>
                 </div>
-                <div className="grid gap-3 grid-cols-1 sml:grid-cols-2">
+                <div className="grid gap-3 mb-4 grid-cols-1 sml:grid-cols-2">
                     <Col>
                         <Form.Item name="status" label="สถานะ"
                             rules={[{ required: true, message: "กรุณาเลือกสถานะ", },]}>

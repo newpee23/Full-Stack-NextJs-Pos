@@ -169,29 +169,29 @@ const PromotionFrom = ({ onClick, editData, statusAction, title }: Props) => {
         return (
             <Form layout="vertical" onFinish={(values) => { handleSubmit(values as promotionSubmit); }} initialValues={formValues}>
                 {/* เลือกรูปภาพ */}
-                <div className="grid gap-3 grid-cols-1 sml:grid-cols-1">
+                <div className="grid gap-3 mb-4 grid-cols-1 sml:grid-cols-1">
                 <UploadPromotion label="เพิ่มรูปภาพโปรโมชั่น" name="img" imageUrl={formValues.imageUrl} addImage={formValues.img} setFormValues={setFormValues} status={editData ? "update" : "add"} />
                     {/* <InputFrom label="imageUrl" name="imageUrl" required={false} type="hidden" /> */}
                 </div>
                 {/* ชื่อโปรโมชั่น */}
-                <div className="grid gap-3 grid-cols-1 sml:grid-cols-2">
+                <div className="grid gap-3 mb-4 grid-cols-1 sml:grid-cols-2">
                     <InputFrom label="ชื่อโปรโมชั่น" name="name" required={true} type="text" />
                 </div>
                 {/* รายละเอียด */}
-                <div className="grid gap-3 grid-cols-1 sml:grid-cols-1">
+                <div className="grid gap-3 mb-4 grid-cols-1 sml:grid-cols-1">
                     <InputFrom label="รายละเอียด" name="detail" required={true} type="textArea" />
                 </div>
                 {/* ราคาขาย */}
-                <div className="grid gap-3 grid-cols-1 sml:grid-cols-2">
+                <div className="grid gap-3 mb-4 grid-cols-1 sml:grid-cols-2">
                     <InputFrom label="ราคาโปรโมชั่น" name="promotionalPrice" required={true} type="float" />
                 </div>
                 {/* เริ่มและสิ้นสุดโปรโมชั่น */}
-                <div className="grid gap-3 grid-cols-1 sml:grid-cols-2">
+                <div className="grid gap-3 mb-4 grid-cols-1 sml:grid-cols-2">
                     <InputFrom label="วันที่เริ่มโปรโมชั่น" name="startDate" required={true} type="datePicker" />
                     <InputFrom label="วันที่หมดโปรโมชั่น" name="endDate" required={true} type="datePicker" />
                 </div>
                 {/* สถานะ */}
-                <div className="grid gap-3 grid-cols-1 sml:grid-cols-2">
+                <div className="grid gap-3 mb-4 grid-cols-1 sml:grid-cols-2">
 
                     <StatusFrom label="สถานะ" name="status" />
                 </div>

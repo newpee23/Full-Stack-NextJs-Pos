@@ -14,7 +14,7 @@ const config: Config = {
       },
       colors: {
         'orange-1': "#FF5B22",
-        'orange-2': "#ED7D31",
+        'orange-2': "#EA580C",
         'orange-3': "#FF9130",
         'orange-4': "#DE8F5F",
         'orange-5': "#F9B572",

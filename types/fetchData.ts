@@ -182,6 +182,9 @@ export interface optionSelect {
 
 export interface optionSelectPromotionItem {
   value: number;
+  productId: number;
+  promotionId: number;
+  promotionName: string;
   label: string;
   stock: number;
 }

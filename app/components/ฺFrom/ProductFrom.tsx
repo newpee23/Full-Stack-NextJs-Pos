@@ -189,27 +189,27 @@ const ProductFrom = ({ onClick, editData, title, statusAction }: Props) => {
     return (
       <Form layout="vertical" onFinish={(values) => { setFormValues(values as productSubmit); onFinish(values); }} initialValues={formValues}>
         {/* เลือกรูปภาพ */}
-        <div className="grid gap-3 grid-cols-1 sml:grid-cols-1">
+        <div className="grid gap-3 mb-4 grid-cols-1 sml:grid-cols-1">
           <UploadAnt label="เพิ่มรูปภาพสินค้า" name="img" imageUrl={formValues.imageUrl} addImage={formValues.img} setFormValues={setFormValues} status={editData ? "update" : "add"} />
           <InputFrom label="imageUrl" name="imageUrl" required={false} type="hidden" />
         </div>
         {/* ชื่อสินค้า,  */}
-        <div className="grid gap-3 grid-cols-1 sml:grid-cols-2">
+        <div className="grid gap-3 mb-4 grid-cols-1 sml:grid-cols-2">
           <InputFrom label="ชื่อสินค้า" name="name" required={true} type="text" />
           <InputFrom label="จำนวนสต็อคสินค้า" name="stock" required={true} type="number" />
         </div>
         {/* ประเภทสินค้า,หน่วยนับ */}
-        <div className="grid gap-3 grid-cols-1 sml:grid-cols-2">
+        <div className="grid gap-3 mb-4 grid-cols-1 sml:grid-cols-2">
           <SelectProductType option={data} />
           <SelectUnit option={data} />
         </div>
         {/* ราคาสินค้า,ต้นทุน */}
-        <div className="grid gap-3 grid-cols-1 sml:grid-cols-2">
+        <div className="grid gap-3 mb-4 grid-cols-1 sml:grid-cols-2">
           <InputFrom label="ราคาขาย" name="price" required={true} type="float" />
           <InputFrom label="ต้นทุน" name="cost" required={true} type="float" />
         </div>
         {/* สถานะ */}
-        <div className="grid gap-3 grid-cols-1 sml:grid-cols-2">
+        <div className="grid gap-3 mb-4 grid-cols-1 sml:grid-cols-2">
           <StatusFrom label="การขายสินค้า" name="statusSail" />
           <StatusFrom label="สถานะ" name="status" />
         </div>

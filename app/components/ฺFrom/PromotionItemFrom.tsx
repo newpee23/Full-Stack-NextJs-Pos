@@ -9,8 +9,9 @@ import ErrPage from '../ErrPage';
 import SelectProduct from '../UI/select/SelectProduct';
 import ListPromotionItem from '../UI/list/ListPromotionItem';
 import InputFrom from '../UI/InputFrom';
+import SelectPromotion from '../UI/select/SelectPromotion';
 
-interface promotionItem {
+export interface promotionItem {
   productId: number | undefined;
   promotionId: number | undefined;
   stock: number | undefined;
@@ -39,17 +40,21 @@ const PromotionItemFrom = ({ onClick, editData, title, statusAction }: Props) =>
   }
   ]);
 
-  const handleItemSubmit = async (values: { productId: number, stock: number }) => {
+  const handleItemSubmit = async (values: { promotionId: number, productId: number, stock: number }) => {
+    if (!values.promotionId) return showMessage({ status: "error", text: "กรุณาเลือกหัวข้อโปรโมชั่น" });
     if (!values.productId) return showMessage({ status: "error", text: "กรุณาเลือกสินค้า" });
+
+    const selectedPromotion = data?.promotion.find(promotion => promotion.value === values.promotionId);
     const selectedProduct = data?.product.find(product => product.value === values.productId);
-    if (selectedProduct) {
+
+    if (selectedProduct && selectedPromotion) {
       // ตรวจสอบว่า productId ที่ถูกเลือกมีอยู่ใน state อยู่แล้วหรือไม่
       const isDuplicateProduct = productId?.some(product => product.value === values.productId);
       if (isDuplicateProduct) {
         showMessage({ status: "error", text: "ไม่สามารถเลือกสินค้าซ้ำได้ กรุณาตรวจสอบอีกครั้ง" });
       } else {
         // เพิ่ม productId ที่ถูกเลือกลงใน state
-        setProductId((prevArray) => [...prevArray, { label: selectedProduct.label, value: selectedProduct.value, stock: values.stock }]);
+        setProductId((prevArray) => [...prevArray, { label: selectedProduct.label, value: selectedProduct.value, stock: values.stock, productId: values.productId, promotionId: values.promotionId ,promotionName: selectedPromotion.label}]);
       }
     } else {
       showMessage({ status: "error", text: "ไม่พบข้อมูลที่ต้องการ" });
@@ -88,17 +93,23 @@ const PromotionItemFrom = ({ onClick, editData, title, statusAction }: Props) =>
   const MyForm = (): React.JSX.Element => {
     return (
       <>
-        <Form layout="vertical" onFinish={(values: { productId: number, stock: number }) => { handleItemSubmit(values); }} >
+        <Form layout="vertical" onFinish={(values: { promotionId: number, productId: number, stock: number }) => { handleItemSubmit(values); }} >
           {/* เลือกสินค้า */}
-          <div className="grid gap-3 grid-cols-1 sml:grid-cols-2">
-            <SelectProduct required={false} option={data} />
+          <div className="grid gap-3 mb-4 grid-cols-1 sml:grid-cols-2">
+            <SelectPromotion option={data} />
+            <SelectProduct required={true} option={data} />
+          </div>
+          <div className="grid gap-3 mb-4 grid-cols-1 sml:grid-cols-2">
             <InputFrom label="จำนวน" name="stock" required={true} type="number" />
+            <div className="flex justify-end items-center">
+              <div>
+                  <SaveBtn label="เพิ่มสินค้า" />
+              </div>
+            </div>
           </div>
-          <div className="text-right mt-3">
-            <SaveBtn label="เพิ่มสินค้า" />
-          </div>
+
         </Form>
-        <ListPromotionItem productId={productId} handleRemoveProduct={handleRemoveProduct} />
+        <ListPromotionItem itemPromoTion={productId} handleRemoveProduct={handleRemoveProduct} />
       </>
     );
   };
