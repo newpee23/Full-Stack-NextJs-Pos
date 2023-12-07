@@ -131,6 +131,23 @@ export interface fetchItemPromotion {
   status: "Active" | "InActive";
 }
 
+export interface fetchItemPromotionInPromotion {
+  index: number;
+  key: string;
+  id: number;
+  name: string;
+  totalItem: number;
+  ItemPromotions: ItemPromotions[];
+}
+
+export interface ItemPromotions {
+  id: number;
+  productId: number;
+  stock: number;
+  promotionId: number;
+  status: "Active" | "InActive";
+}
+
 export interface fetchTable {
   id: string;
   name: string;
@@ -181,34 +198,36 @@ export interface optionSelect {
 }
 
 export interface optionSelectPromotionItem {
+  id?: number;
   value: number;
   productId: number;
   promotionId: number;
   promotionName: string;
   label: string;
   stock: number;
+  status: "Active" | "InActive";
 }
 
 export interface fetchOptionAddEmployeeType {
   position: optionSelect[];
-  branch: optionSelect[]; 
+  branch: optionSelect[];
 }
 
 export interface fetchOptionAddTables {
-  branch: optionSelect[]; 
+  branch: optionSelect[];
 }
 
 export interface fetchOptionAddProduct {
-  unit: optionSelect[]; 
-  productType: optionSelect[]; 
+  unit: optionSelect[];
+  productType: optionSelect[];
 }
 
 export interface fetchOptionAddExpensesItem {
-  expenses: optionSelect[]; 
+  expenses: optionSelect[];
 }
 
 export interface fetchOptionAddPromotionItem {
-  promotion: optionSelect[]; 
+  promotion: optionSelect[];
   product: optionSelect[];
 }
 

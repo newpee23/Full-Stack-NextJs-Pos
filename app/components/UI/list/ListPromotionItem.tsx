@@ -6,7 +6,7 @@ import InputFrom from "../InputFrom";
 import StatusFrom from "../select/StatusFrom";
 import SaveBtn from "../btn/SaveBtn";
 import { promotionItem } from "../../ฺFrom/PromotionItemFrom";
-import { useAddDataItemPromotion } from "@/app/api/promotionItem";
+import { useAddDataItemPromotion, useUpdateDataItemPromotion } from "@/app/api/promotionItem";
 import { useAppDispatch } from "@/app/store/store";
 import { setLoading } from "@/app/store/slices/loadingSlice";
 import { useSession } from "next-auth/react";
@@ -17,7 +17,10 @@ import { MdDelete } from "react-icons/md";
 
 interface ListPromotionItemProps {
     itemPromoTion: optionSelectPromotionItem[];
-    handleRemoveProduct: (productIdToRemove: number) => void;
+    deleteDataItem: dataVerifyItemPromotion[];
+    handleRemoveProduct: (productIdToRemove: number, item: optionSelectPromotionItem) => void;
+    onClick: () => void;
+    statusAction: 'add' | 'update';
 }
 
 interface FormValues {
@@ -41,7 +44,7 @@ const conversDataToArray = (values: { [key: string]: FormValues }): dataVerifyIt
     return dataArray;
 };
 
-const ListPromotionItem: React.FC<ListPromotionItemProps> = ({ itemPromoTion, handleRemoveProduct }) => {
+const ListPromotionItem = ({ itemPromoTion, handleRemoveProduct, onClick, statusAction, deleteDataItem }: ListPromotionItemProps) => {
 
     const dispatch = useAppDispatch();
     const [form] = Form.useForm();
@@ -49,6 +52,7 @@ const ListPromotionItem: React.FC<ListPromotionItemProps> = ({ itemPromoTion, ha
     const [messageApi, contextHolder] = message.useMessage();
     const [spinning, setSpinning] = useState<boolean>(false);
     const addDataItemPromotionMutation = useAddDataItemPromotion();
+    const updateDataItemPromotionMutation = useUpdateDataItemPromotion();
     const [messageError, setMessageError] = useState<{ message: string }[]>([]);
     const [loadingQuery, setLoadingQuery] = useState<number>(0);
 
@@ -62,7 +66,7 @@ const ListPromotionItem: React.FC<ListPromotionItemProps> = ({ itemPromoTion, ha
                     initialValues[`promotionId-${index}`] = item.promotionId;
                     initialValues[`productId-${index}`] = item.productId;
                     initialValues[`stock-${index}`] = item.stock;
-                    initialValues[`status-${index}`] = "Active";
+                    initialValues[`status-${index}`] = item.status;
                 });
                 form.setFieldsValue(initialValues);
                 setTimeout(() => { setSpinning(false) }, 500);
@@ -82,6 +86,7 @@ const ListPromotionItem: React.FC<ListPromotionItemProps> = ({ itemPromoTion, ha
         loadComponents();
     }, [loadingQuery]);
 
+
     const showMessage = ({ status, text }: { status: string; text: string }) => {
         if (status === 'success') {
             messageApi.success(text);
@@ -91,13 +96,32 @@ const ListPromotionItem: React.FC<ListPromotionItemProps> = ({ itemPromoTion, ha
             messageApi.warning(text);
         }
     };
-
+  
     const handleSubmit = async (values: { [key: string]: FormValues }) => {
         try {
             // สร้าง array จากข้อมูลใน form
             const resultArray = conversDataToArray(values);
             setLoadingQuery(0);
             dispatch(setLoading({ loadingAction: 0, showLoading: true }));
+
+            // Update itemPromotion
+            if (statusAction === "update") {
+               
+                const updateItemPromotion = await updateDataItemPromotionMutation.mutateAsync({
+                    token: session?.user.accessToken,
+                    itemPromotionData: resultArray,
+                    deleteItemPromotionData: deleteDataItem,
+                    setLoadingQuery: setLoadingQuery
+                });
+
+                if (updateItemPromotion === null) return showMessage({ status: "error", text: "แก้ไขข้อมูลสินค้าในโปรโมชั่นไม่สำเร็จ กรุณาลองอีกครั้ง" });
+                if (updateItemPromotion?.status === true) {
+                    // setTimeout(() => { onClick(); }, 1500);
+                    return showMessage({ status: "success", text: "แก้ไขข้อมูลสินค้าในโปรโมชั่นสำเร็จ" });
+                }
+                if (typeof updateItemPromotion.message !== 'string') setMessageError(updateItemPromotion.message);
+                return showMessage({ status: "error", text: "แก้ไขข้อมูลสินค้าในโปรโมชั่นไม่สำเร็จ กรุณาแก้ไขข้อผิดพลาด" });
+            }
 
             // Insert itemPromotion
             const itemPromotion = await addDataItemPromotionMutation.mutateAsync({
@@ -108,7 +132,7 @@ const ListPromotionItem: React.FC<ListPromotionItemProps> = ({ itemPromoTion, ha
 
             if (itemPromotion === null) return showMessage({ status: "error", text: "เพิ่มข้อมูลสินค้าในโปรโมชั่นไม่สำเร็จ กรุณาลองอีกครั้ง" });
             if (itemPromotion?.status === true) {
-                // setTimeout(() => { onClick(); }, 1500);
+                setTimeout(() => { onClick(); }, 1500);
                 return showMessage({ status: "success", text: "เพิ่มข้อมูลสินค้าในโปรโมชั่นสำเร็จ" });
             }
             if (typeof itemPromotion.message !== 'string') setMessageError(itemPromotion.message);
@@ -133,7 +157,7 @@ const ListPromotionItem: React.FC<ListPromotionItemProps> = ({ itemPromoTion, ha
                             <div className="flex items-center justify-between flex-col mt-[-10px]">
                                 {/* ชื่อสินค้า */}
                                 <div className="flex w-full">
-                                    <p className="w-full overflow-hidden text-ellipsis whitespace-nowrap">{index+1}).{item.label}</p>
+                                    <p className="w-full overflow-hidden text-ellipsis whitespace-nowrap">{index + 1}).{item.label}</p>
                                 </div>
                                 <div className="flex w-full justify-end items-center mt-2">
                                     <div className="ml-3">
@@ -146,7 +170,7 @@ const ListPromotionItem: React.FC<ListPromotionItemProps> = ({ itemPromoTion, ha
                                     {/* สถานะ */}
                                     <div className="ml-3 flex items-start">
                                         <StatusFrom label="สถานะ" name={`status-${index}`} />
-                                        <MdDelete  className="mx-2 ml-5 mt-1 text-red-700 cursor-pointer" style={{ fontSize: "24px" }} onClick={() => handleRemoveProduct(item.value)} />
+                                        <MdDelete className="mx-2 ml-5 mt-1 text-red-700 cursor-pointer" style={{ fontSize: "24px" }} onClick={() => { handleRemoveProduct(item.value,item);}} />
                                     </div>
                                 </div>
                             </div>
@@ -163,7 +187,7 @@ const ListPromotionItem: React.FC<ListPromotionItemProps> = ({ itemPromoTion, ha
                     )}
                 </Form>
             </SpinDiv>
-            {messageError.length > 0 && <ErrFrom showError={messageError}/>}
+            {messageError.length > 0 && <ErrFrom showError={messageError} />}
         </div>
     );
 };

@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import authenticate from "../checkToken";
 import { typeNumber } from "@/utils/utils";
 import { dataVerifyItemPromotion } from "@/types/verify";
-import { handleAddItemPromotion, handleDeleteItemPromotion, handleGetAllItemPromotion, handleGetItemPromotionById, handleGetItemPromotionByPromotionId, handleUpdateItemPromotion } from "./service";
+import { handleAddItemPromotion, handleDeleteItemPromotion, handleGetAllItemPromotion, handleGetItemPromotionByCompanyId, handleGetItemPromotionById, handleGetItemPromotionByPromotionId, handleUpdateItemPromotion } from "./service";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === "GET") {
@@ -23,8 +23,10 @@ const GET = async (req: NextApiRequest, res: NextApiResponse) => {
         const { query } = req;
         // getItemPromotion By Id
         if (query.id) return await handleGetItemPromotionById(res, typeNumber(query.id));
-        // getItemPromotion By companyId
+        // getItemPromotion By PromotionId
         if (query.promotionId) return await handleGetItemPromotionByPromotionId(res, typeNumber(query.promotionId));
+        // getItemPromotion By companyId
+        if (query.companyId) return await handleGetItemPromotionByCompanyId(res, typeNumber(query.companyId));
         //  getAllItemPromotion
         return await handleGetAllItemPromotion(res);
     } catch (error: unknown) {

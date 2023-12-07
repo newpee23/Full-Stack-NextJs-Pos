@@ -25,7 +25,6 @@ const DeleteBtn = ({ label, name ,onClick }: Props) => {
   };
 
   const handleCancel = () => {
-    console.log('Clicked cancel button');
     setOpen(false);
   };
   return (

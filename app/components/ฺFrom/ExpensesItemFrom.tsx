@@ -38,6 +38,16 @@ const ExpensesItemFrom = () => {
     branchId: undefined,
     status: "Active",
   });
+  
+  useEffect(() => {
+    const loadComponents = () => {
+      if (loadingQuery > 0) {
+        dispatch(setLoading({ loadingAction: loadingQuery, showLoading: true }));
+      }
+    };
+
+    loadComponents();
+  }, [loadingQuery]);
 
   const handleRefresh = () => {
     remove();
@@ -103,15 +113,6 @@ const ExpensesItemFrom = () => {
     }
   };
 
-  useEffect(() => {
-    const loadComponents = () => {
-      if (loadingQuery > 0) {
-        dispatch(setLoading({ loadingAction: loadingQuery, showLoading: true }));
-      }
-    };
-
-    loadComponents();
-  }, [loadingQuery]);
 
   return (
     <div className="p-3">
@@ -119,7 +120,7 @@ const ExpensesItemFrom = () => {
         {/* หัวข้อค่าใช้จ่าย */}
         <div className="grid gap-3 mb-4 grid-cols-1 sml:grid-cols-2 lgl:grid-cols-4">
           <SelectExpenses option={data} />
-          <div className="flex items-center ml-[-0.75rem]">
+          <div className="flex items-center ml-[-0.75rem] mt-3">
             <RefreshBtn label="Refresh" onClick={handleRefresh} />
           </div>
         </div>

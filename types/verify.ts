@@ -100,6 +100,11 @@ export interface dataVerifyItemPromotion {
   status: "Active" | "InActive";
 }
 
+export interface dataVerifyIUpdatetemPromotion {
+  deleteItemPromotionData: dataVerifyItemPromotion[];
+  itemPromotionData: dataVerifyItemPromotion[];
+}
+
 export interface dataVerifyTable {
   id?: string;
   name: string;

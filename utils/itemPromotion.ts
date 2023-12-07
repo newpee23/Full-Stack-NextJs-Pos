@@ -1,6 +1,6 @@
 import { prisma } from "@/pages/lib/prismaDB";
-import { fetchItemPromotion } from "@/types/fetchData";
-import { dataVerifyItemPromotion, promiseDataVerify } from "@/types/verify";
+import { fetchItemPromotion, fetchItemPromotionInPromotion } from "@/types/fetchData";
+import { dataVerifyIUpdatetemPromotion, dataVerifyItemPromotion, promiseDataVerify } from "@/types/verify";
 import { fetchPromotionById } from "./promotion";
 import { fetchProductById } from "./product";
 
@@ -11,7 +11,7 @@ const pushData = (message: string) => {
 export const verifyItemPromotionBody = (data: dataVerifyItemPromotion[]): promiseDataVerify[] => {
     const verifyStatus: promiseDataVerify[] = [];
 
-    data.map((item, index) => {
+    data.forEach((item, index) => {
         if (!item.promotionId) verifyStatus.push(pushData(`ไม่พบข้อมูล : promotionId แถวที่ ${index + 1}`));
         if (!item.productId) verifyStatus.push(pushData(`ไม่พบข้อมูล : productId แถวที่ ${index + 1}`));
         if (!item.stock) verifyStatus.push(pushData(`ไม่พบข้อมูล : stock แถวที่ ${index + 1}`));
@@ -97,16 +97,37 @@ export const insertItemPromotion = async (body: dataVerifyItemPromotion): Promis
     return verifyStatus;
 };
 
-export const fetchItemPromotionById = async (id: number): Promise<fetchItemPromotion | null> => {
+export const fetchItemPromotionById = async (id: number): Promise<fetchItemPromotionInPromotion[] | null> => {
     try {
-        const itemPromotion = await prisma.itemPromotion.findUnique({
+        const itemPromotion = await prisma.promotion.findMany({
+            select: {
+                id: true,
+                name: true,
+                ItemPromotions: {
+                    select: {
+                        id: true,
+                        productId: true,
+                        stock: true,
+                        promotionId: true,
+                        status: true,
+                    },
+                },
+            },
             where: {
-                id: id
-            }
+                id: id,
+            },
+            orderBy: { id: 'asc' },
         });
 
         if (!itemPromotion) return null;
-        return itemPromotion as fetchItemPromotion;
+        // สร้าง key เพื่อเอาไปใส่ table และ แปลง date เป็น str
+        const promotionWithKey: fetchItemPromotionInPromotion[] = itemPromotion.map((itemPromotion, index) => ({
+            ...itemPromotion,
+            index: (index + 1),
+            key: itemPromotion.id.toString(),
+            totalItem: itemPromotion.ItemPromotions.length,
+        }));
+        return promotionWithKey;
     } catch (error) {
         // Handle any errors here or log them
         console.error('Error fetching itemPromotion:', error);
@@ -116,16 +137,37 @@ export const fetchItemPromotionById = async (id: number): Promise<fetchItemPromo
     }
 }
 
-export const fetchItemPromotionByPromotionId = async (promotionId: number): Promise<fetchItemPromotion[] | null> => {
+export const fetchItemPromotionByPromotionId = async (promotionId: number): Promise<fetchItemPromotionInPromotion[] | null> => {
     try {
-        const itemPromotion = await prisma.itemPromotion.findMany({
+        const itemPromotion = await prisma.promotion.findMany({
+            select: {
+                id: true,
+                name: true,
+                ItemPromotions: {
+                    select: {
+                        id: true,
+                        productId: true,
+                        stock: true,
+                        promotionId: true,
+                        status: true,
+                    },
+                },
+            },
             where: {
-                promotionId: promotionId
-            }
+                id: promotionId,
+            },
+            orderBy: { id: 'asc' },
         });
 
         if (!itemPromotion) return null;
-        return itemPromotion as fetchItemPromotion[];
+        // สร้าง key เพื่อเอาไปใส่ table และ แปลง date เป็น str
+        const promotionWithKey: fetchItemPromotionInPromotion[] = itemPromotion.map((itemPromotion, index) => ({
+            ...itemPromotion,
+            index: (index + 1),
+            key: itemPromotion.id.toString(),
+            totalItem: itemPromotion.ItemPromotions.length,
+        }));
+        return promotionWithKey;
     } catch (error) {
         // Handle any errors here or log them
         console.error('Error fetching itemPromotion:', error);
@@ -135,12 +177,82 @@ export const fetchItemPromotionByPromotionId = async (promotionId: number): Prom
     }
 }
 
-export const fetchAllItemPromotion = async (): Promise<fetchItemPromotion[] | null> => {
+export const fetchItemPromotionByCompanyId = async (companyId: number): Promise<fetchItemPromotionInPromotion[] | null> => {
     try {
-        const itemPromotion = await prisma.itemPromotion.findMany({});
+        const itemPromotion = await prisma.promotion.findMany({
+            select: {
+                id: true,
+                name: true,
+                ItemPromotions: {
+                    select: {
+                        id: true,
+                        productId: true,
+                        stock: true,
+                        promotionId: true,
+                        status: true,
+                    },
+                },
+            },
+            where: {
+                companyId: companyId,
+                ItemPromotions: {
+                    some: {} // ในกรณีนี้, some หมายถึง "มีอย่างน้อยหนึ่ง"
+                },
+            },
+            orderBy: { id: 'asc' },
+        });
 
         if (!itemPromotion) return null;
-        return itemPromotion as fetchItemPromotion[];
+        // สร้าง key เพื่อเอาไปใส่ table และ แปลง date เป็น str
+        const promotionWithKey: fetchItemPromotionInPromotion[] = itemPromotion.map((itemPromotion, index) => ({
+            ...itemPromotion,
+            index: (index + 1),
+            key: itemPromotion.id.toString(),
+            totalItem: itemPromotion.ItemPromotions.length,
+        }));
+        return promotionWithKey;
+    } catch (error) {
+        // Handle any errors here or log them
+        console.error('Error fetching itemPromotion:', error);
+        return null;
+    } finally {
+        await prisma.$disconnect();
+    }
+}
+
+export const fetchAllItemPromotion = async (): Promise<fetchItemPromotionInPromotion[] | null> => {
+    try {
+        const itemPromotion = await prisma.promotion.findMany({
+            select: {
+                id: true,
+                name: true,
+                ItemPromotions: {
+                    select: {
+                        id: true,
+                        productId: true,
+                        stock: true,
+                        promotionId: true,
+                        status: true,
+                    },
+                },
+            },
+            where: {
+                ItemPromotions: {
+                    some: {} // ในกรณีนี้, some หมายถึง "มีอย่างน้อยหนึ่ง"
+                },
+            },
+            orderBy: { id: 'asc' },
+        });
+
+        if (!itemPromotion) return null;
+        // สร้าง key เพื่อเอาไปใส่ table และ แปลง date เป็น str
+        const promotionWithKey: fetchItemPromotionInPromotion[] = itemPromotion.map((itemPromotion, index) => ({
+            ...itemPromotion,
+            index: (index + 1),
+            key: itemPromotion.id.toString(),
+            totalItem: itemPromotion.ItemPromotions.length,
+        }));
+        return promotionWithKey;
     } catch (error) {
         // Handle any errors here or log them
         console.error('Error fetching itemPromotion:', error);
@@ -189,7 +301,7 @@ export const deleteDataItemPromotion = async (id: number): Promise<fetchItemProm
     }
 }
 
-export const fetchProductInItemPromotion  = async (productId: number, promotionId: number): Promise<fetchItemPromotion[] | null> => {
+export const fetchProductInItemPromotion = async (productId: number, promotionId: number): Promise<fetchItemPromotion[] | null> => {
     try {
         const product = await prisma.itemPromotion.findMany({
             where: {
@@ -207,3 +319,75 @@ export const fetchProductInItemPromotion  = async (productId: number, promotionI
         await prisma.$disconnect();
     }
 }
+
+export const checkItemPromotionIdArr = async (data: dataVerifyIUpdatetemPromotion): Promise<promiseDataVerify[]> => {
+    const verifyStatus: promiseDataVerify[] = [];
+
+    // ตรวจสอบความถูกต้องของข้อมูล
+    if(data.deleteItemPromotionData.length > 0){
+        for (let index = 0; index < data.deleteItemPromotionData.length; index++) {
+            const item = data.deleteItemPromotionData[index];
+            const checkProductId = await fetchItemPromotionById(item.promotionId);
+            if (checkProductId?.length === 0) verifyStatus.push(pushData(`ไม่พบข้อมล deleteItemPromotionData : promotionId แถวที่ ${index + 1}`));
+        }
+    }
+
+    for (let index = 0; index < data.itemPromotionData.length; index++) {
+        const item = data.itemPromotionData[index];
+        const checkProductId = await fetchItemPromotionById(item.promotionId);
+        if (checkProductId?.length === 0) verifyStatus.push(pushData(`ไม่พบข้อมล itemPromotionData : promotionId แถวที่ ${index + 1}`));
+    }
+
+    return verifyStatus;
+};
+
+export const checkItemPromotionProductIdArr = async (data: dataVerifyIUpdatetemPromotion): Promise<promiseDataVerify[]> => {
+    const verifyStatus: promiseDataVerify[] = [];
+
+    // ตรวจสอบความถูกต้องของข้อมูล
+    if(data.deleteItemPromotionData.length > 0){
+        for (let index = 0; index < data.deleteItemPromotionData.length; index++) {
+            const item = data.deleteItemPromotionData[index];
+            const checkProductId = await fetchProductById(item.productId);
+            if (!checkProductId) verifyStatus.push(pushData(`ไม่พบข้อมล deleteItemPromotionData : productId แถวที่ ${index + 1}`));
+        }
+    }
+
+    for (let index = 0; index < data.itemPromotionData.length; index++) {
+        const item = data.itemPromotionData[index];
+        const checkProductId = await fetchProductById(item.productId);
+        if (!checkProductId) verifyStatus.push(pushData(`ไม่พบข้อมล itemPromotionData : productId แถวที่ ${index + 1}`));
+    }
+
+    return verifyStatus;
+};
+
+export const deleteDataItPromotionByPdIdPmId = async (data: dataVerifyItemPromotion[]): Promise<promiseDataVerify[]> => {
+    const verifyStatus: promiseDataVerify[] = [];
+    try {
+        for (let index = 0; index < data.length; index++) {
+            const productId = data[index].productId;
+            const promotionId = data[index].promotionId;
+
+            const deletedItemPromotion = await prisma.itemPromotion.deleteMany({
+                where: {
+                    productId: productId,
+                    promotionId: promotionId,
+                },
+            });
+            
+            if(deletedItemPromotion.count === 0){
+                verifyStatus.push(pushData(`ลบข้อมูล itemPromotionData แถวที่ ${index + 1} ไม่สำเร็จ`));
+            }
+        }
+        
+        return verifyStatus;
+    } catch (error: unknown) {
+        // จัดการข้อผิดพลาดที่เกิดขึ้น
+        console.error('An error occurred deleting data.:', error);
+        return [];
+    } finally {
+        await prisma.$disconnect();
+    }
+}
+

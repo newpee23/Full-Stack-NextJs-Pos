@@ -1,5 +1,5 @@
-import { dataVerifyItemPromotion } from "@/types/verify";
-import { checkArrayPdIdInPromotionId, checkArrayProductId, checkArrayPromotionId, deleteDataItemPromotion, fetchAllItemPromotion, fetchItemPromotionById, fetchItemPromotionByPromotionId, insertArrayPromotionItem, insertItemPromotion, updateDataItemPromotion, verifyItemPromotionBody } from "@/utils/itemPromotion";
+import { dataVerifyIUpdatetemPromotion, dataVerifyItemPromotion } from "@/types/verify";
+import { checkArrayPdIdInPromotionId, checkArrayProductId, checkArrayPromotionId, checkItemPromotionIdArr, checkItemPromotionProductIdArr, deleteDataItPromotionByPdIdPmId, deleteDataItemPromotion, fetchAllItemPromotion, fetchItemPromotionByCompanyId, fetchItemPromotionById, fetchItemPromotionByPromotionId, insertArrayPromotionItem, insertItemPromotion, updateDataItemPromotion, verifyItemPromotionBody } from "@/utils/itemPromotion";
 import { NextApiResponse } from "next";
 
 export const handleAddItemPromotion = async (body: dataVerifyItemPromotion[], res: NextApiResponse) => {
@@ -36,6 +36,13 @@ export const handleGetItemPromotionByPromotionId = async (res: NextApiResponse, 
     return res.status(200).json({ message: "itemPromotion found", itemPromotion: itemPromotion, status: true });
 }
 
+export const handleGetItemPromotionByCompanyId = async (res: NextApiResponse, companyId: number) => {
+    const itemPromotion = await fetchItemPromotionByCompanyId(companyId);
+    if (!itemPromotion || (Array.isArray(itemPromotion) && itemPromotion.length === 0)) return res.status(404).json({ message: `No itemPromotion found with companyId : ${companyId}`, itemPromotion: null, status: false });
+
+    return res.status(200).json({ message: "itemPromotion found", itemPromotion: itemPromotion, status: true });
+}
+
 export const handleGetAllItemPromotion = async (res: NextApiResponse) => {
     const itemPromotion = await fetchAllItemPromotion();
     if (!itemPromotion || (Array.isArray(itemPromotion) && itemPromotion.length === 0)) return res.status(404).json({ message: `No itemPromotion found`, itemPromotion: null, status: false });
@@ -43,21 +50,23 @@ export const handleGetAllItemPromotion = async (res: NextApiResponse) => {
     return res.status(200).json({ message: "itemPromotion found", itemPromotion: itemPromotion, status: true });
 }
 
-export const handleUpdateItemPromotion = async (body: dataVerifyItemPromotion, res: NextApiResponse) => {
-    // if (!body.id || isNaN(Number(body.id))) return res.status(404).json({ message: "Please specify itemPromotionId.", itemPromotion: null, status: false });
-    // // VerifyitemPromotionData
-    // const verifyPromotion = verifyItemPromotionBody(body);
-    // if (verifyPromotion.length > 0) return res.status(404).json({ message: verifyPromotion, itemPromotion: null, status: false });
-    // // check itemPromotionId
-    // const checkItemPromotionId = await fetchItemPromotionById(body.id);
-    // if (!checkItemPromotionId) return res.status(404).json({ message: `No itemPromotion found with id : ${body.id}`, itemPromotion: null, status: false });
-    // // check promotionId
-    // const checkPromotionId = await fetchPromotionById(body.promotionId);
-    // if (!checkPromotionId) return res.status(404).json({ message: `No promotion found with promotionId : ${body.promotionId}`, itemPromotion: null, status: false });
-    // // check productId
-    // const productId = await fetchProductById(body.productId);
-    // if (!productId) return res.status(404).json({ message: `No product found with productId : ${body.productId}`, itemPromotion: null, status: false });
-    // // updateItemPromotion
+export const handleUpdateItemPromotion = async (body: dataVerifyIUpdatetemPromotion, res: NextApiResponse) => {
+    // VerifyitemPromotionData
+    if(body.deleteItemPromotionData.length > 0){
+        const verifyDeleteItemPromotion = verifyItemPromotionBody(body.deleteItemPromotionData);
+        if (verifyDeleteItemPromotion.length > 0) return res.status(404).json({ message: verifyDeleteItemPromotion, itemPromotion: null, status: false });
+    }
+    const verifyItemPromotion = verifyItemPromotionBody(body.itemPromotionData);
+    if (verifyItemPromotion.length > 0) return res.status(404).json({ message: verifyItemPromotion, itemPromotion: null, status: false });
+    // check itemPromotionId
+    const checkPromotionId = await checkItemPromotionIdArr(body);
+    if (checkPromotionId.length > 0) return res.status(404).json({ message: checkPromotionId, itemPromotion: null, status: false });
+    // check productId
+    const checkProductId = await checkItemPromotionProductIdArr(body);
+    if (checkProductId.length > 0) return res.status(404).json({ message: checkProductId, itemPromotion: null, status: false });
+    // deleteItemPromotion By productId And promotionId
+    const deleteItemPromotion = await deleteDataItPromotionByPdIdPmId(body.deleteItemPromotionData);
+    // updateItemPromotion
     // const updateItemPromotion = await updateDataItemPromotion(body, body.id);
     // if (!updateItemPromotion) return res.status(404).json({ message: "An error occurred saving data.", itemPromotion: null, status: false });
 
