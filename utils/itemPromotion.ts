@@ -139,6 +139,7 @@ export const fetchItemPromotionById = async (id: number): Promise<fetchItemPromo
 
 export const fetchItemPromotionByPromotionId = async (promotionId: number): Promise<fetchItemPromotionInPromotion[] | null> => {
     try {
+        
         const itemPromotion = await prisma.promotion.findMany({
             select: {
                 id: true,
@@ -168,6 +169,29 @@ export const fetchItemPromotionByPromotionId = async (promotionId: number): Prom
             totalItem: itemPromotion.ItemPromotions.length,
         }));
         return promotionWithKey;
+    } catch (error) {
+        // Handle any errors here or log them
+        console.error('Error fetching itemPromotion:', error);
+        return null;
+    } finally {
+        await prisma.$disconnect();
+    }
+}
+
+export const fetchItemPromotionByPromotionIdPdId = async (promotionId: number,productId: number): Promise<fetchItemPromotion | null> => {
+    try {
+        
+        const itemPromotion = await prisma.itemPromotion.findFirst({
+            where: {
+                promotionId: promotionId,
+                productId: productId,
+            },
+            orderBy: { id: 'asc' },
+        });
+
+        if (!itemPromotion) return null;
+    
+        return itemPromotion;
     } catch (error) {
         // Handle any errors here or log them
         console.error('Error fetching itemPromotion:', error);
@@ -365,19 +389,22 @@ export const checkItemPromotionProductIdArr = async (data: dataVerifyIUpdatetemP
 export const deleteDataItPromotionByPdIdPmId = async (data: dataVerifyItemPromotion[]): Promise<promiseDataVerify[]> => {
     const verifyStatus: promiseDataVerify[] = [];
     try {
+        
         for (let index = 0; index < data.length; index++) {
             const productId = data[index].productId;
             const promotionId = data[index].promotionId;
+            const checkPromotionId = await fetchItemPromotionByPromotionIdPdId(promotionId, productId);
 
-            const deletedItemPromotion = await prisma.itemPromotion.deleteMany({
-                where: {
-                    productId: productId,
-                    promotionId: promotionId,
-                },
-            });
-            
-            if(deletedItemPromotion.count === 0){
-                verifyStatus.push(pushData(`ลบข้อมูล itemPromotionData แถวที่ ${index + 1} ไม่สำเร็จ`));
+            if(checkPromotionId){
+                const deletedItemPromotion = await prisma.itemPromotion.delete({
+                    where: {
+                       id: checkPromotionId.id
+                    },
+                });
+
+                if(!deletedItemPromotion){
+                    verifyStatus.push(pushData(`ลบข้อมูล itemPromotion แถวที่ ${index + 1} ไม่สำเร็จ`));
+                }
             }
         }
         
@@ -390,4 +417,26 @@ export const deleteDataItPromotionByPdIdPmId = async (data: dataVerifyItemPromot
         await prisma.$disconnect();
     }
 }
+
+export const updateItemPromotionArr = async (data: dataVerifyItemPromotion[]): Promise<promiseDataVerify[]> => {
+    const verifyStatus: promiseDataVerify[] = [];
+
+    for (let index = 0; index < data.length; index++) {
+        const item = data[index];
+        const checkPromotionId = await fetchItemPromotionByPromotionIdPdId(item.promotionId, item.productId);
+     
+        // Update ItemPromotion
+        if(checkPromotionId){
+            const updateItem = await updateDataItemPromotion(item,checkPromotionId.id);
+            if(!updateItem) verifyStatus.push(pushData(`แก้ไข itemPromotion แถวที่ ${index + 1} ไม่สำเร็จ`));
+        }else{
+            // Insert New ItemPromotion
+            const insertNewItem = await insertItemPromotion(item);
+            if(!insertNewItem) verifyStatus.push(pushData(`เพิ่ม itemPromotion แถวที่ ${index + 1} ไม่สำเร็จ`));
+        }
+    }
+
+    return verifyStatus;
+};
+
 

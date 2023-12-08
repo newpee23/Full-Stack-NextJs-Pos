@@ -116,7 +116,7 @@ const ListPromotionItem = ({ itemPromoTion, handleRemoveProduct, onClick, status
 
                 if (updateItemPromotion === null) return showMessage({ status: "error", text: "แก้ไขข้อมูลสินค้าในโปรโมชั่นไม่สำเร็จ กรุณาลองอีกครั้ง" });
                 if (updateItemPromotion?.status === true) {
-                    // setTimeout(() => { onClick(); }, 1500);
+                    setTimeout(() => { onClick(); }, 1500);
                     return showMessage({ status: "success", text: "แก้ไขข้อมูลสินค้าในโปรโมชั่นสำเร็จ" });
                 }
                 if (typeof updateItemPromotion.message !== 'string') setMessageError(updateItemPromotion.message);
