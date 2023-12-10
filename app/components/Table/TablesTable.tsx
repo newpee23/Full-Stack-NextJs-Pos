@@ -15,7 +15,7 @@ import { fetchTable } from '@/types/fetchData';
 const TablesTable = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const { data: session } = useSession();
-  const { data, isLoading, isError, refetch, remove } = useDataTables(session?.user.accessToken, session?.user.company_id);
+  const { data, isLoading, isError, refetch, remove } = useDataTables(session?.user.accessToken, session?.user.branch_id);
   const deleteDataTables = useDeleteDataTables();
 
   const showMessage = ({ status, text }: { status: string, text: string }) => {

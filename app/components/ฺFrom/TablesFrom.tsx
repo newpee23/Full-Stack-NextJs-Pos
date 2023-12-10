@@ -1,9 +1,8 @@
 import { setLoading } from '@/app/store/slices/loadingSlice';
 import { useAppDispatch } from '@/app/store/store';
-import { Col, Form, Input, Select, Skeleton, message } from 'antd';
+import { Form, Skeleton, message } from 'antd';
 import { useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react'
-import { optionStatus, validateWhitespace } from './validate/validate';
 import ProgressBar from '../UI/loading/ProgressBar';
 import SaveBtn from '../UI/btn/SaveBtn';
 import DrawerActionData from '../DrawerActionData';

@@ -74,7 +74,7 @@ const HomeCloudPage = () => {
       <main>
         <div className="flex mt-14 bg-slate-50">
           <MenuPage onMenuClick={handleMenuClick} />
-          <div className="w-full">
+          <div className="w-full min-w-[400px]">
             {selectedComponent ? (
               // แสดง component ที่ถูกเลือก
                 <BlockContens idComponents={selectedComponent} />

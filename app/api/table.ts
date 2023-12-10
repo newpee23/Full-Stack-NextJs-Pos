@@ -9,9 +9,9 @@ interface addTablesType {
     , status: boolean
 }
 
-const fetchTableData = async (token: string | undefined, company_id: number | undefined): Promise<fetchTable[]> => {
+const fetchTableData = async (token: string | undefined, branchId: number | undefined): Promise<fetchTable[]> => {
     try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/table?companyId=${company_id}`, {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/table?branchId=${branchId}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -243,8 +243,8 @@ export const useDeleteDataTables = () => {
     return useMutation((variables: { token: string | undefined; id: string }) => deleteTables(variables.token, variables.id));
 };
 
-export const useDataTables = (token: string | undefined, company_id: number | undefined) => {
-    return useQuery('dataTables', () => fetchTableData(token, company_id), {
+export const useDataTables = (token: string | undefined, branchId: number | undefined) => {
+    return useQuery('dataTables', () => fetchTableData(token, branchId), {
         refetchOnWindowFocus: false,
     });
 };

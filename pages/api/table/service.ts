@@ -26,28 +26,28 @@ export const handleAddTable = async (body: dataVerifyTable, res: NextApiResponse
 
 export const handleGetTableById = async (res: NextApiResponse, id: string) => {
     const tables = await fetchTableById(id);
-    if (!tables) return res.status(404).json({ message: `No tables found with Id : ${id}`, tables: null, status: false });
+    if (!tables) return res.status(200).json({ message: `No tables found with Id : ${id}`, tables: null, status: false });
 
     return res.status(200).json({ message: "Tables found", promotion: tables, status: true });
 }
 
 export const handleGetTableByBranchId = async (res: NextApiResponse, branchId: number) => {
     const tables = await fetchTableBranchId(branchId);
-    if (!tables || (Array.isArray(tables) && tables.length === 0)) return res.status(404).json({ message: `No tables found with branchId : ${branchId}`, tables: null, status: false });
+    if (!tables || (Array.isArray(tables) && tables.length === 0)) return res.status(200).json({ message: `No tables found with branchId : ${branchId}`, tables: null, status: false });
 
     return res.status(200).json({ message: "Tables found", tables: tables, status: true });
 }
 
 export const handleGetTableByCompanyId = async (res: NextApiResponse, companyId: number) => {
     const tables = await fetchTableCompanyId(companyId);
-    if (!tables || (Array.isArray(tables) && tables.length === 0)) return res.status(404).json({ message: `No tables found with companyId : ${companyId}`, tables: null, status: false });
+    if (!tables || (Array.isArray(tables) && tables.length === 0)) return res.status(200).json({ message: `No tables found with companyId : ${companyId}`, tables: null, status: false });
 
     return res.status(200).json({ message: "Tables found", tables: tables, status: true });
 }
 
 export const handleGetAllTable = async (res: NextApiResponse) => {
     const tables = await fetchAllTable();
-    if (!tables || (Array.isArray(tables) && tables.length === 0)) return res.status(404).json({ message: `No tables found`, tables: null, status: false });
+    if (!tables || (Array.isArray(tables) && tables.length === 0)) return res.status(200).json({ message: `No tables found`, tables: null, status: false });
 
     return res.status(200).json({ message: "Tables found", tables: tables, status: true });
 }
