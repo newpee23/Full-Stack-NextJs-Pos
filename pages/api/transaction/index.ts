@@ -1,4 +1,6 @@
+import { typeNumber } from "@/utils/utils";
 import { NextApiRequest, NextApiResponse } from "next";
+import { handleGetTransactionByBranchId } from "./service";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === "GET") {
@@ -20,7 +22,7 @@ const GET = async (req: NextApiRequest, res: NextApiResponse) => {
         // getTable By Id
         // if (query.id) return await handleGetTableById(res, query.id.toString());
         // getTable By companyId
-        // if (query.branchId) return await handleGetTableByBranchId(res, typeNumber(query.branchId));
+        if (query.branchId) return await handleGetTransactionByBranchId(res, typeNumber(query.branchId));
         // getTable By companyId
         // if (query.companyId) return await handleGetTableByCompanyId(res, typeNumber(query.companyId));
         //  getAllTable

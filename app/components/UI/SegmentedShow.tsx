@@ -3,19 +3,18 @@ import { AppstoreOutlined, BarsOutlined } from '@ant-design/icons';
 import { Segmented } from 'antd';
 import { SegmentedValue } from 'antd/lib/segmented';
 
-const SegmentedShow = () => {
-  const handleSegmentChange = (value: SegmentedValue) => {
-    console.log('Selected value:', value);
-  };
-
+interface Props {
+  setSegmentedShow: React.Dispatch<React.SetStateAction<SegmentedValue>>;
+}
+const SegmentedShow = ({setSegmentedShow} : Props) => {
   return (
     <Segmented
       defaultValue="1"
       options={[
-        { label: 'List', value: '1', icon: <BarsOutlined /> },
-        { label: 'Kanban', value: '2', icon: <AppstoreOutlined /> },
+        { label: 'แสดงตามโต๊ะ', value: '1', icon: <BarsOutlined /> },
+        { label: 'แสดงตามบิล', value: '2', icon: <AppstoreOutlined /> },
       ]}
-      onChange={(value) => handleSegmentChange(value)}
+      onChange={(value) => setSegmentedShow(value)}
     />
   );
 };

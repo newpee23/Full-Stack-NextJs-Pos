@@ -235,3 +235,18 @@ export interface optionIdName {
   id: number;
   name: string;
 }
+
+export interface orderTransactionByBranch {
+  id: string;
+  name: string;
+  stoves: number;
+  people: number;
+  transactionOrder: order | null
+}
+
+export interface order {
+  id: string;
+  receipt: string;
+  startOrder: Date;
+  peoples: number;
+}

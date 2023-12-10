@@ -1,4 +1,4 @@
-import { fetchTable } from "@/types/fetchData";
+import { orderTransactionByBranch } from "@/types/fetchData";
 import axios, { AxiosError } from "axios";
 import { useQuery } from "react-query";
 
@@ -8,10 +8,10 @@ interface addTransactionType {
   status: boolean;
 }
 
-const fetchTableData = async (token: string | undefined,branch_id: number | undefined): Promise<fetchTable[]> => {
+const orderTransactionByBranchData = async (token: string | undefined,branch_id: number | undefined): Promise<orderTransactionByBranch[]> => {
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/table?branch_id=${branch_id}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/transaction?branchId=${branch_id}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -24,8 +24,8 @@ const fetchTableData = async (token: string | undefined,branch_id: number | unde
       return [];
     }
 
-    const tables: fetchTable[] = response.data.tables;
-    return tables;
+    const orderTransaction: orderTransactionByBranch[] = response.data.transactionItem;
+    return orderTransaction;
   } catch (error: unknown) {
     if (axios.AxiosError) {
       // The error is an instance of AxiosError
@@ -52,7 +52,7 @@ const fetchTableData = async (token: string | undefined,branch_id: number | unde
 };
 
 export const useDataTransaction = (token: string | undefined, branchId: number | undefined) => {
-    return useQuery('dataTransactionTables', () => fetchTableData(token, branchId), {
+    return useQuery('dataTransactionTables', () => orderTransactionByBranchData(token, branchId), {
         refetchOnWindowFocus: false,
     });
 };
