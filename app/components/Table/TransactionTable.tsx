@@ -6,10 +6,6 @@ import ErrPage from '../ErrPage';
 import { SegmentedValue } from 'antd/lib/segmented';
 import CardTransaction from '../UI/card/CardTransaction';
 import { orderTransactionByBranch } from '@/types/fetchData';
-import { Card } from 'antd';
-import CloseBtnBill from '../UI/btn/CloseBtnBill';
-import AddBtnBill from '../UI/btn/AddBtnBill';
-import TagStatus from '../UI/TagStatus';
 import EmptyNodata from '../UI/EmptyNodata';
 import RefreshBtn from '../UI/btn/RefreshBtn';
 
@@ -37,9 +33,7 @@ const TransactionTable = ({ segmentedShow }: Props) => {
 
   const renderCardByTable = (dataOrder: orderTransactionByBranch[]) => {
     return dataOrder.map((item) => {
-      const { transactionOrder, id, name, people, stoves } = item;
-      const isOpen = Boolean(transactionOrder);
-
+      const isOpen = Boolean(item.transactionOrder);
       return (
         <CardTransaction key={item.id} data={item} isOpen={isOpen}/>
       );
@@ -51,11 +45,9 @@ const TransactionTable = ({ segmentedShow }: Props) => {
 
     return hasTransactionOrder ? (
       dataOrder.map((item) => {
-        const { transactionOrder, id, name, people, stoves } = item;
-        const isOpen = Boolean(transactionOrder);
-
+        const isOpen = Boolean(item.transactionOrder);
         return (
-          transactionOrder ? (
+          item.transactionOrder ? (
             <CardTransaction key={item.id} data={item} isOpen={isOpen}/>
           ) : null
         );

@@ -1,9 +1,10 @@
 import React from 'react';
 import { Card } from 'antd';
-import AddBtnBill from '../btn/AddBtnBill';
 import TagStatus from '../TagStatus';
 import CloseBtnBill from '../btn/CloseBtnBill';
 import { orderTransactionByBranch } from '@/types/fetchData';
+import moment from 'moment';
+import TransactionFrom from '@/app/components/ฺFrom/TransactionFrom';
 
 type Props = {
     data: orderTransactionByBranch;
@@ -18,14 +19,14 @@ const CardTransaction = ({ data, isOpen }: Props) => {
                 {isOpen ? (
                     <CloseBtnBill onClick={() => console.log("ssss")} label="ปิดบิล" />
                 ) : (
-                    <AddBtnBill onClick={() => console.log("ssss")} label="เปิดบิล" />
+                    <TransactionFrom id={data.id} tableName={data.name} />
                 )}
             </div>
             <div className="flex items-center justify-between p-2">
                 <p>จำนวนเตา : {data.stoves}</p>
             </div>
             <div className="p-2">
-                <p>เวลาเปิดบิล : {data.transactionOrder?.startOrder?.toString() || "-"}</p>
+                <p>เวลาเปิดบิล : {moment(data.transactionOrder?.startOrder?.toString()).format('DD/MM/YYYY HH:mm') || "-"}</p>
             </div>
             <div className="flex items-center justify-between p-2">
                 <p>ยอดปัจจุบัน: </p>
