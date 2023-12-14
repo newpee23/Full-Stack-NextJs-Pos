@@ -157,3 +157,8 @@ export interface dataUpdateImgPromotion {
   companyId: number;
   promotionId: number;
 }
+
+export interface dataVerifyTransaction {
+  id: string;
+  peoples: number;
+}

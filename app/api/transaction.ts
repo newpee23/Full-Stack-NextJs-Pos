@@ -51,6 +51,7 @@ const orderTransactionByBranchData = async (token: string | undefined,branch_id:
   }
 };
 
+// function React Query
 export const useDataTransaction = (token: string | undefined, branchId: number | undefined) => {
     return useQuery('dataTransactionTables', () => orderTransactionByBranchData(token, branchId), {
         refetchOnWindowFocus: false,

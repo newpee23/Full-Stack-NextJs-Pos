@@ -125,11 +125,17 @@ export const fetchTableBranchId = async (branchId: number): Promise<fetchTable[]
                     },
                 }
             }
-            , orderBy: { id: 'asc', } 
         });
 
         if (!tables) return null;
-        return tables as fetchTable[];
+        // สร้าง key เพื่อเอาไปใส่ table และ แปลง date เป็น str
+        const tablesWithKey: fetchTable[] = tables.map((tables, index) => ({
+            ...tables,
+            index: (index + 1),
+            key: tables.id.toString(),
+        }));
+    
+        return tablesWithKey;
     } catch (error) {
         // Handle any errors here or log them
         console.error('Error fetching tables:', error);

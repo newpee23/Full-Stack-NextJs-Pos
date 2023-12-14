@@ -4,7 +4,7 @@ import TagStatus from '../TagStatus';
 import CloseBtnBill from '../btn/CloseBtnBill';
 import { orderTransactionByBranch } from '@/types/fetchData';
 import moment from 'moment';
-import TransactionFrom from '@/app/components/ฺFrom/TransactionFrom';
+import AddModalTransaction from '../modal/AddModalTransaction';
 
 type Props = {
     data: orderTransactionByBranch;
@@ -19,17 +19,16 @@ const CardTransaction = ({ data, isOpen }: Props) => {
                 {isOpen ? (
                     <CloseBtnBill onClick={() => console.log("ssss")} label="ปิดบิล" />
                 ) : (
-                    <TransactionFrom id={data.id} tableName={data.name} />
+                   <AddModalTransaction data={data}/>
                 )}
             </div>
             <div className="flex items-center justify-between p-2">
                 <p>จำนวนเตา : {data.stoves}</p>
             </div>
             <div className="p-2">
-                <p>เวลาเปิดบิล : {moment(data.transactionOrder?.startOrder?.toString()).format('DD/MM/YYYY HH:mm') || "-"}</p>
+                <p>เวลาเปิดบิล : {data.transactionOrder?.startOrder ? moment(data.transactionOrder?.startOrder?.toString()).format('DD/MM/YYYY HH:mm') : "-"}</p>
             </div>
-            <div className="flex items-center justify-between p-2">
-                <p>ยอดปัจจุบัน: </p>
+            <div className="flex items-center justify-end p-2">
                 <TagStatus color={isOpen ? "success" : "error"} textShow={isOpen ? "ใช้งาน" : "ไม่ใช้งาน"} />
             </div>
         </Card>

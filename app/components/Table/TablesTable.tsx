@@ -5,7 +5,6 @@ import React from 'react'
 import SkeletonTable from '../UI/loading/SkeletonTable';
 import ErrPage from '../ErrPage';
 import RefreshBtn from '../UI/btn/RefreshBtn';
-import { DataTypeTables } from '@/types/columns';
 import { ColumnsType } from 'antd/lib/table';
 import TagStatus from '../UI/TagStatus';
 import TablesFrom from '../ฺFrom/TablesFrom';
