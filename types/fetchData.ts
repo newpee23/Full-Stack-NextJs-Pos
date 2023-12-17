@@ -241,6 +241,7 @@ export interface orderTransactionByBranch {
   name: string;
   stoves: number;
   people: number;
+  expiration: number;
   transactionOrder: order | null
 }
 
@@ -249,4 +250,16 @@ export interface order {
   receipt: string;
   startOrder: Date;
   peoples: number;
+}
+
+export interface fetchTransaction {
+  tableId: string;
+  receipt: string;
+  startOrder: Date;
+  endOrder: Date;
+  peoples: number;
+  totalPrice: number;
+  branchId: number;
+  employeeId: number;
+  status: "Active" | "InActive";
 }

@@ -58,3 +58,20 @@ export const currentDateStrImg = (): string => {
     return `${year}${month}${day}${hours}${minutes}`;
 }
 
+// บวกเวลาตากนาที
+export const addMinutesToCurrentTime = (time: number): Date => {
+    try {
+        const currentTime = DateTime.local();
+        const newTime = currentTime.plus({ minutes: time });
+        const adjustedTime = newTime.setZone('Asia/Bangkok');
+        const formattedTime = adjustedTime.toISO();
+        if (formattedTime) {
+          return new Date(formattedTime);
+        } else {
+          throw new Error('Error formatting time');
+        }
+      } catch (error) {
+        console.error(error);
+        throw new Error('Error calculating time');
+      }
+}

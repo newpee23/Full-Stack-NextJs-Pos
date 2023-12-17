@@ -5,10 +5,11 @@ import { Modal } from 'antd';
 type Props = {
   label: string;
   name?: string;
+  bill? : boolean;
   onClick: () => void;
 };
 
-const DeleteBtn = ({ label, name ,onClick }: Props) => {
+const DeleteBtn = ({ label, name ,onClick, bill }: Props) => {
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [modalText, setModalText] = useState(name);
@@ -38,7 +39,7 @@ const DeleteBtn = ({ label, name ,onClick }: Props) => {
         <span className="ml-1">{label}</span>
       </button>
       <Modal
-        title="แจ้งเตือนการลบข้อมูล"
+        title={bill ? "แจ้งเตือนการปิดบิลขาย" : "แจ้งเตือนการลบข้อมูล"}
         open={open}
         onOk={handleOk}
         confirmLoading={confirmLoading}

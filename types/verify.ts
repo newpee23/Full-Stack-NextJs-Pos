@@ -159,6 +159,9 @@ export interface dataUpdateImgPromotion {
 }
 
 export interface dataVerifyTransaction {
-  id: string;
+  tableId: string;
   peoples: number;
+  expiration: number;
+  branchId: number;
+  employeeId: number;
 }

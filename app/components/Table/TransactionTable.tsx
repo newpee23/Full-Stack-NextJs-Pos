@@ -35,7 +35,7 @@ const TransactionTable = ({ segmentedShow }: Props) => {
     return dataOrder.map((item) => {
       const isOpen = Boolean(item.transactionOrder);
       return (
-        <CardTransaction key={item.id} data={item} isOpen={isOpen}/>
+        <CardTransaction key={item.id} data={item} isOpen={isOpen} onClick={handleRefresh}/>
       );
     });
   }
@@ -48,7 +48,7 @@ const TransactionTable = ({ segmentedShow }: Props) => {
         const isOpen = Boolean(item.transactionOrder);
         return (
           item.transactionOrder ? (
-            <CardTransaction key={item.id} data={item} isOpen={isOpen}/>
+            <CardTransaction key={item.id} data={item} isOpen={isOpen} onClick={handleRefresh}/>
           ) : null
         );
       })

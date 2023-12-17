@@ -1,6 +1,6 @@
 import { typeNumber } from "@/utils/utils";
 import { NextApiRequest, NextApiResponse } from "next";
-import { handleAddTransaction, handleGetTransactionAll, handleGetTransactionByBranchId, handleGetTransactionByCompanyId, handleGetTransactionById } from "./service";
+import { handleAddTransaction, handleCloseTransaction, handleGetTransactionAll, handleGetTransactionByBranchId, handleGetTransactionByCompanyId, handleGetTransactionById } from "./service";
 import { dataVerifyTransaction } from "@/types/verify";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
@@ -9,7 +9,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     } else if (req.method === "POST") {
         POST(req, res);
     } else if (req.method === "PUT") {
-        // PUT(req, res);
+        PUT(req, res);
     } else if (req.method === "DELETE") {
         // DELETE(req, res);
     } else {
@@ -39,6 +39,17 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
         const body: dataVerifyTransaction = await req.body;
         // Verify/Add Table
         return await handleAddTransaction(body, res);
+    } catch (error: unknown) {
+        console.error(error);
+        return res.status(500).json({ message: "Internal server error", status: false });
+    }
+};
+
+const PUT = async (req: NextApiRequest, res: NextApiResponse) => {
+    try {
+        const body: {id: string} = await req.body;
+        // Verify/Add Transaction
+        return await handleCloseTransaction(body.id, res);
     } catch (error: unknown) {
         console.error(error);
         return res.status(500).json({ message: "Internal server error", status: false });
