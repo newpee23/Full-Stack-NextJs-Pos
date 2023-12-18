@@ -19,8 +19,6 @@ const AddModalTransaction = ({ data , onClick }: Props) => {
   const [form] = Form.useForm();
   const addDataTransactionMutation = useAddDataTransaction();
   const [messageApi, contextHolder] = message.useMessage();
-  const [loadingQuery, setLoadingQuery] = useState<number>(0);
-  const [messageError, setMessageError] = useState<{ message: string }[]>([]);
   const options: { value: string; label: string }[] = [];
 
   for (let i = 1; i <= data.people; i++) {
@@ -67,11 +65,11 @@ const AddModalTransaction = ({ data , onClick }: Props) => {
         branchId: session?.user.branch_id,
         employeeId: parseInt(session?.user.id, 10),
       },
-      setLoadingQuery: setLoadingQuery
     });
 
     if (addTransaction?.status === true) {
-      setTimeout(() => { onClick(); }, 1000);
+      handleGeneratePDFWithQRCode()
+      // setTimeout(() => { onClick(); }, 1000);
       setOpen(false);
       setConfirmLoading(false);
       return showMessage({ status: "success", text: "เปิดบิลสำเร็จ" });
@@ -79,6 +77,21 @@ const AddModalTransaction = ({ data , onClick }: Props) => {
       return showMessage({ status: "error", text: "เปิดบิลไม่สำเร็จ กรุณาลองอีกครั้ง" });
     }
   }
+
+  const handleGeneratePDFWithQRCode = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/jspdf`);
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        window.open(url, '_blank'); // เปิด PDF ในแท็บใหม่
+      } else {
+        console.error('Failed to generate PDF with QR code');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 
   return (
     <>

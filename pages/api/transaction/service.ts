@@ -18,7 +18,7 @@ export const handleAddTransaction = async (body: dataVerifyTransaction, res: Nex
     const addTransaction = await insertTransaction(body);
     if (!addTransaction) return res.status(404).json({ message: "An error occurred saving data.", transactionItem: null, status: false });
 
-    return res.status(200).json({ message: "Data saved successfully.", transactionItem: null, status: true });
+    return res.status(200).json({ message: "Data saved successfully.", transactionItem: addTransaction, status: true });
 }
 
 export const handleCloseTransaction = async (id: string, res: NextApiResponse) => {

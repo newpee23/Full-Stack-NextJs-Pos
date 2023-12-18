@@ -18,7 +18,7 @@ const HomeCloudPage = () => {
   const [loading, setLoading] = useState(true);
 
   const handleMenuClick = (key: React.Key) => {
- 
+
     // ให้เปลี่ยน state เมื่อมีการคลิกที่เมนู
     if (key === "13") signOut({ callbackUrl: "/auth" });
     setSelectedComponent(key);
@@ -77,7 +77,8 @@ const HomeCloudPage = () => {
           <div className="w-full min-w-[400px]">
             {selectedComponent ? (
               // แสดง component ที่ถูกเลือก
-                <BlockContens idComponents={selectedComponent} />
+              <BlockContens idComponents={selectedComponent} />
+  
             ) : null}
           </div>
         </div>

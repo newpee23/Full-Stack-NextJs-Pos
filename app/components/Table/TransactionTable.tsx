@@ -8,6 +8,7 @@ import CardTransaction from '../UI/card/CardTransaction';
 import { orderTransactionByBranch } from '@/types/fetchData';
 import EmptyNodata from '../UI/EmptyNodata';
 import RefreshBtn from '../UI/btn/RefreshBtn';
+import { generatePdf } from '@/app/lib/receipt/receiptOpenBill';
 
 type Props = {
   segmentedShow: SegmentedValue;
@@ -35,7 +36,7 @@ const TransactionTable = ({ segmentedShow }: Props) => {
     return dataOrder.map((item) => {
       const isOpen = Boolean(item.transactionOrder);
       return (
-        <CardTransaction key={item.id} data={item} isOpen={isOpen} onClick={handleRefresh}/>
+        <CardTransaction key={item.id} data={item} isOpen={isOpen} onClick={handleRefresh} />
       );
     });
   }
@@ -44,21 +45,24 @@ const TransactionTable = ({ segmentedShow }: Props) => {
     const hasTransactionOrder = dataOrder.some((item) => Boolean(item.transactionOrder));
 
     return hasTransactionOrder ? (
-      dataOrder.map((item) => {
-        const isOpen = Boolean(item.transactionOrder);
-        return (
-          item.transactionOrder ? (
-            <CardTransaction key={item.id} data={item} isOpen={isOpen} onClick={handleRefresh}/>
-          ) : null
-        );
-      })
+      <div className="grid p-5 gap-5 grid-cols-1 mdl:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {dataOrder.map((item) => {
+          const isOpen = Boolean(item.transactionOrder);
+          return (
+            item.transactionOrder ? (
+              <CardTransaction key={item.id} data={item} isOpen={isOpen} onClick={handleRefresh} />
+            ) : null
+          );
+        })}
+      </div>
     ) : <EmptyNodata />;
   };
 
   return (
     <div>
       <div className="text-right p-2 pb-0">
-        <RefreshBtn label="Refresh Data" onClick={handleRefresh}/>
+        <RefreshBtn label="Refresh Data" onClick={handleRefresh} />
+        <RefreshBtn label="Refresh Data" onClick={generatePdf} />
       </div>
       {segmentedShow === "1" ? (
         data && data?.length > 0 ? (
@@ -70,9 +74,7 @@ const TransactionTable = ({ segmentedShow }: Props) => {
         )
       ) :
         data && data?.length > 0 ? (
-          <div className="grid p-5 gap-5 grid-cols-1 mdl:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {renderCardByTransaction(data)}
-          </div>
+          renderCardByTransaction(data)
         ) : null}
     </div>
   )

@@ -249,6 +249,7 @@ export interface order {
   id: string;
   receipt: string;
   startOrder: Date;
+  endOrder: Date;
   peoples: number;
 }
 

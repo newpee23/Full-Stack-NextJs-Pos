@@ -48,9 +48,8 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
 
 const PUT = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
-        const body: dataVerifyItemPromotion = await req.body;
         // Verify/Add itemPromotion
-        return await handleUpdateItemPromotion(body, res);
+        return await handleUpdateItemPromotion(req.body, res);
     } catch (error: unknown) {
         console.error(error);
         return res.status(500).json({ message: "Internal server error", status: false });
