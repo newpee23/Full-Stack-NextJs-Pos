@@ -1,15 +1,25 @@
 import jsPDF from "jspdf";
 import QRCode from 'qrcode';
+import '@/app/lib/receipt/THSarabunNew-normal';
 
 export const generatePdf = async () => {
     const pdf = new jsPDF({
-        format: [80, 200],
+        format: [80, 90],
         unit: 'mm',
     });
 
+    // Define the font
+    pdf.addFont("THSarabunNew-normal.ttf", "THSarabunNew-normal", "normal");
+
+    // Set the font to THSarabunNew-normal
+    pdf.setFont("THSarabunNew-normal");
+
     // Function to add text to the PDF and handle page breaks
-    const addText = (text: string, x: number, y: number) => {
+    const addText = (text: string, y: number, fontSize: number = 12) => {
         const lineHeight = 10;
+        const textWidth = pdf.getStringUnitWidth(text) * fontSize / pdf.internal.scaleFactor;
+        const x = (pdf.internal.pageSize.width - textWidth) / 2;
+
         const remainingHeight = pdf.internal.pageSize.height - y;
 
         if (remainingHeight < lineHeight) {
@@ -17,28 +27,34 @@ export const generatePdf = async () => {
             y = 15;
         }
 
-        // Set the font size (adjust this value based on your requirements)
-        pdf.setFontSize(12);
+        // Set the font size
+        pdf.setFontSize(fontSize);
 
         pdf.text(text, x, y);
     };
 
-    addText("บริษัทนิวจำกัด", 0, 15);
-    addText("สาขารามอินทรา 21", 0, 40);
-    addText("----------------------------------------", 0, 45);
-
-    const qrCodeData = 'https://example.com';
+    addText("บริษัทนิวจำกัด", 10, 16);
+    addText("สาขารามอินทรา 21", 15, 14);
+    addText("เริ่มต้น 18/12/2023 21:00", 20, 14);
+    addText("------------------------------------------------------------------------", 25, 14);
+    addText("โต๊ะที่ 1", 30, 16);
+    // QrCode
+    const qrCodeData = 'http://localhost:3000/customerCloud';
     const qrCodeSize = 30;
     const qrCodeX = 25;
-    const qrCodeY = 100;
+    const qrCodeY = 30;
 
     const qrCodeDataUrl = await QRCode.toDataURL(qrCodeData, { width: qrCodeSize });
 
     pdf.addImage(qrCodeDataUrl, 'PNG', qrCodeX, qrCodeY, qrCodeSize, qrCodeSize);
+    // Text
+    addText("(สแกนเพื่อสั่งอาหาร)", 63, 16);
+    addText("เวลาสั่งอาหาร 120 นาที (4 ท่าน)", 70, 14);
+    addText("สิ้นสุด 18/12/2023 24:00", 75, 14);
 
     const pdfBlob = pdf.output('blob');
     const pdfUrl = URL.createObjectURL(pdfBlob);
-
+ 
     const newTab = window.open(pdfUrl, '_blank');
 
     newTab?.addEventListener('beforeunload', () => {
