@@ -70,7 +70,7 @@ const HomeCloudPage = () => {
 
   return (
     <>
-      <Navbar />
+      <Navbar page="customerCloud"/>
       <main>
         <div className="flex mt-14 bg-slate-50">
           <MenuPage onMenuClick={handleMenuClick} />

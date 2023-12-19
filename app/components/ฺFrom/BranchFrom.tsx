@@ -144,24 +144,23 @@ const BranchFrom = ({ onClick, editData, title, statusAction }: Props) => {
         return (
             <Form layout="vertical" onFinish={(values) => { setFormValues(values as branchSubmit); onFinish(values); }} initialValues={formValues}>
                {/* ชื่อสาขา,รหัสใบเสร็จ */}
-               <div className="grid gap-3 mb-4 grid-cols-1 sml:grid-cols-2">
+               <div className="grid gap-3 mb-3 grid-cols-1 sml:grid-cols-2">
                     <InputFrom label="ชื่อสาขา" name="name" required={true} type="text"/>
                     <InputFrom label="รหัสใบเสร็จ" name="codeReceipt" required={true} type="text"/>
                </div>
                 {/* ที่อยู่สาขา */}
-                <div className="grid gap-3 mb-4 grid-cols-1 sml:grid-cols-1">
+                <div className="grid gap-3 mb-3 grid-cols-1 sml:grid-cols-1">
                     <InputFrom label="ที่อยู่สาขา" name="address" required={true} type="textArea"/>
                 </div>
                 {/* วันหมดอายุสาขา,เบอร์โทรศัพท์ */}
-                <div className="grid gap-3 mb-4 grid-cols-1 sml:grid-cols-2">
+                <div className="grid gap-3 mb-3 grid-cols-1 sml:grid-cols-2">
                     <InputFrom label="วันหมดอายุสาขา" name="expiration" required={true} type="datePicker"/>
                     <InputFrom label="เบอร์โทรศัพท์" name="phone" required={true} type="number"/>
                 </div>
                 {/* สถานะ */}
-                <div className="grid gap-3 mb-4 grid-cols-1 sml:grid-cols-2">
+                <div className="grid gap-3 mb-3 grid-cols-1 sml:grid-cols-2">
                     <StatusFrom label="สถานะ" name="status" />
                 </div>
-                
                 <ProgressBar />
                 <SaveBtn label="บันทึกข้อมูล" />
             </Form>

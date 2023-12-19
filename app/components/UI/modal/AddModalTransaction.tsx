@@ -5,6 +5,7 @@ import { orderTransactionByBranch } from '@/types/fetchData';
 import SelectPeople from '../select/SelectPeople';
 import { useAddDataTransaction } from '@/app/api/transaction';
 import { useSession } from 'next-auth/react';
+import { generatePdf } from '@/app/lib/receipt/receiptOpenBill';
 
 type Props = {
   data: orderTransactionByBranch;
@@ -68,8 +69,8 @@ const AddModalTransaction = ({ data , onClick }: Props) => {
     });
 
     if (addTransaction?.status === true) {
-      handleGeneratePDFWithQRCode()
-      // setTimeout(() => { onClick(); }, 1000);
+      generatePdf({ details: data });
+      setTimeout(() => { onClick(); }, 1000);
       setOpen(false);
       setConfirmLoading(false);
       return showMessage({ status: "success", text: "เปิดบิลสำเร็จ" });
@@ -77,21 +78,6 @@ const AddModalTransaction = ({ data , onClick }: Props) => {
       return showMessage({ status: "error", text: "เปิดบิลไม่สำเร็จ กรุณาลองอีกครั้ง" });
     }
   }
-
-  const handleGeneratePDFWithQRCode = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/jspdf`);
-      if (response.ok) {
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        window.open(url, '_blank'); // เปิด PDF ในแท็บใหม่
-      } else {
-        console.error('Failed to generate PDF with QR code');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  };
 
   return (
     <>

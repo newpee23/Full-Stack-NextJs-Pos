@@ -10,3 +10,7 @@ html {
 * {
   font-family: 'Kanit', sans-serif; /* Set the font to Kanit with a fallback to sans-serif */
 }
+
+.ant-row.css-dev-only-do-not-override-1adbn6x {
+  margin-bottom: 5px;
+}

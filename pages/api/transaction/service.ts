@@ -63,3 +63,8 @@ export const handleGetTransactionAll = async (res: NextApiResponse) => {
 
     return res.status(200).json({ message: "Tables found", transactionItem: transactionOrder, status: true });
 }
+
+export const handleGetCustomerFrontDataById = async (res: NextApiResponse, id: string) => {
+  
+    return res.status(200).json({ message: "customerFrontData found", customerFrontData: id, status: true });
+}

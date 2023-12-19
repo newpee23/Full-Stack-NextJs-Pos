@@ -8,7 +8,6 @@ import CardTransaction from '../UI/card/CardTransaction';
 import { orderTransactionByBranch } from '@/types/fetchData';
 import EmptyNodata from '../UI/EmptyNodata';
 import RefreshBtn from '../UI/btn/RefreshBtn';
-import { generatePdf } from '@/app/lib/receipt/receiptOpenBill';
 
 type Props = {
   segmentedShow: SegmentedValue;
@@ -62,7 +61,6 @@ const TransactionTable = ({ segmentedShow }: Props) => {
     <div>
       <div className="text-right p-2 pb-0">
         <RefreshBtn label="Refresh Data" onClick={handleRefresh} />
-        <RefreshBtn label="Refresh Data" onClick={generatePdf} />
       </div>
       {segmentedShow === "1" ? (
         data && data?.length > 0 ? (

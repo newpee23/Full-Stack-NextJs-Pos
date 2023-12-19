@@ -1,8 +1,12 @@
 import jsPDF from "jspdf";
 import QRCode from 'qrcode';
 import '@/app/lib/receipt/THSarabunNew-normal';
+import { orderTransactionByBranch } from "@/types/fetchData";
 
-export const generatePdf = async () => {
+interface Props {
+    details: orderTransactionByBranch;
+}
+export const generatePdf = async ({details} : Props) => {
     const pdf = new jsPDF({
         format: [80, 90],
         unit: 'mm',
@@ -35,11 +39,11 @@ export const generatePdf = async () => {
 
     addText("บริษัทนิวจำกัด", 10, 16);
     addText("สาขารามอินทรา 21", 15, 14);
-    addText("เริ่มต้น 18/12/2023 21:00", 20, 14);
+    addText("เวลาเริ่มต้น 18/12/2023 21:00", 20, 14);
     addText("------------------------------------------------------------------------", 25, 14);
     addText("โต๊ะที่ 1", 30, 16);
     // QrCode
-    const qrCodeData = 'http://localhost:3000/customerCloud';
+    const qrCodeData = `${process.env.NEXT_PUBLIC_BASE_URL_FRONT}/customerFront/${details.transactionOrder?.id}`;
     const qrCodeSize = 30;
     const qrCodeX = 25;
     const qrCodeY = 30;
@@ -48,9 +52,9 @@ export const generatePdf = async () => {
 
     pdf.addImage(qrCodeDataUrl, 'PNG', qrCodeX, qrCodeY, qrCodeSize, qrCodeSize);
     // Text
-    addText("(สแกนเพื่อสั่งอาหาร)", 63, 16);
+    addText("(สแกนเพื่อสั่งอาหาร)", 64, 16);
     addText("เวลาสั่งอาหาร 120 นาที (4 ท่าน)", 70, 14);
-    addText("สิ้นสุด 18/12/2023 24:00", 75, 14);
+    addText("เวลาสิ้นสุด 18/12/2023 24:00", 76, 14);
 
     const pdfBlob = pdf.output('blob');
     const pdfUrl = URL.createObjectURL(pdfBlob);

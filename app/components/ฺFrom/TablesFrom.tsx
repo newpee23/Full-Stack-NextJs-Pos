@@ -168,7 +168,7 @@ const TablesFrom = ({ onClick, title, statusAction, editData }: Props) => {
           <InputFrom label="เวลาบริการ(นาที)" name="expiration" required={true} type="number" />
         </div>
         {/* สาขา, สถานะ */}
-        <div className="grid gap-3 mb-4 grid-cols-1 sml:grid-cols-2">
+        <div className="grid gap-3 mb-4 grid-cols-1 sml:grid-cols-2 mt-3">
           <SelectBranch data={data} />
           <StatusFrom label="สถานะ" name="status"/>
         </div>

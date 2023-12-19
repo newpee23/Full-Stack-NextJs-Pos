@@ -1,15 +1,17 @@
 "use client";
 import { useState, useEffect } from "react";
-
 // Next.js Imports
 import Image from "next/image";
-
 // Images and Icons
 import logo from "@/public/images/moonlamplogo.png";
 
 import { AiOutlineShoppingCart, AiOutlineHeart, AiOutlineUser } from "react-icons/ai";
 
-const Navbar = () => {
+interface Props {
+  page: string;
+}
+
+const Navbar = ({page}: Props) => {
 
   const [isScrolling, setIsScrolling] = useState(false);
 
@@ -33,6 +35,7 @@ const Navbar = () => {
   return (
     <nav className={`py-4 w-full fixed top-0 bg-white shadow-lg z-50`}>
       <div className="w-[95%] m-auto flex justify-between items-center">
+      
         <a href="/">
           <Image src={logo} width={150} priority alt="logo"/>
         </a>
@@ -41,11 +44,6 @@ const Navbar = () => {
           <div className="cursor-pointer relative" aria-label="Shopping Cart">
             <AiOutlineShoppingCart size={20} />
           </div>
-
-          <div aria-label="User Account">
-            <AiOutlineUser size={25} />
-          </div>
-
         </div>
 
       </div>

@@ -1,9 +1,13 @@
-import React from 'react'
+"use client"
+import React from 'react';
+import ErrPage from '../components/ErrPage';
 
-const HomePageFront = () => {
+const HomePageFront= () => {
   return (
-    <div>HomePageFront</div>
-  )
-}
+    <section>
+        <ErrPage />
+    </section>
+  );
+};
 
 export default HomePageFront;

@@ -8,6 +8,8 @@ import { useUpdateDataTransaction } from '@/app/api/transaction';
 import DeleteBtn from '../btn/DeleteBtn';
 import { useSession } from 'next-auth/react';
 import CountdownTime from '../CountdownTime';
+import PrintReceipt from '../btn/PrintReceipt';
+import { generatePdf } from '@/app/lib/receipt/receiptOpenBill';
 
 type Props = {
   data: orderTransactionByBranch;
@@ -44,12 +46,16 @@ const CardTransaction = ({ data, isOpen, onClick }: Props) => {
     return showMessage({ status: "error", text: "ปิดบิลขายไม่สำเร็จ กรุณาแก้ไขข้อผิดพลาด" });
   }
 
+  const countDownTime = () => {
+    if(data.transactionOrder?.startOrder){
+      return  <div className="text-center">
+                <CountdownTime time={data.expiration} startOrder={data.transactionOrder.startOrder} />
+              </div>
+    }
+    return <></>;
+  }
   return (
-    <Card key={data.id} title={data.name} className="bg-slate-50 border border-stone-100 text-sm" hoverable bordered={false}>
-
-      <div className="text-center">
-        <CountdownTime time={data.transactionOrder?.startOrder ? data.expiration : 0} startOrder={data.transactionOrder?.startOrder ? data.transactionOrder.startOrder : new Date()} />
-      </div>
+    <Card key={data.id} title={data.name} extra={countDownTime()} className="bg-slate-50 border border-stone-100 text-sm" hoverable bordered={false}>
       <div className="flex items-center justify-between p-2">
         <p>จำนวนลูกค้า : {data.transactionOrder?.peoples || "0"}/{data.people}</p>
         {isOpen ? (
@@ -65,9 +71,10 @@ const CardTransaction = ({ data, isOpen, onClick }: Props) => {
         <p>เวลาเปิดบิล : {data.transactionOrder?.startOrder ? moment(data.transactionOrder?.startOrder?.toString()).format('DD/MM/YYYY HH:mm') : "-"}</p>
       </div>
       <div className="p-2">
-        <p>เวลาเปิดบิล : {data.transactionOrder?.endOrder ? moment(data.transactionOrder?.endOrder?.toString()).format('DD/MM/YYYY HH:mm') : "-"}</p>
+        <p>เวลาปิดบิล : {data.transactionOrder?.endOrder ? moment(data.transactionOrder?.endOrder?.toString()).format('DD/MM/YYYY HH:mm') : "-"}</p>
       </div>
-      <div className="flex items-center justify-end p-2">
+      <div className={`flex items-center ${data.transactionOrder?.startOrder ? "justify-between" : "justify-end"} p-2`} style={{ height: "54px" }}>
+        {data.transactionOrder?.startOrder && <PrintReceipt label='พิมพ์ใบเปิดโต๊ะ' onClick={() => generatePdf({ details: data })} />}
         <TagStatus color={isOpen ? "success" : "error"} textShow={isOpen ? "ใช้งาน" : "ไม่ใช้งาน"} />
       </div>
       {contextHolder}
