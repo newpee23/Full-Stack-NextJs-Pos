@@ -69,7 +69,7 @@ const AddModalTransaction = ({ data , onClick }: Props) => {
     });
 
     if (addTransaction?.status === true) {
-      generatePdf({ details: data });
+      generatePdf({ details: addTransaction.transactionItem, page: "modalAdd" });
       setTimeout(() => { onClick(); }, 1000);
       setOpen(false);
       setConfirmLoading(false);

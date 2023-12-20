@@ -1,15 +1,6 @@
 import React, { useState } from "react";
-import {
-    AppstoreOutlined,
-    ContainerOutlined,
-    DesktopOutlined,
-    MailOutlined,
-    MenuFoldOutlined,
-    MenuUnfoldOutlined,
-    PieChartOutlined,
-} from "@ant-design/icons";
 import type { MenuProps } from "antd";
-import { Button, Menu } from "antd";
+import { Menu } from "antd";
 import "@/app/components/menuPage.css";
 
 type MenuItem = Required<MenuProps>["items"][number];
@@ -35,26 +26,26 @@ const MenuFront = ({ onMenuClick }: MenuPageProps) => {
     };
 
     const items: MenuItem[] = [
-        getItem("เปิดบิลขาย", "1", <PieChartOutlined />),
-        getItem("สาขา", "2", <DesktopOutlined />),
-        getItem("โต๊ะ", "3", <ContainerOutlined />),
+        getItem("เปิดบิลขาย", "1"),
+        getItem("เนื้อสัตว์", "2"),
+        getItem("โต๊ะ", "3"),
     ];
 
     return (
-        <section>
-            <div className={`p-2 pb-1 ${!collapsed ? "w-36" : "w-20"} bg-white border-inline-end flex items-center justify-end`} style={{ borderInlineEnd: "1px solid rgba(5, 5, 5, 0.06)" }}>
-                <Button onClick={toggleCollapsed} className={`flex items-center justify-center ${collapsed && "w-full"}`}>
-                    {collapsed ? <MenuUnfoldOutlined onClick={toggleCollapsed} /> : <MenuFoldOutlined onClick={toggleCollapsed} />}
-                </Button>
-            </div>
+        <section style={{ borderInlineEnd: "1px solid rgba(5, 5, 5, 0.06)" }}>
+           
+            <button type="button" className="w-11/12 m-1 flex items-center py-2 justify-center text-orange-600 border rounded-md text-sm drop-shadow-md hover:bg-orange-600 hover:text-white hover:drop-shadow-xl whitespace-nowrap transition-transform transform hover:scale-105">
+                <span className="font-thin">สรุปยอด</span>
+            </button>
 
             <Menu
                 onClick={({ key }) => handleMenuItemClick(key)}
                 defaultSelectedKeys={["1"]}
                 mode="inline"
-                inlineCollapsed={collapsed}
+                inlineCollapsed={false}
                 items={items}
-                className={`h-[100vh] z-0 ${!collapsed && "w-36"}`}
+                className={`h-[100vh] max-w-[100px] z-0 ${!collapsed && "w-36"}`}
+                style={{ borderInlineEnd: "0" }}
             />
         </section>
     );

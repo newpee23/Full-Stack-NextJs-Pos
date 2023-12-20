@@ -30,7 +30,7 @@ const HomePageFront = ({ params }: HomePageFrontProps) => {
             <p>วันที่ใช้บริการ 12/12/2023</p> 
             <p>เวลาเริ่มต้น 20:00 เวลาสิ้นสุด 22:00</p>
             <CountdownTime time={120} startOrder={new Date()} />
-            <p className="text-orange-600 text-xs">*หมายเหตุ เมื่อถึงเวลาสิ้นสุดจะไม่สามารถสั่งรายการอาหารได้</p>
+            <p className="text-orange-600 text-xs">*เมื่อถึงเวลาสิ้นสุดจะไม่สามารถสั่งรายการอาหารได้</p>
           </div>
           <div className="mt-3">
             <CardProduct />

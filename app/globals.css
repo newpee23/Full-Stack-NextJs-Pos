@@ -14,3 +14,20 @@ html {
 .ant-row.css-dev-only-do-not-override-1adbn6x {
   margin-bottom: 5px;
 }
+
+:where(.css-dev-only-do-not-override-1adbn6x).ant-card .ant-card-body{
+  padding: 12px;
+}
+
+:where(.css-dev-only-do-not-override-1adbn6x).ant-card .ant-card-meta-title{
+  font-size: 12px;
+  margin-bottom: 0px !important;
+}
+
+.ant-card-meta-description{
+  font-size: 10px;
+}
+
+:where(.css-dev-only-do-not-override-1adbn6x).ant-card .ant-card-meta-description{
+  color: rgb(239 117 12);
+}

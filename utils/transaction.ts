@@ -1,16 +1,15 @@
-import { fetchTransaction, orderTransactionByBranch } from "@/types/fetchData";
+import { fetchCustomerFrontData, fetchTransaction, orderTransactionByBranch } from "@/types/fetchData";
 import { prisma } from "@/pages/lib/prismaDB";
 import { dataVerifyTransaction, promiseDataVerify } from "@/types/verify";
 import { addMinutesToCurrentTime } from "./timeZone";
 import { generateRunningNumber, getMonthNow, getYearNow } from "./utils";
+import { fetchProductByCompanyId } from "./product";
 
 const pushData = (message: string) => {
     return { message };
 };
 
-export const verifyTransactionBody = (
-    data: dataVerifyTransaction
-): promiseDataVerify[] => {
+export const verifyTransactionBody = (data: dataVerifyTransaction): promiseDataVerify[] => {
     const verifyStatus: promiseDataVerify[] = [];
 
     if (!data.tableId) verifyStatus.push(pushData("ไม่พบข้อมูล : tableId"));
@@ -100,9 +99,7 @@ export const fetchTransactionByBranchId = async (
     }
 };
 
-export const fetchTransactionById = async (
-    id: string
-): Promise<orderTransactionByBranch | null> => {
+export const fetchTransactionById = async (id: string): Promise<orderTransactionByBranch | null> => {
     try {
         const table = await prisma.tables.findUnique({
             select: {
@@ -154,9 +151,7 @@ export const fetchTransactionById = async (
     }
 };
 
-export const fetchTransactionByCompanyId = async (
-    companyId: number
-): Promise<orderTransactionByBranch[] | null> => {
+export const fetchTransactionByCompanyId = async (companyId: number): Promise<orderTransactionByBranch[] | null> => {
     try {
         const tables = await prisma.tables.findMany({
             select: {
@@ -212,9 +207,7 @@ export const fetchTransactionByCompanyId = async (
     }
 };
 
-export const fetchTransactionAll = async (): Promise<
-    orderTransactionByBranch[] | null
-> => {
+export const fetchTransactionAll = async (): Promise<orderTransactionByBranch[] | null> => {
     try {
         const tables = await prisma.tables.findMany({
             select: {
@@ -229,30 +222,27 @@ export const fetchTransactionAll = async (): Promise<
         if (tables.length === 0) return null;
 
         // Fetch transactions for each table in parallel
-        const tablesWithTransactions: orderTransactionByBranch[] =
-            await Promise.all(
-                tables.map(async (item, index) => {
-                    const transactionOrder = await prisma.transaction.findFirst({
-                        select: {
-                            id: true,
-                            receipt: true,
-                            startOrder: true,
-                            endOrder: true,
-                            peoples: true,
-                        },
-                        where: {
-                            tableId: item.id,
-                            status: "Active",
-                        },
-                    });
+        const tablesWithTransactions: orderTransactionByBranch[] = await Promise.all(tables.map(async (item, index) => {
+            const transactionOrder = await prisma.transaction.findFirst({
+                select: {
+                    id: true,
+                    receipt: true,
+                    startOrder: true,
+                    endOrder: true,
+                    peoples: true,
+                },
+                where: {
+                    tableId: item.id,
+                    status: "Active",
+                },
+            });
 
-                    return {
-                        ...item,
-                        index: index + 1,
-                        transactionOrder: transactionOrder || null,
-                    };
-                })
-            );
+            return {
+                ...item,
+                index: index + 1,
+                transactionOrder: transactionOrder || null,
+            };
+        }));
 
         return tablesWithTransactions;
     } catch (error) {
@@ -302,9 +292,7 @@ export const getReceiptOrder = async (branchId: number): Promise<string> => {
     }
 };
 
-export const insertTransaction = async (
-    body: dataVerifyTransaction
-): Promise<fetchTransaction | null> => {
+export const insertTransaction = async (body: dataVerifyTransaction): Promise<fetchTransaction | null> => {
     try {
         const receipt = await getReceiptOrder(body.branchId);
 
@@ -345,6 +333,159 @@ export const closeDataTransaction = async (id: string): Promise<fetchTransaction
 
         if (!transaction) return null;
         return transaction as fetchTransaction;
+    } catch (error) {
+        console.error('Error updating transaction:', error);
+        return null;
+    } finally {
+        await prisma.$disconnect();
+    }
+}
+
+export const fetchDataFrontDetailByTransactionId = async (id: string): Promise<fetchCustomerFrontData | null> => {
+    try {
+        // ข้อมูล transaction
+        const transaction = await prisma.transaction.findUnique({
+            select: {
+                id: true,
+                tableId: true,
+                receipt: true,
+                startOrder: true,
+                endOrder: true,
+                peoples: true,
+                branch: {
+                    select: {
+                        id: true,
+                        name: true,
+                        companyId: true,
+                    },
+                },
+            },
+            where: { id },
+        });
+        if (!transaction) return null;
+
+        // ข้อมูล table
+        const tablesData = await prisma.tables.findFirst({
+            select: {
+                id: true,
+                name: true,
+                expiration: true,
+                companyId: true,
+            },
+            where: {
+                id: transaction.tableId,
+            },
+        });
+        if (!tablesData?.companyId) return null;
+        // ข้อมูล productType And product
+        const productData = await prisma.productType.findMany({
+            where: {
+                companyId: tablesData?.companyId,
+            },
+            include: {
+                Products: {
+                    select: {
+                        id: true,
+                        name: true,
+                        price: true,
+                        stock: true,
+                        img: true,
+                        unit: {
+                            select: {
+                                id: true,
+                                name: true,
+                            },
+                        },
+                        productType: {
+                            select: {
+                                id: true,
+                                name: true,
+                            }
+                        }
+                    },
+                    where: {
+                        status: "Active",
+                        statusSail: "Active",
+                    },
+                },
+            },
+        });
+ 
+        // ข้อมูล promotion
+        const promotionData = await prisma.promotion.findMany({
+            select: {
+                id: true,
+                name: true,
+                detail: true,
+                promotionalPrice: true,
+                startDate: true,
+                endDate: true,
+                img: true,
+                ItemPromotions: {
+                    select: {
+                        productId: true,
+                        stock: true,
+                    },
+                },
+            },
+            where: {
+                companyId: tablesData?.companyId,
+                endDate: {
+                    gt: new Date(), // Greater than the current date
+                },
+                status: "Active"
+            }
+        });
+        const currentDate = new Date();
+        const filteredPromotions = promotionData.filter(promotion => new Date(promotion.startDate) <= currentDate);
+        const productPromotion = await prisma.product.findMany({
+            select: {
+                id: true,
+                name: true,
+                price: true,
+                stock: true,
+                img: true,
+                unit: {
+                    select: {
+                        id: true,
+                        name: true,
+                    },
+                },
+                productType: {
+                    select: {
+                        id: true,
+                        name: true,
+                    }
+                }
+            },
+            where: {
+                status: "Active",
+                statusSail: "Active",
+                companyId: tablesData.companyId
+            },
+        });
+        const enhancedPromotions = filteredPromotions.map(promotion => {
+            // Map through all ItemPromotions and find associated products
+            const associatedProducts = promotion.ItemPromotions.map(itemPromotion => {
+                return productPromotion.find(product => product.id === itemPromotion.productId) || null;
+            });
+
+            // Add the array of associated products to the promotion
+            return {
+                ...promotion,
+                productsItemPromotions: associatedProducts,
+            };
+        });
+
+        // ข้อมูลทั้งหมด
+        const transactionWithTable: fetchCustomerFrontData = {
+            ...transaction,
+            tablesData: tablesData,
+            productData: productData,
+            promotionData: enhancedPromotions
+        };
+   
+        return transactionWithTable;
     } catch (error) {
         console.error('Error updating transaction:', error);
         return null;

@@ -74,7 +74,7 @@ const CardTransaction = ({ data, isOpen, onClick }: Props) => {
         <p>เวลาปิดบิล : {data.transactionOrder?.endOrder ? moment(data.transactionOrder?.endOrder?.toString()).format('DD/MM/YYYY HH:mm') : "-"}</p>
       </div>
       <div className={`flex items-center ${data.transactionOrder?.startOrder ? "justify-between" : "justify-end"} p-2`} style={{ height: "54px" }}>
-        {data.transactionOrder?.startOrder && <PrintReceipt label='พิมพ์ใบเปิดโต๊ะ' onClick={() => generatePdf({ details: data })} />}
+        {data.transactionOrder?.startOrder && <PrintReceipt label='พิมพ์ใบเปิดโต๊ะ' onClick={() => generatePdf({ details: data, page: "tableTransaction" })} />}
         <TagStatus color={isOpen ? "success" : "error"} textShow={isOpen ? "ใช้งาน" : "ไม่ใช้งาน"} />
       </div>
       {contextHolder}

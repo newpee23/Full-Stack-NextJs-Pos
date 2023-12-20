@@ -3,9 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { handleAddTransaction, handleCloseTransaction, handleGetTransactionAll, handleGetTransactionByBranchId, handleGetTransactionByCompanyId, handleGetTransactionById } from "./service";
 import { dataVerifyTransaction } from "@/types/verify";
 
-
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-    console.log(req)
     if (req.method === "GET") {
         GET(req, res);
     } else if (req.method === "POST") {

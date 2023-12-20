@@ -264,3 +264,83 @@ export interface fetchTransaction {
   employeeId: number;
   status: "Active" | "InActive";
 }
+
+export interface fetchCustomerFrontData {
+  id: string;
+  tableId: string;
+  receipt: string;
+  startOrder: Date;
+  endOrder: Date;
+  peoples: number;
+  branch: branchCustomerFrontData;
+  tablesData: tablesDataCustomerFrontData;
+  productData: productDataCustomerFrontData[];
+  promotionData: promotionDataCustomerFrontData[];
+}
+
+interface branchCustomerFrontData {
+  id: number;
+  name: string;
+  companyId: number;
+}
+
+interface tablesDataCustomerFrontData {
+  id: string;
+  name: string;
+  expiration: number;
+  companyId: number;
+}
+
+interface productDataCustomerFrontData {
+  id: number;
+  name: string;
+  companyId: number;
+  status: string,
+  Products: productData[];
+}
+
+interface productData {
+  id: number;
+  name: string;
+  price: number;
+  stock: number;
+  img: string | null;
+  unit: idNameCustomerFrontData;
+  productType: idNameCustomerFrontData;
+}
+
+interface idNameCustomerFrontData {
+  id: number;
+  name: string;
+}
+
+interface ItemPromotionsCustomerFrontData {
+  productId: number;
+  stock: number;
+}
+
+export interface promotionDataCustomerFrontData {
+  id: number;
+  name: string;
+  detail: string;
+  promotionalPrice: number;
+  startDate: Date;
+  endDate: Date;
+  img: string | null;
+  ItemPromotions: ItemPromotionsCustomerFrontData[];
+  productsItemPromotions: ({
+    unit: {
+      id: number;
+      name: string;
+    };
+    productType: {
+      id: number;
+      name: string;
+    };
+    id: number;
+    name: string;
+    price: number;
+    stock: number;
+    img: string | null;
+  } | null)[]
+}
