@@ -360,7 +360,10 @@ export const fetchDataFrontDetailByTransactionId = async (id: string): Promise<f
                     },
                 },
             },
-            where: { id },
+            where: { 
+                id:id , 
+                status: "Active" 
+            },
         });
         if (!transaction) return null;
 
@@ -376,6 +379,7 @@ export const fetchDataFrontDetailByTransactionId = async (id: string): Promise<f
                 id: transaction.tableId,
             },
         });
+ 
         if (!tablesData?.companyId) return null;
         // ข้อมูล productType And product
         const productData = await prisma.productType.findMany({

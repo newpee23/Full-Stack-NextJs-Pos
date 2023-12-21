@@ -291,7 +291,7 @@ interface tablesDataCustomerFrontData {
   companyId: number;
 }
 
-interface productDataCustomerFrontData {
+export interface productDataCustomerFrontData {
   id: number;
   name: string;
   companyId: number;

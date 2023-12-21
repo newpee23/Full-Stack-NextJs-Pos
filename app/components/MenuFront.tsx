@@ -2,18 +2,20 @@ import React, { useState } from "react";
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
 import "@/app/components/menuPage.css";
+import { productDataCustomerFrontData } from "@/types/fetchData";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
 interface MenuPageProps {
     onMenuClick: (key: React.Key) => void;
+    productType: productDataCustomerFrontData[];
 }
 
 const getItem = (label: React.ReactNode, key: React.Key, icon?: React.ReactNode, children?: MenuItem[], type?: "group",): MenuItem => {
     return { key, icon, children, label, type, } as MenuItem;
 }
 
-const MenuFront = ({ onMenuClick }: MenuPageProps) => {
+const MenuFront = ({ onMenuClick , productType }: MenuPageProps) => {
     const [collapsed, setCollapsed] = useState(false);
 
     const toggleCollapsed = () => {
@@ -26,15 +28,14 @@ const MenuFront = ({ onMenuClick }: MenuPageProps) => {
     };
 
     const items: MenuItem[] = [
-        getItem("เปิดบิลขาย", "1"),
-        getItem("เนื้อสัตว์", "2"),
-        getItem("โต๊ะ", "3"),
+        ...productType.map((product) =>
+            getItem(product.name, product.id.toString())
+        ),
     ];
 
     return (
         <section style={{ borderInlineEnd: "1px solid rgba(5, 5, 5, 0.06)" }}>
-           
-            <button type="button" className="w-11/12 m-1 flex items-center py-2 justify-center text-orange-600 border rounded-md text-sm drop-shadow-md hover:bg-orange-600 hover:text-white hover:drop-shadow-xl whitespace-nowrap transition-transform transform hover:scale-105">
+            <button type="button" className="w-11/12 m-1 mt-2 flex items-center py-2 justify-center text-orange-600 border rounded-md text-sm drop-shadow-md hover:bg-orange-600 hover:text-white hover:drop-shadow-xl whitespace-nowrap transition-transform transform hover:scale-105">
                 <span className="font-thin">สรุปยอด</span>
             </button>
 
