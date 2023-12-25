@@ -61,7 +61,6 @@ export const VerifyUpdateImage = (data: dataUpdateImg): promiseDataVerify[] => {
 
     // ตรวจสอบความถูกต้องของข้อมูล
     if (!data.fileName.trim()) verifyStatus.push(pushData("กรุณาระบุ : fileName"));
-    if (data.fileName.length > 50) verifyStatus.push(pushData("กรุณาระบุ : fileName ไม่เกิน 50 อักษร"));
     if (!Number.isInteger(data.companyId) || data.companyId <= 0) verifyStatus.push(pushData("กรุณาระบุ : companyId เป็นตัวเลขจำนวนเต็มเท่านั้น"));
     if (!Number.isInteger(data.pdId) || data.pdId <= 0) verifyStatus.push(pushData("กรุณาระบุ : pdId เป็นตัวเลขจำนวนเต็มเท่านั้น"));
     // Return

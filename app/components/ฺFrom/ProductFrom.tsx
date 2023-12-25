@@ -24,7 +24,9 @@ interface Props {
 }
 
 export interface productSubmit {
-  img: RcFile | undefined;
+  img: {
+    file: File
+  } | undefined;
   imageUrl: string | undefined;
   name: string;
   cost: string | undefined;

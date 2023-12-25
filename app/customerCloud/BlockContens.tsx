@@ -13,6 +13,7 @@ import ProductTable from '../components/Table/ProductTable';
 import PromotionTable from '../components/Table/PromotionTable';
 import ExpensesItemFrom from '../components/ฺFrom/ExpensesItemFrom';
 import PromotionItemTable from '../components/Table/PromotionItemTable';
+import UploadImage from './UploadImage';
 
 type Props = { idComponents: React.Key | null; };
 

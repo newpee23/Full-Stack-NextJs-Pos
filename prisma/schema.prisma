@@ -55,7 +55,7 @@ model Product {
   price            Float             @default(0.00)
   stock            Int
   statusSail       enumStatus        @default(Active)
-  img              String?           @db.VarChar(50)
+  img              String?          
   unit             Unit              @relation(fields: [unitId], references: [id])
   unitId           Int
   productType      ProductType       @relation(fields: [productTypeId], references: [id])
@@ -91,7 +91,7 @@ model Promotion {
   promotionalPrice Float           @default(0.00)
   startDate        DateTime
   endDate          DateTime
-  img              String?         @db.VarChar(50)
+  img              String?      
   company          Company         @relation(fields: [companyId], references: [id])
   companyId        Int
   status           enumStatus      @default(Active)

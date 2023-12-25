@@ -6,6 +6,7 @@ import { useMutation, useQuery } from "react-query";
 import { s3UploadImages } from "../lib/s3PreSignedUrl";
 import { currentDateStrImg } from "@/utils/timeZone";
 import { typeNumber } from "@/utils/utils";
+import { handleCheckFileSize, handleUploadFileFirebaseStorage } from "../lib/uploadFirebaseStorage";
 
 interface addProduct {
     message: { message: string }[] | string
@@ -136,7 +137,7 @@ const fetchProductData = async (token: string | undefined, companyId: number | u
     }
 };
 
-const addProduct = async (token: string | undefined, productData: dataVerifyProduct, setLoadingQuery: React.Dispatch<React.SetStateAction<number>>): Promise<addProduct | null> => {
+const addProductData = async (token: string | undefined, productData: dataVerifyProduct, setLoadingQuery: React.Dispatch<React.SetStateAction<number>>): Promise<addProduct | null> => {
     try {
         const productDataImg = productData.img;
         if(productDataImg){
@@ -160,22 +161,28 @@ const addProduct = async (token: string | undefined, productData: dataVerifyProd
 
         // upload Img S3
         if (productDataImg) {
-            const productId = response.data.product[0]?.message;
-            const date = currentDateStrImg();
-            const dataProductImg: uploadImagesType = {
-                originFileObj: productDataImg,
-                fileName: `product/PD_${productId}_${date}`
-            };
-
-            const uploadImg = await s3UploadImages(dataProductImg);
-            // updateImg
-            if (uploadImg) {
-                await updateImageProduct(token, { companyId: productData.companyId, fileName: uploadImg, pdId: typeNumber(productId) });
+            const fileSize = handleCheckFileSize(productDataImg.file);
+            if(fileSize){
+                const productId = response.data.product[0]?.message;
+                const date = currentDateStrImg();
+                const dataProductImg: uploadImagesType = {
+                    originFileObj: productDataImg.file,
+                    fileName: `product/PD_${productId}_${date}`
+                };
+    
+                const uploadImg = await handleUploadFileFirebaseStorage(dataProductImg);
+                if (uploadImg) {
+                  await updateImageProduct(token, { companyId: productData.companyId, fileName: uploadImg, pdId: typeNumber(productId) });
+                }
+                
+            }else{
                 setLoadingQuery(100);
+                return {message:[{message: "ไฟล์รูปภาพต้องมีขนาดน้อยกว่า 5 MB"}] , product: null , status: false};
             }
-        } else {
-            setLoadingQuery(100);
-        }
+
+        } 
+        
+        setLoadingQuery(100);
         return product;
     } catch (error) {
         setLoadingQuery(100);
@@ -248,7 +255,7 @@ const updateProduct = async (token: string | undefined, productData: dataVerifyP
             const productId = productData.id;
             const date = currentDateStrImg();
             const dataProductImg: uploadImagesType = {
-                originFileObj: productData.img,
+                originFileObj: productData.img.file,
                 fileName: `product/PD_${productId}_${date}`
             };
 
@@ -339,6 +346,7 @@ export const useAddDataProduct = () => {
             token: string | undefined;
             productData: dataVerifyProduct;
             setLoadingQuery: React.Dispatch<React.SetStateAction<number>>;
-        }) => addProduct(variables.token, variables.productData, variables.setLoadingQuery)
+        }) => addProductData(variables.token, variables.productData, variables.setLoadingQuery)
     );
 };
+

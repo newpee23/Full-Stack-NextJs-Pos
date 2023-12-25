@@ -70,7 +70,9 @@ export interface dataVerifyProduct {
   cost: number;
   price: number;
   stock: number;
-  img?: File | undefined;
+  img?: {
+    file: File;
+  } | undefined;
   imageUrl?: string;
   unitId: number;
   productTypeId: number;
@@ -138,7 +140,7 @@ export interface promiseDataVerify {
 
 export interface uploadImagesType {
   fileName: string;
-  originFileObj: any;
+  originFileObj: File;
 }
 
 export interface dataVerifyUpdateImgPd {

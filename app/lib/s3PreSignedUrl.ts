@@ -6,7 +6,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 export const s3UploadImages = async (data: uploadImagesType): Promise<string> => {
 	try {
 		const { fileName, originFileObj } = data;
-		const file = originFileObj.file;
+		const file = originFileObj;
 		const fileNameS3: string = file.name;
 		const fileExtension: string = fileNameS3.split('.').pop() || '';
 		const type = `image/${fileExtension}`
