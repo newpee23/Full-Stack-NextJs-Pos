@@ -60,7 +60,6 @@ export const VerifyUpdateImagePromotion = (data: dataUpdateImgPromotion): promis
 
     // ตรวจสอบความถูกต้องของข้อมูล
     if (!data.fileName.trim()) verifyStatus.push(pushData("กรุณาระบุ : fileName"));
-    if (data.fileName.length > 50) verifyStatus.push(pushData("กรุณาระบุ : fileName ไม่เกิน 50 อักษร"));
     if (!Number.isInteger(data.companyId) || data.companyId <= 0) verifyStatus.push(pushData("กรุณาระบุ : companyId เป็นตัวเลขจำนวนเต็มเท่านั้น"));
     if (!Number.isInteger(data.promotionId) || data.promotionId <= 0) verifyStatus.push(pushData("กรุณาระบุ : promotionId เป็นตัวเลขจำนวนเต็มเท่านั้น"));
     // Return
@@ -137,6 +136,7 @@ export const fetchPromotionByCompanyId = async (companyId: number): Promise<fetc
             where: {
                 companyId: companyId
             }
+            , orderBy: { id: 'asc', },
         });
 
         if (!promotion) return null;
@@ -161,7 +161,7 @@ export const fetchPromotionByCompanyId = async (companyId: number): Promise<fetc
 
 export const fetchAllPromotion = async (): Promise<fetchPromotion[] | null> => {
     try {
-        const promotion = await prisma.promotion.findMany({});
+        const promotion = await prisma.promotion.findMany({orderBy: { id: 'asc', },});
 
         if (!promotion) return null;
         return promotion as fetchPromotion[];
@@ -181,7 +181,7 @@ export const updateDataPromotion = async (body: dataVerifyPromotion, id: number)
             data: {
                 name: body.name,
                 detail: body.detail,
-                img: body.imageUrl,
+                img: body.imageUrl ? body.imageUrl : null,
                 promotionalPrice: body.promotionalPrice,
                 startDate: dateTimeIso(body.startDate),
                 endDate: dateTimeIso(body.endDate),

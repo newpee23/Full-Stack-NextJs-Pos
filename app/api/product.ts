@@ -3,7 +3,6 @@ import { fetchOptionAddProduct, fetchProduct } from "@/types/fetchData";
 import { dataUpdateImg, dataVerifyProduct, uploadImagesType } from "@/types/verify";
 import axios, { AxiosError } from "axios";
 import { useMutation, useQuery } from "react-query";
-import { s3UploadImages } from "../lib/s3PreSignedUrl";
 import { currentDateStrImg } from "@/utils/timeZone";
 import { typeNumber } from "@/utils/utils";
 import { handleCheckFileSize, handleUploadFileFirebaseStorage } from "../lib/uploadFirebaseStorage";
@@ -159,7 +158,7 @@ const addProductData = async (token: string | undefined, productData: dataVerify
         );
         const product: addProduct = response.data;
 
-        // upload Img S3
+        // upload Img firebase
         if (productDataImg) {
             const fileSize = handleCheckFileSize(productDataImg.file);
             if(fileSize){
@@ -167,7 +166,7 @@ const addProductData = async (token: string | undefined, productData: dataVerify
                 const date = currentDateStrImg();
                 const dataProductImg: uploadImagesType = {
                     originFileObj: productDataImg.file,
-                    fileName: `product/PD_${productId}_${date}`
+                    fileName: `product/PMT_${productId}_${date}`
                 };
     
                 const uploadImg = await handleUploadFileFirebaseStorage(dataProductImg);
@@ -213,7 +212,7 @@ const addProductData = async (token: string | undefined, productData: dataVerify
     }
 };
 
-const updateImageProduct = async (token: string | undefined, dataUpdate: dataUpdateImg) => {
+const updateImageProduct = async (token: string | undefined, dataUpdate: dataUpdateImg): Promise<void> => {
     try {
         const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/product/updateImage`,
             dataUpdate,
@@ -250,23 +249,12 @@ const updateImageProduct = async (token: string | undefined, dataUpdate: dataUpd
 
 const updateProduct = async (token: string | undefined, productData: dataVerifyProduct, setLoadingQuery: React.Dispatch<React.SetStateAction<number>>): Promise<addProduct | null> => {
     try {
-        // upload Img S3
-        if (productData.img) {
-            const productId = productData.id;
-            const date = currentDateStrImg();
-            const dataProductImg: uploadImagesType = {
-                originFileObj: productData.img.file,
-                fileName: `product/PD_${productId}_${date}`
-            };
 
-            const uploadImg = await s3UploadImages(dataProductImg);
-            // updateImg
-            if (uploadImg) {
-                productData.imageUrl = uploadImg;
-            }
-
+        const productDataImg = productData.img;
+        if (productDataImg && productData.id) {
             productData.img = undefined;
         }
+
         //  updateData
         const response = await axios.put(`${process.env.NEXT_PUBLIC_BASE_URL}/product`,
             productData,
@@ -282,6 +270,29 @@ const updateProduct = async (token: string | undefined, productData: dataVerifyP
                 },
             }
         );
+
+         // upload Img firebase
+         if (productDataImg && productData.id) {
+            const fileSize = handleCheckFileSize(productDataImg.file);
+            if(fileSize){
+                const productId = productData.id;
+                const date = currentDateStrImg();
+                const dataProductImg: uploadImagesType = {
+                    originFileObj: productDataImg.file,
+                    fileName: `promotion/PMT_${productId}_${date}`
+                };
+    
+                const uploadImg = await handleUploadFileFirebaseStorage(dataProductImg);
+                if (uploadImg) {
+                  await updateImageProduct(token, { companyId: productData.companyId, fileName: uploadImg, pdId: productId });
+                }
+                
+            }else{
+                setLoadingQuery(100);
+                return {message:[{message: "ไฟล์รูปภาพต้องมีขนาดน้อยกว่า 5 MB"}] , product: null , status: false};
+            }
+
+        } 
 
         const product: addProduct = response.data;
         return product;

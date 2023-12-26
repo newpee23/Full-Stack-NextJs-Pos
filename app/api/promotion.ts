@@ -5,6 +5,7 @@ import { s3UploadImages } from "../lib/s3PreSignedUrl";
 import { typeNumber } from "@/utils/utils";
 import { useMutation, useQuery } from "react-query";
 import { fetchPromotion } from "@/types/fetchData";
+import { handleCheckFileSize, handleUploadFileFirebaseStorage } from "../lib/uploadFirebaseStorage";
 
 interface addPromotion {
     message: { message: string }[] | string
@@ -54,8 +55,8 @@ const fetchDataPromotion = async (token: string | undefined, companyId: number |
 
 const addDataPromotion = async (token: string | undefined, promotionData: dataVerifyPromotion, setLoadingQuery: React.Dispatch<React.SetStateAction<number>>): Promise<addPromotion | null> => {
     try {
-        const productDataImg = promotionData.img;
-        if(productDataImg){
+        const promotionDataImg = promotionData.img;
+        if(promotionDataImg){
             promotionData.img = undefined;
         }
         const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/promotion`,
@@ -74,24 +75,30 @@ const addDataPromotion = async (token: string | undefined, promotionData: dataVe
         );
         const promotion: addPromotion = response.data;
 
-        // upload Img S3
-        if (productDataImg) {
-            const promotionId = response.data.promotion[0]?.message;
-            const date = currentDateStrImg();
-            const datapromotionImg: uploadImagesType = {
-                originFileObj: productDataImg,
-                fileName: `promotion/PMT_${promotionId}_${date}`
-            };
-
-            const uploadImg = await s3UploadImages(datapromotionImg);
-            // updateImg
-            if (uploadImg) {
-                await updateImagepromotion(token, { companyId: promotionData.companyId, fileName: uploadImg, promotionId: typeNumber(promotionId) });
+         // upload Img firebase
+         if (promotionDataImg?.file && response.data.promotion[0]?.message) {
+            const fileSize = handleCheckFileSize(promotionDataImg.file);
+            if(fileSize){
+                const promotionId: number = typeNumber(response.data.promotion[0].message);
+                const date = currentDateStrImg();
+                const dataPromotionImg: uploadImagesType = {
+                    originFileObj: promotionDataImg.file,
+                    fileName: `promotion/PD_${promotionId}_${date}`
+                };
+    
+                const uploadImg = await handleUploadFileFirebaseStorage(dataPromotionImg);
+                if (uploadImg) {
+                  await updateImagepromotion(token, { companyId: promotionData.companyId, fileName: uploadImg, promotionId: promotionId });
+                }
+                
+            }else{
                 setLoadingQuery(100);
+                return {message:[{message: "ไฟล์รูปภาพต้องมีขนาดน้อยกว่า 5 MB"}] , promotion: null , status: false};
             }
-        } else {
-            setLoadingQuery(100);
-        }
+
+        } 
+        
+        setLoadingQuery(100);
         return promotion;
     } catch (error) {
         setLoadingQuery(100);
@@ -122,7 +129,7 @@ const addDataPromotion = async (token: string | undefined, promotionData: dataVe
     }
 };
 
-const updateImagepromotion = async (token: string | undefined, dataUpdate: dataUpdateImgPromotion) => {
+const updateImagepromotion = async (token: string | undefined, dataUpdate: dataUpdateImgPromotion): Promise<void> => {
     try {
         const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/promotion/updateImage`,
             dataUpdate,
@@ -159,22 +166,12 @@ const updateImagepromotion = async (token: string | undefined, dataUpdate: dataU
 
 const updatePromotion = async (token: string | undefined, promotionData: dataVerifyPromotion, setLoadingQuery: React.Dispatch<React.SetStateAction<number>>): Promise<addPromotion | null> => {
     try {
-        // upload Img S3
-        if (promotionData.img) {
-            const promotionId = promotionData.id;
-            const date = currentDateStrImg();
-            const datapromotionImg: uploadImagesType = {
-                originFileObj: promotionData.img,
-                fileName: `promotion/PMT_${promotionId}_${date}`
-            };
 
-            const uploadImg = await s3UploadImages(datapromotionImg);
-            // updateImg
-            if (uploadImg) {
-                promotionData.imageUrl = uploadImg;
-            }
+        const promotionDataImg = promotionData.img;
+        if (promotionDataImg && promotionData.id) {
             promotionData.img = undefined;
         }
+      
         //  updateData
         const response = await axios.put(`${process.env.NEXT_PUBLIC_BASE_URL}/promotion`,
             promotionData,
@@ -190,6 +187,29 @@ const updatePromotion = async (token: string | undefined, promotionData: dataVer
                 },
             }
         );
+
+          // upload Img firebase
+          if (promotionDataImg && promotionData.id) {
+            const fileSize = handleCheckFileSize(promotionDataImg.file);
+            if(fileSize){
+                const productId = promotionData.id;
+                const date = currentDateStrImg();
+                const dataProductImg: uploadImagesType = {
+                    originFileObj: promotionDataImg.file,
+                    fileName: `promotion/PD_${productId}_${date}`
+                };
+    
+                const uploadImg = await handleUploadFileFirebaseStorage(dataProductImg);
+                if (uploadImg) {
+                  await updateImagepromotion(token, { companyId: promotionData.companyId, fileName: uploadImg, promotionId: productId });
+                }
+                
+            }else{
+                setLoadingQuery(100);
+                return {message:[{message: "ไฟล์รูปภาพต้องมีขนาดน้อยกว่า 5 MB"}] , promotion: null , status: false};
+            }
+
+        } 
 
         const promotion: addPromotion = response.data;
         return promotion;
@@ -294,3 +314,4 @@ export const useDataPromotion = (token: string | undefined, company_id: number |
         refetchOnWindowFocus: false,
     });
 };
+

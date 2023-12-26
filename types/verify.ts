@@ -88,7 +88,9 @@ export interface dataVerifyPromotion {
   promotionalPrice: number;
   startDate: Date;
   endDate: Date;
-  img?: File | undefined;
+  img?: {
+    file: File;
+  } | undefined;
   imageUrl?: string;
   companyId: number;
   status: "Active" | "InActive";

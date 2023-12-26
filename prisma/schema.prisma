@@ -161,6 +161,7 @@ model Transaction {
   branchId   Int
   employee   Employee    @relation(fields: [employeeId], references: [id])
   employeeId Int
+  tokenOrder String
   status     enumStatus  @default(Active)
   orderBills OrderBill[]
 }

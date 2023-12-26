@@ -23,15 +23,17 @@ const UploadAnt = ({ name, label, imageUrl, addImage, setFormValues, status }: P
 
     const handleCancel = () => setPreviewOpen(false);
 
-    const handlePreview = async (file: UploadFile) => {
-
-        if (!file.url && !file.preview) {
-            file.preview = await getBase64(file.originFileObj as RcFile);
+    const handlePreview = async (file: UploadFile) => {   
+        if(file.size){
+            if (!file.url && !file.preview) {
+                file.preview = await getBase64(file.originFileObj as RcFile);
+            }
+    
+            setPreviewImage(file.url || (file.preview as string));
+        }else{
+            setPreviewImage(file.url as string);
         }
-
-        setPreviewImage(file.url || (file.preview as string));
         setPreviewOpen(true);
-
     };
 
     const handleRemove = () => {
@@ -54,14 +56,14 @@ const UploadAnt = ({ name, label, imageUrl, addImage, setFormValues, status }: P
     );
 
     useEffect(() => {
-        const loadSetFileList = () => {
+        const loadSetFileList = async () => {
             if (imageUrl) {
                 setFileList([
                     {
                         uid: "-1",
                         name: "รูปภาพสินค้า",
                         status: "done",
-                        url: `${process.env.NEXT_PUBLIC_BASE_IMAGE_URL}${imageUrl}`,
+                        url: `${imageUrl}`,
                     }
                 ]);
             }

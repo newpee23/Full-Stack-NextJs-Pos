@@ -10,7 +10,7 @@ const nextConfig = {
     S3_AWS_REGION: "ap-southeast-1",
   },
   images: {
-    domains: ['nextpos-s3.s3.ap-southeast-1.amazonaws.com'],
+    domains: ['nextpos-s3.s3.ap-southeast-1.amazonaws.com', 'firebasestorage.googleapis.com'],
   },
 };
 

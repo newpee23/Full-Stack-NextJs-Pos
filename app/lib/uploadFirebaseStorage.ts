@@ -44,6 +44,14 @@ export const handleUploadFileFirebaseStorage = async (dataProductImg: uploadImag
   }
 };
 
+export function getFileNameFromUrl(url: string) {
+  // Split the URL by '/'
+  const urlParts = url.split('/');
+  // Get the last part of the URL (which should be the file name)
+  const fileName = urlParts[urlParts.length - 1];
+  // Decode the file name (if it contains special characters)
+  return decodeURIComponent(fileName);
+}
 
 export const handleCheckFileSize = (files: File): boolean => {
   console.log(files.size)

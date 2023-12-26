@@ -28,7 +28,9 @@ type Props = {
 }
 
 export interface promotionSubmit {
-    img: RcFile | undefined;
+    img: {
+      file: File
+    } | undefined;
     imageUrl: string | undefined;
     name: string;
     detail: string;
