@@ -8,13 +8,14 @@ interface addDataFrontType {
     , status: boolean
 }
 
-const fetchDataFront = async (token: string | undefined, id: string): Promise<fetchCustomerFrontData | null> => {
+const fetchDataFront = async (tokenOrder: string): Promise<fetchCustomerFrontData | null> => {
     try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/transaction/customerFrontData?id=${id}`, {
+     
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/transaction/customerFrontData?tokenOrder=${tokenOrder}`, {
             headers: {
-                Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${tokenOrder}`,
             },
-        });
+          });
 
         if (!response.data) {
             console.error('Failed to fetch customerFrontData data');
@@ -49,8 +50,8 @@ const fetchDataFront = async (token: string | undefined, id: string): Promise<fe
 };
 
 // function React Query
-export const useDataFront = (token: string | undefined, id: string) => {
-    return useQuery('dataFront', () => fetchDataFront(token, id), {
+export const useDataFront = (tokenOrder: string) => {
+    return useQuery('dataFront', () => fetchDataFront(tokenOrder), {
         refetchOnWindowFocus: false,
     });
 };

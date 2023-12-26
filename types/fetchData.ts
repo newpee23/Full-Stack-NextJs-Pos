@@ -251,9 +251,11 @@ export interface order {
   startOrder: Date;
   endOrder: Date;
   peoples: number;
+  tokenOrder: string | null;
 }
 
 export interface fetchTransaction {
+  id: string;
   tableId: string;
   receipt: string;
   startOrder: Date;
@@ -261,6 +263,7 @@ export interface fetchTransaction {
   peoples: number;
   totalPrice: number;
   branchId: number;
+  tokenOrder: string | null;
   employeeId: number;
   status: "Active" | "InActive";
 }

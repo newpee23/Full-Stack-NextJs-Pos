@@ -6,21 +6,21 @@ import Navbar from "@/app/components/Navbar";
 import CountdownTime from "@/app/components/UI/CountdownTime";
 import CardProduct from "@/app/components/UI/card/CardProduct";
 import SkeletonTable from "@/app/components/UI/loading/SkeletonTable";
-import { useSession } from "next-auth/react";
+
 import React from "react";
 
 interface HomePageFrontProps {
   params: {
-    id: string;
+    tokenOrder: string;
   };
 }
 
 const HomePageFront = ({ params }: HomePageFrontProps) => {
-  const { id } = params;
-  const { data: session } = useSession();
-  const { data, isLoading, isError, refetch, remove } = useDataFront(session?.user.accessToken, id);
+  const { tokenOrder } = params;
+  
+  const { data, isLoading, isError, refetch, remove } = useDataFront(tokenOrder);
 
-  if (!id) {
+  if (!tokenOrder) {
     return <ErrPage />;
   }
 

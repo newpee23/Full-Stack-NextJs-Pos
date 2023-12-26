@@ -26,6 +26,30 @@ export const verifyUserId = async (token: string): Promise<boolean> => {
   return true;
 };
 
+export const verifyTransactionId = async (token: string): Promise<boolean> => {
+  // check transaction
+  try {
+    if (!token) return false;
+
+    const tokenData = getDataToken(token);
+    if (!tokenData) return false;
+    
+    const transaction = await prisma.transaction.findUnique({
+      where: {
+        id: tokenData.id,
+      },
+    });
+
+    if (!transaction) return false;
+  } catch (error) {
+    return false;
+  } finally {
+    await prisma.$disconnect();
+  }
+
+  return true;
+};
+
 export const hashPassword = async (password: string): Promise<string> => {
   // เข้ารหัสรหัสผ่าน
   const hashedPassword = await hash(password, 10);

@@ -3,7 +3,8 @@ import { prisma } from "@/pages/lib/prismaDB";
 import { dataVerifyTransaction, promiseDataVerify } from "@/types/verify";
 import { addMinutesToCurrentTime } from "./timeZone";
 import { generateRunningNumber, getMonthNow, getYearNow } from "./utils";
-import { fetchProductByCompanyId } from "./product";
+import jwt from "jsonwebtoken";
+import { fetchTableById } from "./table";
 
 const pushData = (message: string) => {
     return { message };
@@ -41,9 +42,7 @@ export const verifyTransactionBody = (data: dataVerifyTransaction): promiseDataV
     return verifyStatus;
 };
 
-export const fetchTransactionByBranchId = async (
-    branchId: number
-): Promise<orderTransactionByBranch[] | null> => {
+export const fetchTransactionByBranchId = async (branchId: number): Promise<orderTransactionByBranch[] | null> => {
     try {
         const tables = await prisma.tables.findMany({
             select: {
@@ -71,6 +70,7 @@ export const fetchTransactionByBranchId = async (
                             startOrder: true,
                             endOrder: true,
                             peoples: true,
+                            tokenOrder: true,
                         },
                         where: {
                             tableId: item.id,
@@ -126,6 +126,7 @@ export const fetchTransactionById = async (id: string): Promise<orderTransaction
                 startOrder: true,
                 endOrder: true,
                 peoples: true,
+                tokenOrder: true,
             },
             where: {
                 tableId: table.id,
@@ -179,6 +180,7 @@ export const fetchTransactionByCompanyId = async (companyId: number): Promise<or
                             startOrder: true,
                             endOrder: true,
                             peoples: true,
+                            tokenOrder: true,
                         },
                         where: {
                             tableId: item.id,
@@ -230,6 +232,7 @@ export const fetchTransactionAll = async (): Promise<orderTransactionByBranch[] 
                     startOrder: true,
                     endOrder: true,
                     peoples: true,
+                    tokenOrder: true,
                 },
                 where: {
                     tableId: item.id,
@@ -306,6 +309,7 @@ export const insertTransaction = async (body: dataVerifyTransaction): Promise<fe
                 totalPrice: 0.0,
                 branchId: body.branchId,
                 employeeId: body.employeeId,
+                tokenOrder: null,
                 status: "Active",
             },
         });
@@ -341,10 +345,10 @@ export const closeDataTransaction = async (id: string): Promise<fetchTransaction
     }
 }
 
-export const fetchDataFrontDetailByTransactionId = async (id: string): Promise<fetchCustomerFrontData | null> => {
+export const fetchDataFrontDetailByTransactionId = async (tokenOrder: string): Promise<fetchCustomerFrontData | null> => {
     try {
         // ข้อมูล transaction
-        const transaction = await prisma.transaction.findUnique({
+        const transaction = await prisma.transaction.findFirst({
             select: {
                 id: true,
                 tableId: true,
@@ -361,7 +365,7 @@ export const fetchDataFrontDetailByTransactionId = async (id: string): Promise<f
                 },
             },
             where: { 
-                id:id , 
+                tokenOrder:tokenOrder , 
                 status: "Active" 
             },
         });
@@ -490,6 +494,41 @@ export const fetchDataFrontDetailByTransactionId = async (id: string): Promise<f
         };
    
         return transactionWithTable;
+    } catch (error) {
+        console.error('Error updating transaction:', error);
+        return null;
+    } finally {
+        await prisma.$disconnect();
+    }
+}
+
+export const createTokenTransaction = async ({id, tableId}: {id: string, tableId: string}): Promise<string | null> => {
+    const table = await fetchTableById(tableId);
+
+    if(!table) return null;
+    const tokenOrder = jwt.sign(
+        {
+            id: id,
+            exp: Math.floor(Date.now() / 1000) + (60 * table.expiration), // เวลาหมดเป็นนาที
+        },
+        process.env.SECRET_KEY_TRANSACTION!
+    );
+
+    return tokenOrder;
+}
+
+export const updateTokenOrderTransaction = async ({id, tokenOrder} : {id: string, tokenOrder: string}): Promise<fetchTransaction | null> => {
+    try {
+
+        const transaction = await prisma.transaction.update({
+            where: { id },
+            data: {
+                tokenOrder: tokenOrder
+            },
+        });
+
+        if (!transaction) return null;
+        return transaction as fetchTransaction;
     } catch (error) {
         console.error('Error updating transaction:', error);
         return null;

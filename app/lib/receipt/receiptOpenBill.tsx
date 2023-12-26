@@ -44,7 +44,7 @@ export const generatePdf = async ({details , page} : Props) => {
     addText("------------------------------------------------------------------------", 25, 14);
     addText("โต๊ะที่ 1", 30, 16);
     // QrCode
-    const qrCodeData = `${process.env.NEXT_PUBLIC_BASE_URL_FRONT}/customerFront/${page === "modalAdd" ? details.id : details.transactionOrder?.id }`;
+    const qrCodeData = `${process.env.NEXT_PUBLIC_BASE_URL_FRONT}/customerFront/${page === "modalAdd" ? details.transactionOrder?.tokenOrder : details.transactionOrder?.tokenOrder }`;
     const qrCodeSize = 30;
     const qrCodeX = 25;
     const qrCodeY = 30;

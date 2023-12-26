@@ -1,7 +1,7 @@
 import { dataVerifyTransaction } from "@/types/verify";
 import { getBranchById } from "@/utils/branch";
 import { getEmployeeById } from "@/utils/employee";
-import { closeDataTransaction, fetchDataFrontDetailByTransactionId, fetchTransactionAll, fetchTransactionByBranchId, fetchTransactionByCompanyId, fetchTransactionById, insertTransaction, verifyTransactionBody } from "@/utils/transaction";
+import { closeDataTransaction, createTokenTransaction, fetchDataFrontDetailByTransactionId, fetchTransactionAll, fetchTransactionByBranchId, fetchTransactionByCompanyId, fetchTransactionById, insertTransaction, updateTokenOrderTransaction, verifyTransactionBody } from "@/utils/transaction";
 import { NextApiResponse } from "next";
 
 export const handleAddTransaction = async (body: dataVerifyTransaction, res: NextApiResponse) => {
@@ -17,6 +17,12 @@ export const handleAddTransaction = async (body: dataVerifyTransaction, res: Nex
     // Add Transaction
     const addTransaction = await insertTransaction(body);
     if (!addTransaction) return res.status(404).json({ message: "An error occurred saving data.", transactionItem: null, status: false });
+    // Create Token
+    const tokenOrder = await createTokenTransaction({id: addTransaction.id, tableId: addTransaction.tableId});
+    if (!tokenOrder) return res.status(404).json({ message: "An error occurred tokenOrder data.", transactionItem: null, status: false });
+    // Update Token
+    const updateToken = await updateTokenOrderTransaction({id: addTransaction.id, tokenOrder: tokenOrder});
+    if (!updateToken) return res.status(404).json({ message: "An error occurred updateTokenOrder data.", transactionItem: null, status: false });
 
     return res.status(200).json({ message: "Data saved successfully.", transactionItem: addTransaction, status: true });
 }
@@ -31,7 +37,6 @@ export const handleCloseTransaction = async (id: string, res: NextApiResponse) =
 
     return res.status(200).json({ message: "Successfully deleted data", transactionItem: closeTransaction, status: true });
 }
-
 
 export const handleGetTransactionByBranchId = async (res: NextApiResponse, branchId: number) => {
     if(!branchId) return res.status(200).json({ message: [{message: `ไม่พบข้อมูล branchId`}], transactionItem: null, status: false });
@@ -64,9 +69,9 @@ export const handleGetTransactionAll = async (res: NextApiResponse) => {
     return res.status(200).json({ message: "Tables found", transactionItem: transactionOrder, status: true });
 }
 
-export const handleGetCustomerFrontDataById = async (res: NextApiResponse, id: string) => {
+export const handleGetCustomerFrontDataById = async (res: NextApiResponse, tokenOrder: string) => {
     // fetchDataByTransactionId
-    const dataDetail = await fetchDataFrontDetailByTransactionId(id);
+    const dataDetail = await fetchDataFrontDetailByTransactionId(tokenOrder);
     if(!dataDetail) return res.status(404).json({ message: [ {message : "พบข้อผิดพลาดข้อมูล"}], customerFrontData: null, status: true });
     
     return res.status(200).json({ message: [ {message : "พบข้อมูล"}], customerFrontData: dataDetail, status: true });

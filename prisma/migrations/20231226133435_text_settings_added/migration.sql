@@ -154,7 +154,7 @@ CREATE TABLE "Transaction" (
     "totalPrice" DOUBLE PRECISION NOT NULL DEFAULT 0.00,
     "branchId" INTEGER NOT NULL,
     "employeeId" INTEGER NOT NULL,
-    "tokenOrder" TEXT NOT NULL,
+    "tokenOrder" TEXT,
     "status" "enumStatus" NOT NULL DEFAULT 'Active',
 
     CONSTRAINT "Transaction_pkey" PRIMARY KEY ("id")
