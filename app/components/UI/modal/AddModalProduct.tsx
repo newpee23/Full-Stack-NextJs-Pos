@@ -45,11 +45,16 @@ const AddModalProduct: React.FC<Props> = ({ open, setOpen, selectProduct }) => {
         }
     };
 
+    const handleOk = () => {
+        console.log("value",{id: selectProduct.id , value: value})
+        setOpen(false);
+    }
+
     return (
         <Modal
             title={selectProduct.name}
             open={open}
-            onOk={() => setOpen(false)}
+            onOk={handleOk}
             onCancel={() => setOpen(false)}
             okText="ตกลง"
             cancelText="ยกเลิก"
@@ -64,8 +69,8 @@ const AddModalProduct: React.FC<Props> = ({ open, setOpen, selectProduct }) => {
                     formatter={(value) => `${value}`}
                     parser={(displayValue) => (displayValue ? parseInt(displayValue, 10) : 0)} // Ensure it returns a number
                     onChange={(newValue) => setValue(newValue as number)}
-                    addonBefore={<button onClick={handleIncrement}>+</button>}
-                    addonAfter={<button onClick={handleDecrement}>-</button>}
+                    addonBefore={<button onClick={handleDecrement}>-</button>}
+                    addonAfter={<button onClick={handleIncrement}>+</button>}
                     readOnly
                 />
                 </div>
