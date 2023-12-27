@@ -7,7 +7,6 @@ export const verifyToken = (token: string): boolean => {
   const dateNow = Math.floor(Date.now() / 1000);
   const expDateToken: number = tokenData.exp;
 
-  console.log(dateNow)
   if (expDateToken < dateNow) return false;
 
   return true;

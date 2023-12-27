@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, message } from 'antd';
 import TagStatus from '../TagStatus';
-import { orderTransactionByBranch } from '@/types/fetchData';
+import { orderTransactionAdd } from '@/types/fetchData';
 import moment from 'moment';
 import AddModalTransaction from '../modal/AddModalTransaction';
 import { useUpdateDataTransaction } from '@/app/api/transaction';
@@ -12,7 +12,7 @@ import PrintReceipt from '../btn/PrintReceipt';
 import { generatePdf } from '@/app/lib/receipt/receiptOpenBill';
 
 type Props = {
-  data: orderTransactionByBranch;
+  data: orderTransactionAdd;
   isOpen: boolean;
   onClick: () => void;
 };
@@ -54,6 +54,7 @@ const CardTransaction = ({ data, isOpen, onClick }: Props) => {
     }
     return <></>;
   }
+  
   return (
     <Card key={data.id} title={data.name} extra={countDownTime()} className="bg-slate-50 border border-stone-100 text-sm" hoverable bordered={false}>
       <div className="flex items-center justify-between p-2">

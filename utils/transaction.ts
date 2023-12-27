@@ -309,7 +309,6 @@ export const insertTransaction = async (body: dataVerifyTransaction): Promise<fe
                 totalPrice: 0.0,
                 branchId: body.branchId,
                 employeeId: body.employeeId,
-                tokenOrder: null,
                 status: "Active",
             },
         });

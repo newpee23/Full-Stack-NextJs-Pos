@@ -1,10 +1,10 @@
 import jsPDF from "jspdf";
 import QRCode from 'qrcode';
 import '@/app/lib/receipt/THSarabunNew-normal';
-import { orderTransactionByBranch } from "@/types/fetchData";
+import { orderTransactionAdd, orderTransactionByBranch } from "@/types/fetchData";
 
 interface Props {
-    details: orderTransactionByBranch;
+    details: orderTransactionAdd;
     page: "modalAdd" | "tableTransaction";
 }
 export const generatePdf = async ({details , page} : Props) => {
@@ -44,7 +44,7 @@ export const generatePdf = async ({details , page} : Props) => {
     addText("------------------------------------------------------------------------", 25, 14);
     addText("โต๊ะที่ 1", 30, 16);
     // QrCode
-    const qrCodeData = `${process.env.NEXT_PUBLIC_BASE_URL_FRONT}/customerFront/${page === "modalAdd" ? details.transactionOrder?.tokenOrder : details.transactionOrder?.tokenOrder }`;
+    const qrCodeData = `${process.env.NEXT_PUBLIC_BASE_URL_FRONT}/customerFront/${page === "modalAdd" ? details?.tokenOrder : details.transactionOrder?.tokenOrder }`;
     const qrCodeSize = 30;
     const qrCodeX = 25;
     const qrCodeY = 30;

@@ -1,0 +1,10 @@
+:where(.css-dev-only-do-not-override-1adbn6x).ant-btn-default:not(:disabled):not(.ant-btn-disabled):hover, :where(.css-dev-only-do-not-override-1adbn6x).ant-btn-default:not(:disabled):not(.ant-btn-disabled):active {
+    color: #ef4949;
+    border-color: #ef4949;
+}
+
+button.ant-btn.css-dev-only-do-not-override-1adbn6x.ant-btn-primary, :where(.css-dev-only-do-not-override-1adbn6x).ant-btn-primary:not(:disabled):not(.ant-btn-disabled):hover, :where(.css-dev-only-do-not-override-1adbn6x).ant-btn-primary:not(:disabled):not(.ant-btn-disabled):active {
+    color: #ffffff;
+    border-color: #ea580c;
+    background-color: #ea580c;
+}

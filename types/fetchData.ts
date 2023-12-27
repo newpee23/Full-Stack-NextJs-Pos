@@ -245,6 +245,16 @@ export interface orderTransactionByBranch {
   transactionOrder: order | null
 }
 
+export interface orderTransactionAdd {
+  id: string;
+  name: string;
+  stoves: number;
+  people: number;
+  expiration: number;
+  tokenOrder: string | null | undefined;
+  transactionOrder: order | null
+}
+
 export interface order {
   id: string;
   receipt: string;
@@ -302,7 +312,7 @@ export interface productDataCustomerFrontData {
   Products: productData[];
 }
 
-interface productData {
+export interface productData {
   id: number;
   name: string;
   price: number;

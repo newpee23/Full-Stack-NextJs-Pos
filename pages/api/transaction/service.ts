@@ -23,8 +23,8 @@ export const handleAddTransaction = async (body: dataVerifyTransaction, res: Nex
     // Update Token
     const updateToken = await updateTokenOrderTransaction({id: addTransaction.id, tokenOrder: tokenOrder});
     if (!updateToken) return res.status(404).json({ message: "An error occurred updateTokenOrder data.", transactionItem: null, status: false });
-
-    return res.status(200).json({ message: "Data saved successfully.", transactionItem: addTransaction, status: true });
+   
+    return res.status(200).json({ message: "Data saved successfully.", transactionItem: updateToken, status: true });
 }
 
 export const handleCloseTransaction = async (id: string, res: NextApiResponse) => {

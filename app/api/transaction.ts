@@ -1,11 +1,11 @@
-import { orderTransactionByBranch } from "@/types/fetchData";
+import { orderTransactionAdd, orderTransactionByBranch } from "@/types/fetchData";
 import { dataVerifyTransaction } from "@/types/verify";
 import axios, { AxiosError } from "axios";
 import { useMutation, useQuery } from "react-query";
 
 interface addTransactionType {
   message: { message: string }[] | string;
-  transactionItem: orderTransactionByBranch;
+  transactionItem: orderTransactionAdd;
   status: boolean;
 }
 

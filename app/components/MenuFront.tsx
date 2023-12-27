@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
 import "@/app/components/menuPage.css";
@@ -7,24 +7,29 @@ import { productDataCustomerFrontData } from "@/types/fetchData";
 type MenuItem = Required<MenuProps>["items"][number];
 
 interface MenuPageProps {
-    onMenuClick: (key: React.Key) => void;
     productType: productDataCustomerFrontData[];
 }
 
-const getItem = (label: React.ReactNode, key: React.Key, icon?: React.ReactNode, children?: MenuItem[], type?: "group",): MenuItem => {
-    return { key, icon, children, label, type, } as MenuItem;
-}
+const getItem = (
+    label: React.ReactNode,
+    key: React.Key,
+    icon?: React.ReactNode,
+    children?: MenuItem[],
+    type?: "group",
+): MenuItem => {
+    return { key, icon, children, label, type } as MenuItem;
+};
 
-const MenuFront = ({ onMenuClick , productType }: MenuPageProps) => {
-    const [collapsed, setCollapsed] = useState(false);
-
-    const toggleCollapsed = () => {
-        setCollapsed(!collapsed);
-    };
-
+const MenuFront = ({ productType }: MenuPageProps) => {
+  
     const handleMenuItemClick = (key: React.Key) => {
-        // ให้เรียก callback function ที่ถูกส่งมาจาก parent component
-        onMenuClick(key);
+        // Scroll to the corresponding section
+        const sectionId = `/product/${key.toString()}`;
+        const section = document.getElementById(sectionId);
+
+        if (section) {
+            section.scrollIntoView({ behavior: "smooth" });
+        }
     };
 
     const items: MenuItem[] = [
@@ -45,7 +50,7 @@ const MenuFront = ({ onMenuClick , productType }: MenuPageProps) => {
                 mode="inline"
                 inlineCollapsed={false}
                 items={items}
-                className={`h-[100vh] max-w-[100px] z-0 ${!collapsed && "w-36"}`}
+                className={`h-[100vh] max-w-[100px] z-0`}
                 style={{ borderInlineEnd: "0" }}
             />
         </section>
