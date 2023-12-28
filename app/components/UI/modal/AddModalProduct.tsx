@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { InputNumber, Modal } from 'antd';
 import { productData } from '@/types/fetchData';
+import { useAppDispatch, useAppSelector } from '@/app/store/store';
+import { cartIncrementItem } from '@/app/store/slices/cartSlice';
 
 interface Props {
     open: boolean;
@@ -9,6 +11,16 @@ interface Props {
 }
 
 const AddModalProduct: React.FC<Props> = ({ open, setOpen, selectProduct }) => {
+
+    const dispatch = useAppDispatch();
+    const [value, setValue] = useState<number>(0);
+    const [message, setMessage] = useState<string>("");
+
+    useEffect(() => {
+        if (open) {
+            setValue(0);
+        }
+    }, [open]);
 
     if (!selectProduct) {
         return (
@@ -25,29 +37,26 @@ const AddModalProduct: React.FC<Props> = ({ open, setOpen, selectProduct }) => {
         );
     }
 
-    const [value, setValue] = useState<number>(0);
-
-    useEffect(() => {
-        if (open) {
-            setValue(0);
-        }
-    }, [open]);
-
     const handleIncrement = () => {
         if (value < selectProduct.stock) {
             setValue(value + 1);
+            setMessage("");
         }
     };
 
     const handleDecrement = () => {
         if (value > 0) {
             setValue(value - 1);
+            setMessage("");
         }
     };
 
     const handleOk = () => {
-        console.log("value",{id: selectProduct.id , value: value})
-        setOpen(false);
+        if(value > 0){
+            dispatch(cartIncrementItem({productId: selectProduct.id , name: selectProduct.name , price: selectProduct.price , qty: value , image: selectProduct.img}));
+            return setOpen(false);
+        }
+        setMessage("กรุณาเพิ่มสินค้า");
     }
 
     return (
@@ -66,8 +75,6 @@ const AddModalProduct: React.FC<Props> = ({ open, setOpen, selectProduct }) => {
                     value={value}
                     min={0}
                     max={selectProduct.stock}
-                    formatter={(value) => `${value}`}
-                    parser={(displayValue) => (displayValue ? parseInt(displayValue, 10) : 0)} // Ensure it returns a number
                     onChange={(newValue) => setValue(newValue as number)}
                     addonBefore={<button onClick={handleDecrement}>-</button>}
                     addonAfter={<button onClick={handleIncrement}>+</button>}
@@ -75,9 +82,21 @@ const AddModalProduct: React.FC<Props> = ({ open, setOpen, selectProduct }) => {
                 />
                 </div>
             </div>
-            {value === selectProduct.stock && <p className="mt-3 text-orange-600">จำนวนสินค้าหมดสต็อคแล้ว</p>}
+            {value === selectProduct.stock && 
+                <div className="mt-3 text-orange-600 text-center">
+                    <p>จำนวนสินค้าหมดสต็อคแล้ว</p>
+                </div>
+            }
+            {message && value < 1 ?
+                <div className="mt-3 text-orange-600 text-center">
+                    <p>{message}</p>
+                </div>
+                : null
+            }
         </Modal>
     );
 };
 
 export default AddModalProduct;
+
+

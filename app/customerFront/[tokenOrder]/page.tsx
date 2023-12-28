@@ -43,7 +43,7 @@ const HomePageFront = ({ params }: HomePageFrontProps) => {
 
   return (
     <section>
-      <Navbar page="customerFront" />
+      <Navbar orderDetail={data}/>
       <div className="mt-14 flex">
         <MenuFront productType={data.productData} />
         <div className="w-full p-3">

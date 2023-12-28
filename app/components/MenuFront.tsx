@@ -40,8 +40,8 @@ const MenuFront = ({ productType }: MenuPageProps) => {
 
     return (
         <section style={{ borderInlineEnd: "1px solid rgba(5, 5, 5, 0.06)" }}>
-            <button type="button" className="w-11/12 m-1 mt-2 flex items-center py-2 justify-center text-orange-600 border rounded-md text-sm drop-shadow-md hover:bg-orange-600 hover:text-white hover:drop-shadow-xl whitespace-nowrap transition-transform transform hover:scale-105">
-                <span className="font-thin">สรุปยอด</span>
+            <button type="button" className="w-11/12 m-1 mt-3 flex items-center py-2 justify-center text-orange-600 border rounded-md text-sm drop-shadow-md hover:bg-orange-600 hover:text-white hover:drop-shadow-xl whitespace-nowrap transition-transform transform hover:scale-105">
+                <span className="font-thin">สรุปบิล</span>
             </button>
 
             <Menu
