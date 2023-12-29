@@ -4,6 +4,7 @@ import ErrPage from "@/app/components/ErrPage";
 import MenuFront from "@/app/components/MenuFront";
 import Navbar from "@/app/components/Navbar";
 import CountdownTime from "@/app/components/UI/CountdownTime";
+import FloatBtn from "@/app/components/UI/btn/FloatBtn";
 import CardProduct from "@/app/components/UI/card/CardProduct";
 import SkeletonTable from "@/app/components/UI/loading/SkeletonTable";
 import "@/app/customerFront/order.css"
@@ -59,6 +60,7 @@ const HomePageFront = ({ params }: HomePageFrontProps) => {
           </div>
         </div>
       </div>
+      <FloatBtn />
     </section>
   );
 };

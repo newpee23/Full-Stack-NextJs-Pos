@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
 import "@/app/components/menuPage.css";
 import { productDataCustomerFrontData } from "@/types/fetchData";
+import ModalOrderHistory from "./UI/modal/ModalOrderHistory";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -22,6 +23,7 @@ const getItem = (
 
 const MenuFront = ({ productType }: MenuPageProps) => {
   
+    const [openModal , setOpenModal] = useState<boolean>(false);
     const handleMenuItemClick = (key: React.Key) => {
         // Scroll to the corresponding section
         const sectionId = `/product/${key.toString()}`;
@@ -40,8 +42,8 @@ const MenuFront = ({ productType }: MenuPageProps) => {
 
     return (
         <section style={{ borderInlineEnd: "1px solid rgba(5, 5, 5, 0.06)" }}>
-            <button type="button" className="w-11/12 m-1 mt-3 flex items-center py-2 justify-center text-orange-600 border rounded-md text-sm drop-shadow-md hover:bg-orange-600 hover:text-white hover:drop-shadow-xl whitespace-nowrap transition-transform transform hover:scale-105">
-                <span className="font-thin">สรุปบิล</span>
+            <button type="button" onClick={() => setOpenModal(!openModal)} className="w-11/12 m-1 mt-3 flex items-center py-2 justify-center text-orange-600 border rounded-md text-sm drop-shadow-md hover:bg-orange-600 hover:text-white hover:drop-shadow-xl whitespace-nowrap transition-transform transform hover:scale-105">
+                <span className="font-thin">ยอดบิล</span>
             </button>
 
             <Menu
@@ -53,6 +55,8 @@ const MenuFront = ({ productType }: MenuPageProps) => {
                 className={`h-[100vh] max-w-[100px] z-0`}
                 style={{ borderInlineEnd: "0" }}
             />
+
+            <ModalOrderHistory openModal={openModal} setOpenModal={setOpenModal}/>
         </section>
     );
 };
