@@ -1,7 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface itemCartType {
-  productId: number;
+  productId?: number;
+  promotionId?: number;
+  promotionPrice?: number;
   name: string;
   qty: number;
   price: number;
@@ -9,12 +11,14 @@ export interface itemCartType {
 }
 
 export interface myStateCartItem {
+  transactionId: string;
   itemCart: itemCartType[];
   totalPrice: number;
   totalQty: number;
 }
 
 const initialState: myStateCartItem = {
+  transactionId: "",
   itemCart: [],
   totalPrice: 0,
   totalQty: 0
@@ -61,10 +65,15 @@ const cartSlice = createSlice({
         }
       }
     },
-    removeCartItem: (state, action: PayloadAction<number>) => {
-      const productIdToRemove = action.payload;
-      const itemToRemoveIndex = state.itemCart.findIndex(item => item.productId === productIdToRemove);
-      
+    removeCartItem: (state, action: PayloadAction<{productId?: number, promotionId?: number}>) => {
+      const { productId , promotionId } = action.payload;
+      let itemToRemoveIndex = 0;
+      if(productId){
+        itemToRemoveIndex = state.itemCart.findIndex(item => item.productId === productId);
+      }else{
+        itemToRemoveIndex = state.itemCart.findIndex(item => item.promotionId === promotionId);
+      }
+    
       if (itemToRemoveIndex !== -1) {
         const itemToRemove = state.itemCart[itemToRemoveIndex];
 
@@ -77,9 +86,22 @@ const cartSlice = createSlice({
       return {
         ...initialState,
       };
-    }
+    },
+    cartPromotionIncrementItem: (state, action: PayloadAction<itemCartType>) => {
+      const { promotionId, name, qty, price , image } = action.payload;
+      const existingItem = state.itemCart.find(item => item.promotionId === promotionId);
+
+      if (!existingItem) {
+        state.totalQty += 1;
+        state.totalPrice += price;
+        state.itemCart.push({promotionId: promotionId, name: name, price: price, qty: qty, image: image});
+      } 
+    },
+    setTransactionId: (state, action: PayloadAction<string>) => {
+      state.transactionId = action.payload;
+    },
   }
 });
 
-export const { cartIncrementItem, cartDecrementItem , removeCartItem , cleanCart } = cartSlice.actions;
+export const { cartIncrementItem, cartDecrementItem , removeCartItem , cleanCart , cartPromotionIncrementItem , setTransactionId} = cartSlice.actions;
 export default cartSlice.reducer;

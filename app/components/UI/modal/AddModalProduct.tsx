@@ -65,7 +65,7 @@ const AddModalProduct: React.FC<Props> = ({ open, setOpen, selectProduct }) => {
             open={open}
             onOk={handleOk}
             onCancel={() => setOpen(false)}
-            okText="ตกลง"
+            okText="เพิ่มสินค้า"
             cancelText="ยกเลิก"
         >
             <div className="flex items-center justify-between">

@@ -174,7 +174,8 @@ CREATE TABLE "OrderBill" (
 CREATE TABLE "ItemTransaction" (
     "id" SERIAL NOT NULL,
     "qty" INTEGER NOT NULL,
-    "productId" INTEGER NOT NULL,
+    "productId" INTEGER,
+    "promotionId" INTEGER,
     "orderBillId" INTEGER NOT NULL,
 
     CONSTRAINT "ItemTransaction_pkey" PRIMARY KEY ("id")
@@ -260,9 +261,6 @@ ALTER TABLE "Transaction" ADD CONSTRAINT "Transaction_employeeId_fkey" FOREIGN K
 
 -- AddForeignKey
 ALTER TABLE "OrderBill" ADD CONSTRAINT "OrderBill_transactionId_fkey" FOREIGN KEY ("transactionId") REFERENCES "Transaction"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "ItemTransaction" ADD CONSTRAINT "ItemTransaction_productId_fkey" FOREIGN KEY ("productId") REFERENCES "Product"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ItemTransaction" ADD CONSTRAINT "ItemTransaction_orderBillId_fkey" FOREIGN KEY ("orderBillId") REFERENCES "OrderBill"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

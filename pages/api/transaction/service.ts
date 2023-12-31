@@ -1,7 +1,8 @@
+import { myStateCartItem } from "@/app/store/slices/cartSlice";
 import { dataVerifyTransaction } from "@/types/verify";
 import { getBranchById } from "@/utils/branch";
 import { getEmployeeById } from "@/utils/employee";
-import { closeDataTransaction, createTokenTransaction, fetchDataFrontDetailByTransactionId, fetchTransactionAll, fetchTransactionByBranchId, fetchTransactionByCompanyId, fetchTransactionById, insertTransaction, updateTokenOrderTransaction, verifyTransactionBody } from "@/utils/transaction";
+import { checkOrderArrayProductId, checkOrderArrayPromotionId, closeDataTransaction, createTokenTransaction, fetchDataFrontDetailByTransactionId, fetchTransactionAll, fetchTransactionByBranchId, fetchTransactionByCompanyId, fetchTransactionById, insertOrderBill, insertTransaction, updateTokenOrderTransaction, verifyOrderBillBody, verifyTransactionBody } from "@/utils/transaction";
 import { NextApiResponse } from "next";
 
 export const handleAddTransaction = async (body: dataVerifyTransaction, res: NextApiResponse) => {
@@ -75,4 +76,24 @@ export const handleGetCustomerFrontDataById = async (res: NextApiResponse, token
     if(!dataDetail) return res.status(404).json({ message: [ {message : "พบข้อผิดพลาดข้อมูล"}], customerFrontData: null, status: true });
     
     return res.status(200).json({ message: [ {message : "พบข้อมูล"}], customerFrontData: dataDetail, status: true });
+}
+
+export const handleAddOrderBill = async (body: myStateCartItem, res: NextApiResponse) => {
+    // VerifyUnitData
+    const verifyOrderBill = verifyOrderBillBody(body);
+    if (verifyOrderBill.length > 0) return res.status(404).json({ message: verifyOrderBill, orderBill: null, status: false });
+    // check transactionId
+    const checktransaction = await fetchTransactionById(body.transactionId);
+    if (!checktransaction) return res.status(404).json({ message: [{message: "ไม่พบข้อมูล transactionId ในระบบ"}], orderBill: null, status: false });
+    // check product
+    const checkProduct = await checkOrderArrayProductId(body.itemCart);
+    if(checkProduct.length > 0) return res.status(404).json({ message: checkProduct, orderBill: null, status: false });
+    //  check promotion
+    const checkPromotion = await checkOrderArrayPromotionId(body.itemCart);
+    if(checkPromotion.length > 0) return res.status(404).json({ message: checkPromotion, orderBill: null, status: false });
+    // add orderBill
+    const addOrderBill = await insertOrderBill(body);
+    if (!addOrderBill) return res.status(404).json({ message: "An error occurred saving data.", orderBill: null, status: false });
+
+    return res.status(200).json({ message: [ {message : "พบข้อมูล"}], orderBill: body, status: true });
 }

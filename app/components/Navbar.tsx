@@ -5,7 +5,7 @@ import Image from "next/image";
 // Images and Icons
 import logo from "@/public/images/moonlamplogo.png";
 
-import { AiOutlineShoppingCart, AiOutlineHeart, AiOutlineUser } from "react-icons/ai";
+import { AiOutlineShoppingCart } from "react-icons/ai";
 import { Badge } from "antd";
 import { fetchCustomerFrontData } from "@/types/fetchData";
 import ModalCart from "./UI/modal/ModalCart";

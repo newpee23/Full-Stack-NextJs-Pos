@@ -6,9 +6,12 @@ import Navbar from "@/app/components/Navbar";
 import CountdownTime from "@/app/components/UI/CountdownTime";
 import FloatBtn from "@/app/components/UI/btn/FloatBtn";
 import CardProduct from "@/app/components/UI/card/CardProduct";
+import CardPromotion from "@/app/components/UI/card/CardPromotion";
 import SkeletonTable from "@/app/components/UI/loading/SkeletonTable";
 import "@/app/customerFront/order.css"
-import React from "react";
+import { setTransactionId } from "@/app/store/slices/cartSlice";
+import { useAppDispatch } from "@/app/store/store";
+import React, { useEffect } from "react";
 
 interface HomePageFrontProps {
   params: {
@@ -18,8 +21,15 @@ interface HomePageFrontProps {
 
 const HomePageFront = ({ params }: HomePageFrontProps) => {
   const { tokenOrder } = params;
-  
+  const dispatch = useAppDispatch();
   const { data, isLoading, isError, refetch, remove } = useDataFront(tokenOrder);
+
+  useEffect(() => {
+    if (data) {
+      dispatch(setTransactionId(data.id));
+    }
+
+  }, [data]);
 
   if (!tokenOrder) {
     return <ErrPage />;
@@ -42,9 +52,10 @@ const HomePageFront = ({ params }: HomePageFrontProps) => {
     return <ErrPage onClick={handleRefresh} />;
   }
 
+
   return (
     <section>
-      <Navbar orderDetail={data}/>
+      <Navbar orderDetail={data} />
       <div className="mt-14 flex">
         <MenuFront productType={data.productData} />
         <div className="w-full p-3">
@@ -56,7 +67,8 @@ const HomePageFront = ({ params }: HomePageFrontProps) => {
             <p className="text-orange-600 text-xs">*เมื่อถึงเวลาสิ้นสุดจะไม่สามารถสั่งรายการอาหารได้</p>
           </div>
           <div className="mt-5">
-              <CardProduct productData={data.productData}/>
+            {data.promotionData.length > 0 && <CardPromotion promotionData={data.promotionData} />}
+            <CardProduct productData={data.productData} />
           </div>
         </div>
       </div>

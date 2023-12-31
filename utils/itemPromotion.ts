@@ -38,7 +38,7 @@ export const checkArrayPromotionId = async (data: dataVerifyItemPromotion[]): Pr
     for (let index = 0; index < data.length; index++) {
         const item = data[index];
         const checkPromotionId = await fetchPromotionById(item.promotionId);
-        if (!checkPromotionId) verifyStatus.push(pushData(`ไม่พบข้อมล : promotionId แถวที่ ${index + 1}`));
+        if (!checkPromotionId) verifyStatus.push(pushData(`ไม่พบข้อมูล : promotionId แถวที่ ${index + 1}`));
     }
 
     return verifyStatus;
@@ -50,7 +50,7 @@ export const checkArrayProductId = async (data: dataVerifyItemPromotion[]): Prom
     for (let index = 0; index < data.length; index++) {
         const item = data[index];
         const checkProductId = await fetchProductById(item.productId);
-        if (!checkProductId) verifyStatus.push(pushData(`ไม่พบข้อมล : productId แถวที่ ${index + 1}`));
+        if (!checkProductId) verifyStatus.push(pushData(`ไม่พบข้อมูล : productId แถวที่ ${index + 1}`));
     }
 
     return verifyStatus;
@@ -352,14 +352,14 @@ export const checkItemPromotionIdArr = async (data: dataVerifyIUpdatetemPromotio
         for (let index = 0; index < data.deleteItemPromotionData.length; index++) {
             const item = data.deleteItemPromotionData[index];
             const checkProductId = await fetchItemPromotionById(item.promotionId);
-            if (checkProductId?.length === 0) verifyStatus.push(pushData(`ไม่พบข้อมล deleteItemPromotionData : promotionId แถวที่ ${index + 1}`));
+            if (checkProductId?.length === 0) verifyStatus.push(pushData(`ไม่พบข้อมูล deleteItemPromotionData : promotionId แถวที่ ${index + 1}`));
         }
     }
 
     for (let index = 0; index < data.itemPromotionData.length; index++) {
         const item = data.itemPromotionData[index];
         const checkProductId = await fetchItemPromotionById(item.promotionId);
-        if (checkProductId?.length === 0) verifyStatus.push(pushData(`ไม่พบข้อมล itemPromotionData : promotionId แถวที่ ${index + 1}`));
+        if (checkProductId?.length === 0) verifyStatus.push(pushData(`ไม่พบข้อมูล itemPromotionData : promotionId แถวที่ ${index + 1}`));
     }
 
     return verifyStatus;
@@ -373,14 +373,14 @@ export const checkItemPromotionProductIdArr = async (data: dataVerifyIUpdatetemP
         for (let index = 0; index < data.deleteItemPromotionData.length; index++) {
             const item = data.deleteItemPromotionData[index];
             const checkProductId = await fetchProductById(item.productId);
-            if (!checkProductId) verifyStatus.push(pushData(`ไม่พบข้อมล deleteItemPromotionData : productId แถวที่ ${index + 1}`));
+            if (!checkProductId) verifyStatus.push(pushData(`ไม่พบข้อมูล deleteItemPromotionData : productId แถวที่ ${index + 1}`));
         }
     }
 
     for (let index = 0; index < data.itemPromotionData.length; index++) {
         const item = data.itemPromotionData[index];
         const checkProductId = await fetchProductById(item.productId);
-        if (!checkProductId) verifyStatus.push(pushData(`ไม่พบข้อมล itemPromotionData : productId แถวที่ ${index + 1}`));
+        if (!checkProductId) verifyStatus.push(pushData(`ไม่พบข้อมูล itemPromotionData : productId แถวที่ ${index + 1}`));
     }
 
     return verifyStatus;

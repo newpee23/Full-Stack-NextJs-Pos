@@ -327,7 +327,7 @@ interface idNameCustomerFrontData {
   name: string;
 }
 
-interface ItemPromotionsCustomerFrontData {
+export interface ItemPromotionsCustomerFrontData {
   productId: number;
   stock: number;
 }
@@ -341,19 +341,42 @@ export interface promotionDataCustomerFrontData {
   endDate: Date;
   img: string | null;
   ItemPromotions: ItemPromotionsCustomerFrontData[];
-  productsItemPromotions: ({
-    unit: {
-      id: number;
-      name: string;
-    };
-    productType: {
-      id: number;
-      name: string;
-    };
+  productsItemPromotions: (productsItemPromotions | null)[];
+}
+
+export interface productsItemPromotions {
+  unit: {
     id: number;
     name: string;
-    price: number;
-    stock: number;
-    img: string | null;
-  } | null)[]
+  };
+  productType: {
+    id: number;
+    name: string;
+  };
+  id: number;
+  name: string;
+  price: number;
+  stock: number;
+  img: string | null;
+}
+
+export interface selectItemPromotion {
+  id: number;
+  name: string;
+}
+
+export interface detailPromotion {
+  promotionId: number;
+  img: string | null;
+  name: string;
+  detail: string;
+  promotionPrice: number;
+  itemPromotionsStock: ItemPromotionsCustomerFrontData[];
+}
+
+export interface orderBillType {
+  id: number;
+  orderDate: Date;
+  transactionId: string;
+  status: "succeed" | "cancel" | "making";
 }

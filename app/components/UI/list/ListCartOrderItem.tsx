@@ -23,18 +23,23 @@ const ListCartOrderItem = () => {
     }
 
     const handleDecrementItem = (cartItem: itemCartType) => {
-        dispatch(cartDecrementItem(cartItem.productId));
+        if(cartItem.productId){
+            dispatch(cartDecrementItem(cartItem.productId));
+        }
     }
 
-    const handleRemoveItem = (productId: number) => {
-        dispatch(removeCartItem(productId))
+    const handleRemoveItem = (cartItem: itemCartType) => {
+        if(cartItem.productId){
+           return dispatch(removeCartItem({productId: cartItem.productId}));
+        }
+        dispatch(removeCartItem({promotionId: cartItem.promotionId}));
     }
 
     const data: dataType[] = itemCart.map((cartItem) => ({
         title: (
             <div className="flex justify-between">
                 <p>{cartItem.name}</p>
-                <p><DeleteOutlined  onClick={() => handleRemoveItem(cartItem.productId)} /></p>
+                <p><DeleteOutlined  onClick={() => handleRemoveItem(cartItem)} /></p>
             </div>
         ),
         avatar: cartItem.image || "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png", // Use the image from the cart item, or an empty string if not available
@@ -42,14 +47,16 @@ const ListCartOrderItem = () => {
             <div className="flex justify-between">
                 <p className="text-orange-600">{`ราคา ${cartItem.price} บาท`}</p>
                 <div className="flex">
-                    <MinusCircleOutlined  className="mr-1" onClick={() => handleDecrementItem(cartItem)} />
+                    {cartItem.productId && <MinusCircleOutlined  className="mr-1" onClick={() => handleDecrementItem(cartItem)} />}
                     <p className="text-black">{`${cartItem.qty} ชิ้น`}</p>
-                    <PlusCircleOutlined  className="ml-1" onClick={() => handleIncrementItem(cartItem)} />
+                    {cartItem.productId && <PlusCircleOutlined  className="ml-1" onClick={() => handleIncrementItem(cartItem)} />}
                 </div>
             </div>
         ),
         content: "",
     }));
+
+    console.log(itemCart);
 
     return (
         <>
