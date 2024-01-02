@@ -122,7 +122,7 @@ export const fetchTransactionByBranchId = async (branchId: number): Promise<orde
     }
 };
 
-export const fetchTransactionById = async (id: string): Promise<orderTransactionByBranch | null> => {
+export const fetchTransactionByTableId = async (id: string): Promise<orderTransactionByBranch | null> => {
     try {
         const table = await prisma.tables.findUnique({
             select: {
@@ -166,6 +166,24 @@ export const fetchTransactionById = async (id: string): Promise<orderTransaction
         };
 
         return tableWithTransaction;
+    } catch (error) {
+        // Handle any errors here or log them
+        console.error("Error fetching table and transaction:", error);
+        return null;
+    } finally {
+        await prisma.$disconnect();
+    }
+};
+
+export const fetchTransactionById = async (id: string): Promise<fetchTransaction | null> => {
+    try {
+        const transactionOrder = await prisma.transaction.findUnique({
+            where: {
+                id: id,
+            },
+        });
+
+        return transactionOrder;
     } catch (error) {
         // Handle any errors here or log them
         console.error("Error fetching table and transaction:", error);
@@ -587,23 +605,3 @@ export const checkOrderArrayPromotionId = async (data: itemCartType[]): Promise<
     return verifyStatus;
 };
 
-export const insertOrderBill = async (body: myStateCartItem): Promise<orderBillType | null> => {
-    try {
-        const orderBill = await prisma.orderBill.create({
-            data: {
-              orderDate: new Date(),
-              transactionId: body.transactionId,
-              status: "making",
-            },
-        });
-
-        
-          return orderBill;
-    } catch (error: unknown) {
-        // Handle any errors here or log them
-        console.error("Error add employee:", error);
-        return null;
-    } finally {
-        await prisma.$disconnect();
-    }
-};

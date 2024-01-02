@@ -2,7 +2,9 @@ import { myStateCartItem } from "@/app/store/slices/cartSlice";
 import { dataVerifyTransaction } from "@/types/verify";
 import { getBranchById } from "@/utils/branch";
 import { getEmployeeById } from "@/utils/employee";
-import { checkOrderArrayProductId, checkOrderArrayPromotionId, closeDataTransaction, createTokenTransaction, fetchDataFrontDetailByTransactionId, fetchTransactionAll, fetchTransactionByBranchId, fetchTransactionByCompanyId, fetchTransactionById, insertOrderBill, insertTransaction, updateTokenOrderTransaction, verifyOrderBillBody, verifyTransactionBody } from "@/utils/transaction";
+import { insertItemTransactionArray } from "@/utils/itemTransaction";
+import { insertOrderBill } from "@/utils/orderBill";
+import { checkOrderArrayProductId, checkOrderArrayPromotionId, closeDataTransaction, createTokenTransaction, fetchDataFrontDetailByTransactionId, fetchTransactionAll, fetchTransactionByBranchId, fetchTransactionByCompanyId, fetchTransactionById, fetchTransactionByTableId, insertTransaction, updateTokenOrderTransaction, verifyOrderBillBody, verifyTransactionBody } from "@/utils/transaction";
 import { NextApiResponse } from "next";
 
 export const handleAddTransaction = async (body: dataVerifyTransaction, res: NextApiResponse) => {
@@ -30,7 +32,7 @@ export const handleAddTransaction = async (body: dataVerifyTransaction, res: Nex
 
 export const handleCloseTransaction = async (id: string, res: NextApiResponse) => {
     if (!id) return res.status(404).json({ message: [{message: "Please specify transactionId."}], transactionItem: null, status: false });
-    const transaction = await fetchTransactionById(id);
+    const transaction = await fetchTransactionByTableId(id);
     if (!transaction) return res.status(404).json({ message: `No transaction found with Id : ${id}`, transactionItem: null, status: false });
     if (!transaction.transactionOrder?.id) return res.status(404).json({ message: `No transactionOrder found with Id : ${id}`, transactionItem: null, status: false });
     const closeTransaction = await closeDataTransaction(transaction.transactionOrder?.id);
@@ -58,7 +60,7 @@ export const handleGetTransactionByCompanyId = async (res: NextApiResponse, comp
 export const handleGetTransactionById = async (res: NextApiResponse, id: string) => {
     if(!id) return res.status(200).json({ message: [{message: `ไม่พบข้อมูล id`}], transactionItem: null, status: false });
     // fetch dataOrderBy Branch 
-    const transactionOrder = await fetchTransactionById(id);
+    const transactionOrder = await fetchTransactionByTableId(id);
 
     return res.status(200).json({ message: "Tables found", transactionItem: transactionOrder, status: true });
 }
@@ -93,7 +95,10 @@ export const handleAddOrderBill = async (body: myStateCartItem, res: NextApiResp
     if(checkPromotion.length > 0) return res.status(404).json({ message: checkPromotion, orderBill: null, status: false });
     // add orderBill
     const addOrderBill = await insertOrderBill(body);
-    if (!addOrderBill) return res.status(404).json({ message: "An error occurred saving data.", orderBill: null, status: false });
-
-    return res.status(200).json({ message: [ {message : "พบข้อมูล"}], orderBill: body, status: true });
+    if (!addOrderBill) return res.status(404).json({ message: [{message: "An error occurred saving data."}], orderBill: null, status: false });
+    // add productItemTransaction
+    const addItemTransaction = await insertItemTransactionArray(body.itemCart, addOrderBill.id);
+    if(addItemTransaction.length > 0) return res.status(404).json({ message: addItemTransaction, orderBill: null, status: false });
+    // fetch order
+    return res.status(200).json({ message: [ {message : "บันทึกข้อมูลสำเร็จ"}], orderBill: body, status: true });
 }

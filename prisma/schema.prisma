@@ -214,6 +214,7 @@ enum enumrole {
 }
 
 enum enumOrderBill {
+  process
   succeed
   cancel
   making

@@ -378,5 +378,5 @@ export interface orderBillType {
   id: number;
   orderDate: Date;
   transactionId: string;
-  status: "succeed" | "cancel" | "making";
+  status: "succeed" | "cancel" | "making" | "process";
 }

@@ -5,7 +5,7 @@ CREATE TYPE "enumStatus" AS ENUM ('Active', 'InActive');
 CREATE TYPE "enumrole" AS ENUM ('admin', 'userAdmin', 'user');
 
 -- CreateEnum
-CREATE TYPE "enumOrderBill" AS ENUM ('succeed', 'cancel', 'making');
+CREATE TYPE "enumOrderBill" AS ENUM ('process', 'succeed', 'cancel', 'making');
 
 -- CreateTable
 CREATE TABLE "Company" (
