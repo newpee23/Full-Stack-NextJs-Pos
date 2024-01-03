@@ -1,8 +1,10 @@
 import { DeleteOutlined, LoadingOutlined, MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
-import { List, Spin } from "antd";
+import { List, Spin, message } from "antd";
 import { useAppDispatch, useAppSelector } from "@/app/store/store";
 import { cartIncrementItem, itemCartType, cartDecrementItem, removeCartItem, cleanCart } from "@/app/store/slices/cartSlice";
+import { useSession } from "next-auth/react";
+import { useAddDataItemTransaction } from "@/app/api/customerFront/addTransaction";
 
 export interface dataType {
     title: React.ReactNode;
@@ -11,12 +13,18 @@ export interface dataType {
     content: string;
 }
 
-const ListCartOrderItem = () => {
+interface Props {
+    setOpenCart: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
+const ListCartOrderItem = ({ setOpenCart }: Props) => {
+
+    const { data: session } = useSession();
     const dispatch = useAppDispatch();
+    const [messageApi, contextHolder] = message.useMessage();
     const [ loading, SetLoading ] = useState<boolean>(false);
-    const { itemCart, totalPrice } = useAppSelector((state) => state?.cartSlice);
-   
+    const { itemCart, totalPrice, totalQty, transactionId } = useAppSelector((state) => state?.cartSlice);
+    const addDataItemTransactionMutation = useAddDataItemTransaction();
 
     const handleIncrementItem = (cartItem: itemCartType) => {
         dispatch(cartIncrementItem({ productId: cartItem.productId, image: cartItem.image, name: cartItem.name, price: cartItem.price, qty: 1 }));
@@ -34,6 +42,12 @@ const ListCartOrderItem = () => {
         }
         dispatch(removeCartItem({promotionId: cartItem.promotionId}));
     }
+
+    const showMessage = ({ status, text }: { status: string, text: string }) => {
+        if (status === "success") { messageApi.success(text); }
+        else if (status === "error") { messageApi.error(text); }
+        else if (status === "warning") { messageApi.warning(text); }
+      };
 
     const data: dataType[] = itemCart.map((cartItem) => ({
         title: (
@@ -56,7 +70,35 @@ const ListCartOrderItem = () => {
         content: "",
     }));
 
-    console.log(itemCart);
+    const handleAddItemCart = async () => {
+        if(itemCart.length > 0){
+            try {
+                SetLoading(true);
+                // Insert addItemTransaction
+                const addBranch = await addDataItemTransactionMutation.mutateAsync({
+                    token: session?.user.accessToken,
+                    itemTransactionData: {
+                        itemCart: itemCart,
+                        totalPrice: totalPrice,
+                        totalQty: totalQty,
+                        transactionId: transactionId
+                    }
+                });
+    
+                if(!addBranch?.orderBill){
+                    return showMessage({ status: "success", text: "เกิดข้อผิดพลาดสั่งอาหารไม่สำเร็จ" });
+                }
+                dispatch(cleanCart());
+                return showMessage({ status: "success", text: "สั่งอาหารสำเร็จ" });
+            } catch (error: unknown) {
+                console.error('Failed to add data:', error);
+            } finally {
+                SetLoading(false);
+                setOpenCart(false);
+            }
+        }
+      
+    }
 
     return (
         <>
@@ -85,13 +127,14 @@ const ListCartOrderItem = () => {
             />
         </Spin>
             <div className="text-center mt-3">
-                <button type="button"  onClick={() => SetLoading(!loading)} className="text-white bg-orange-600 py-1 px-4 border rounded-md text-sm drop-shadow-md hover:bg-orange-700 hover:text-white hover:drop-shadow-xl whitespace-nowrap transition-transform transform hover:scale-105">
+                <button type="button"  onClick={() => {SetLoading(!loading);handleAddItemCart();}} className="text-white bg-orange-600 py-1 px-4 border rounded-md text-sm drop-shadow-md hover:bg-orange-700 hover:text-white hover:drop-shadow-xl whitespace-nowrap transition-transform transform hover:scale-105">
                     <span>สั่งสินค้า</span>
                     {loading &&
                         <Spin className="ml-2" indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />
                     }
                 </button>
             </div>
+            {contextHolder}
         </>
     );
 }

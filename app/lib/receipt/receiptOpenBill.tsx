@@ -53,7 +53,7 @@ export const generatePdf = async ({details , page} : Props) => {
 
     pdf.addImage(qrCodeDataUrl, 'PNG', qrCodeX, qrCodeY, qrCodeSize, qrCodeSize);
     // Text
-    addText("(สแกนเพื่อสั่งอาหาร)", 64, 16);
+    addText("(สแกนเพื่อสั่งอาหาร)"+qrCodeData, 64, 16);
     addText("เวลาสั่งอาหาร 120 นาที (4 ท่าน)", 70, 14);
     addText("เวลาสิ้นสุด 18/12/2023 24:00", 76, 14);
 

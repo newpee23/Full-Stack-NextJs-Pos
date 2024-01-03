@@ -85,8 +85,8 @@ export const handleAddOrderBill = async (body: myStateCartItem, res: NextApiResp
     const verifyOrderBill = verifyOrderBillBody(body);
     if (verifyOrderBill.length > 0) return res.status(404).json({ message: verifyOrderBill, orderBill: null, status: false });
     // check transactionId
-    const checktransaction = await fetchTransactionById(body.transactionId);
-    if (!checktransaction) return res.status(404).json({ message: [{message: "ไม่พบข้อมูล transactionId ในระบบ"}], orderBill: null, status: false });
+    const checkTransaction = await fetchTransactionById(body.transactionId);
+    if (!checkTransaction) return res.status(404).json({ message: [{message: "ไม่พบข้อมูล transactionId ในระบบ"}], orderBill: null, status: false });
     // check product
     const checkProduct = await checkOrderArrayProductId(body.itemCart);
     if(checkProduct.length > 0) return res.status(404).json({ message: checkProduct, orderBill: null, status: false });

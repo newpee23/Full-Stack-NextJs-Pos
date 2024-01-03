@@ -28,7 +28,6 @@ export const verifyBranchBody = (data: dataVerifyBranch): promiseDataVerify[] =>
   if (!data.name.trim()) verifyStatus.push(pushData("กรุณาระบุ : name"));
   if (!data.codeReceipt.trim()) verifyStatus.push(pushData("กรุณาระบุ : codeReceipt"));
   if (!data.address.trim()) verifyStatus.push(pushData("กรุณาระบุ : address"));
-  if (!data.phone.trim()) verifyStatus.push(pushData("กรุณาระบุ : phone"));
 
   // Return
   if (verifyStatus.length > 0) return verifyStatus;

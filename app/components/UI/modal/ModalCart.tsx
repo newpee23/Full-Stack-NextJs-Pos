@@ -19,7 +19,7 @@ const ModalCart = ({ openCart, setOpenCart, orderDetail }: Props) => {
                 <p>จำนวน {totalQty} ชิ้น</p>
             </div>
             <div className="mt-2">
-               <ListCartOrderItem />
+               <ListCartOrderItem setOpenCart={setOpenCart}/>
             </div>
         </Modal>
     );

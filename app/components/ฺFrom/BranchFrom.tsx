@@ -155,7 +155,7 @@ const BranchFrom = ({ onClick, editData, title, statusAction }: Props) => {
                 {/* วันหมดอายุสาขา,เบอร์โทรศัพท์ */}
                 <div className="grid gap-3 mb-3 grid-cols-1 sml:grid-cols-2">
                     <InputFrom label="วันหมดอายุสาขา" name="expiration" required={true} type="datePicker"/>
-                    <InputFrom label="เบอร์โทรศัพท์" name="phone" required={true} type="number"/>
+                    <InputFrom label="เบอร์โทรศัพท์" name="phone" required={true} type="text"/>
                 </div>
                 {/* สถานะ */}
                 <div className="grid gap-3 mb-3 grid-cols-1 sml:grid-cols-2">
