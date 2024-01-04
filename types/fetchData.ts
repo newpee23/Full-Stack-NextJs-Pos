@@ -380,3 +380,40 @@ export interface orderBillType {
   transactionId: string;
   status: "succeed" | "cancel" | "making" | "process";
 }
+
+export interface ItemTransactions {
+  id: number;
+  qty: number;
+  productId: number | null;
+  promotionId: number | null;
+  orderBillId: number;
+}
+
+export interface orderBillTotal {
+  id: number;
+  orderDate: Date;
+  status: "succeed" | "cancel" | "making" | "process";
+  ItemTransactions: ItemTransactions[];
+}
+
+export interface itemTransactionsType {
+  productName: string | null;
+  promotionName: string | null;
+  unitName: string | null;
+  id: number;
+  qty: number;
+  productId: number | null;
+  promotionId: number | null;
+  orderBillId: number;
+  price: number;
+} 
+
+export interface orderBillTotalType {
+  index: number;
+  totalBill: number;
+  ItemTransactions: itemTransactionsType[];
+  id: number;
+  orderDate: Date;
+  status: "process" | "succeed" | "cancel" | "making";
+}
+

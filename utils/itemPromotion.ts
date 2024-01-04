@@ -178,6 +178,7 @@ export const fetchItemPromotionByPromotionId = async (promotionId: number): Prom
     }
 }
 
+
 export const fetchItemPromotionByPromotionIdPdId = async (promotionId: number,productId: number): Promise<fetchItemPromotion | null> => {
     try {
         

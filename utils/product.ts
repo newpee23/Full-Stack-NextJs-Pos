@@ -93,6 +93,20 @@ export const fetchProductById = async (id: number): Promise<fetchProduct | null>
             where: {
                 id: id
             }
+            ,include: {
+                productType: {
+                    select: {
+                        id: true,
+                        name: true,
+                    },
+                },
+                unit: {
+                    select: {
+                        id: true,
+                        name: true,
+                    },
+                }
+            }      
         });
 
         if (!product) return null;

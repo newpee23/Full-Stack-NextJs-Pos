@@ -82,9 +82,10 @@ const cartSlice = createSlice({
         state.itemCart.splice(itemToRemoveIndex, 1);
       }
     },
-    cleanCart: (): myStateCartItem => {
+    cleanCart: (state): myStateCartItem => {
       return {
         ...initialState,
+        transactionId: state.transactionId
       };
     },
     cartPromotionIncrementItem: (state, action: PayloadAction<itemCartType>) => {
