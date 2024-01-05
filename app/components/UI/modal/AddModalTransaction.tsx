@@ -6,6 +6,7 @@ import SelectPeople from '../select/SelectPeople';
 import { useAddDataTransaction } from '@/app/api/transaction';
 import { useSession } from 'next-auth/react';
 import { generatePdf } from '@/app/lib/receipt/receiptOpenBill';
+import { fetchDetailReceiptData } from '@/app/api/detailReceipt';
 
 type Props = {
   data: orderTransactionByBranch;
@@ -69,7 +70,10 @@ const AddModalTransaction = ({ data , onClick }: Props) => {
     });
 
     if (addTransaction?.status === true) {
-      generatePdf({ details: addTransaction.transactionItem, page: "modalAdd" });
+      const detailReceipt = await fetchDetailReceiptData(session?.user.accessToken, session?.user.company_id, session?.user.branch_id, addTransaction.transactionItem.id);
+      if(!detailReceipt){
+        return showMessage({ status: "error", text: "ไม่พบข้อมูลรายละเอียดบิลขาย" });
+      }
       setTimeout(() => { onClick(); }, 1000);
       setOpen(false);
       setConfirmLoading(false);

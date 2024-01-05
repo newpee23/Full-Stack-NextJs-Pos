@@ -12,6 +12,7 @@ import PrintReceipt from '../btn/PrintReceipt';
 import { generatePdf } from '@/app/lib/receipt/receiptOpenBill';
 import { fetchOrderBillData } from '@/app/api/customerFront/getOrderBill';
 import { receiptCloseBill } from '@/app/lib/receipt/receiptCloseBill';
+import { fetchDetailReceiptData } from '@/app/api/detailReceipt';
 
 type Props = {
   data: orderTransactionAdd;
@@ -22,6 +23,7 @@ type Props = {
 const CardTransaction = ({ data, isOpen, onClick }: Props) => {
 
   const { data: session } = useSession();
+
   const [messageApi, contextHolder] = message.useMessage();
   const updateDataTransactionMutation = useUpdateDataTransaction();
 
@@ -35,6 +37,7 @@ const CardTransaction = ({ data, isOpen, onClick }: Props) => {
     }
   };
 
+
   const handleCloseBill = async (id: string, transactionId?: string) => {
     const updateTransaction = await updateDataTransactionMutation.mutateAsync({
       token: session?.user.accessToken,
@@ -43,16 +46,16 @@ const CardTransaction = ({ data, isOpen, onClick }: Props) => {
 
     if (updateTransaction?.status === true && transactionId) {
 
-        const orderBill = await fetchOrderBillData(session?.user.accessToken, transactionId);
-        if(!orderBill){
-          return showMessage({ status: "error", text: "สร้างบิลขายไม่สำเร็จ กรุณาติดต่อเจ้าหน้าที่" });
-        }
+      const orderBill = await fetchOrderBillData(session?.user.accessToken, transactionId);
+      if (!orderBill) {
+        return showMessage({ status: "error", text: "สร้างบิลขายไม่สำเร็จ กรุณาติดต่อเจ้าหน้าที่" });
+      }
 
-        receiptCloseBill({orderBill: orderBill});
-        setTimeout(() => { onClick(); }, 1000);
-        return showMessage({ status: "success", text: "ปิดบิลขายสำเร็จ" });
+      receiptCloseBill({ orderBill: orderBill });
+      setTimeout(() => { onClick(); }, 1000);
+      return showMessage({ status: "success", text: "ปิดบิลขายสำเร็จ" });
     }
-    return showMessage({ status: "error", text: "ปิดบิลขายไม่สำเร็จ กรุณาแก้ไขข้อผิดพลาด" });
+    return showMessage({ status: "error", text: "ปิดบิลขายไม่สำเร็จ" });
   }
 
   const countDownTime = () => {
@@ -62,6 +65,15 @@ const CardTransaction = ({ data, isOpen, onClick }: Props) => {
       </div>
     }
     return <></>;
+  }
+
+  const handleReprint = async () => {
+    const detailReceipt = await fetchDetailReceiptData(session?.user.accessToken, session?.user.company_id, session?.user.branch_id, data.transactionOrder?.id);
+    if (!detailReceipt) {
+      return showMessage({ status: "error", text: "ไม่พบข้อมูลรายละเอียดบิลขาย" });
+    }
+
+    generatePdf({ details: data, page: "tableTransaction", detailReceipt: detailReceipt });
   }
 
   return (
@@ -84,7 +96,7 @@ const CardTransaction = ({ data, isOpen, onClick }: Props) => {
         <p>เวลาปิดบิล : {data.transactionOrder?.endOrder ? moment(data.transactionOrder?.endOrder?.toString()).format('DD/MM/YYYY HH:mm') : "-"}</p>
       </div>
       <div className={`flex items-center ${data.transactionOrder?.startOrder ? "justify-between" : "justify-end"} p-2`} style={{ height: "54px" }}>
-        {data.transactionOrder?.startOrder && <PrintReceipt label='พิมพ์ใบเปิดโต๊ะ' onClick={() => generatePdf({ details: data, page: "tableTransaction" })} />}
+        {data.transactionOrder?.startOrder && <PrintReceipt label='พิมพ์ใบเปิดโต๊ะ' onClick={() => handleReprint()} />}
         <TagStatus color={isOpen ? "success" : "error"} textShow={isOpen ? "ใช้งาน" : "ไม่ใช้งาน"} />
       </div>
       {contextHolder}

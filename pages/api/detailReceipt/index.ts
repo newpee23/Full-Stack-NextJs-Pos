@@ -20,10 +20,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 const GET = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
         const { query } = req;
-        // getDetailReceipt By companyId
-        if (query.companyId) return await handleGetDetailReceiptByCompanyId(res, typeNumber(query.companyId));
+        // getDetailReceipt By query.companyId && query.transactionId && query.branchId
+        if (query.companyId && query.transactionId && query.branchId) return await handleGetDetailReceiptByCompanyId(res, typeNumber(query.companyId), typeNumber(query.branchId), query.transactionId.toString());
 
-        return res.status(404).json({ message: [{ message: "ไม่พบข้อมูล: companyId" }], DetailReceipt: null, status: true });
+        return res.status(404).json({ message: [{ message: "ไม่พบข้อมูล: companyId หรือ branchId หรือ transactionId" }], DetailReceipt: null, status: true });
     } catch (error: unknown) {
         console.error(error);
         return res.status(500).json({ message: "Internal server error", status: false });

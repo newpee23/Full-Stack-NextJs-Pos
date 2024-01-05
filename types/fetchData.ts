@@ -242,7 +242,7 @@ export interface orderTransactionByBranch {
   stoves: number;
   people: number;
   expiration: number;
-  tokenOrder: string | null | undefined;
+  tokenOrder?: string | null ;
   transactionOrder: order | null
 }
 
@@ -252,7 +252,7 @@ export interface orderTransactionAdd {
   stoves: number;
   people: number;
   expiration: number;
-  tokenOrder: string | null | undefined;
+  tokenOrder?: string | null | undefined;
   transactionOrder: order | null
 }
 
@@ -416,5 +416,16 @@ export interface orderBillTotalType {
   id: number;
   orderDate: Date;
   status: "process" | "succeed" | "cancel" | "making";
+}
+
+export interface detailReceiptType {
+  companyName: string;
+  logo: string | null;
+  branchName: string;
+  startOrder: Date;
+  endOrder: Date;
+  tableName: string;
+  expiration: number;
+  peoples: number;
 }
 
