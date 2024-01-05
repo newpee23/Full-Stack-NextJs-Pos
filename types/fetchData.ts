@@ -242,6 +242,7 @@ export interface orderTransactionByBranch {
   stoves: number;
   people: number;
   expiration: number;
+  tokenOrder: string | null | undefined;
   transactionOrder: order | null
 }
 

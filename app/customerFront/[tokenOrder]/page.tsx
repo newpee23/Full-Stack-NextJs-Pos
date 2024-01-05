@@ -11,7 +11,10 @@ import SkeletonTable from "@/app/components/UI/loading/SkeletonTable";
 import "@/app/customerFront/order.css"
 import { setTransactionId } from "@/app/store/slices/cartSlice";
 import { useAppDispatch } from "@/app/store/store";
-import React, { useEffect } from "react";
+import { getDate, getTime7H } from "@/utils/utils";
+import { Result } from "antd";
+
+import React, { useEffect, useState } from "react";
 
 interface HomePageFrontProps {
   params: {
@@ -23,6 +26,7 @@ const HomePageFront = ({ params }: HomePageFrontProps) => {
   const { tokenOrder } = params;
   const dispatch = useAppDispatch();
   const { data, isLoading, isError, refetch, remove } = useDataFront(tokenOrder);
+  const [beOver, setBeOver] = useState(true);
 
   useEffect(() => {
     if (data) {
@@ -61,15 +65,20 @@ const HomePageFront = ({ params }: HomePageFrontProps) => {
         <div className="w-full p-3">
           <div className="mt-3 text-center">
             <p className="text-lg">{data.tablesData.name} ({data.peoples} ท่าน)</p>
-            <p>วันที่ใช้บริการ 12/12/2023</p>
-            <p>เวลาเริ่มต้น 20:00 เวลาสิ้นสุด 22:00</p>
-            <CountdownTime time={data.tablesData.expiration} startOrder={data.startOrder} />
+            <p>วันที่ใช้บริการ {getDate(data.startOrder.toString())}</p>
+            <p>เวลาเริ่มต้น {getTime7H(data.startOrder.toString())} เวลาสิ้นสุด {getTime7H(data.endOrder.toString())}</p>
+            <CountdownTime time={data.tablesData.expiration} startOrder={data.startOrder} setBeOver={setBeOver} />
             <p className="text-orange-600 text-xs">*เมื่อถึงเวลาสิ้นสุดจะไม่สามารถสั่งรายการอาหารได้</p>
           </div>
-          <div className="mt-5">
-            {data.promotionData.length > 0 && <CardPromotion promotionData={data.promotionData} />}
-            <CardProduct productData={data.productData} />
-          </div>
+          {beOver ?
+            <div className="mt-5 mb-10">
+              {data.promotionData.length > 0 && <CardPromotion promotionData={data.promotionData} />}
+              <CardProduct productData={data.productData} />
+            </div> :
+            <div className="text-center m-3">
+              <Result status="error" className="pb-3" title="เวลาการใช้บริการของท่านหมดแล้ว" subTitle="กรุณาติดต่อพนักงานเพื่อชำระเงิน" />
+            </div>
+          }
         </div>
       </div>
       <FloatBtn />

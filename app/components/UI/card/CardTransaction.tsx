@@ -10,6 +10,8 @@ import { useSession } from 'next-auth/react';
 import CountdownTime from '../CountdownTime';
 import PrintReceipt from '../btn/PrintReceipt';
 import { generatePdf } from '@/app/lib/receipt/receiptOpenBill';
+import { fetchOrderBillData } from '@/app/api/customerFront/getOrderBill';
+import { receiptCloseBill } from '@/app/lib/receipt/receiptCloseBill';
 
 type Props = {
   data: orderTransactionAdd;
@@ -33,34 +35,41 @@ const CardTransaction = ({ data, isOpen, onClick }: Props) => {
     }
   };
 
-  const handleCloseBill = async (id: string) => {
+  const handleCloseBill = async (id: string, transactionId?: string) => {
     const updateTransaction = await updateDataTransactionMutation.mutateAsync({
       token: session?.user.accessToken,
       id: id
     });
 
-    if (updateTransaction?.status === true) {
-      setTimeout(() => { onClick(); }, 1000);
-      return showMessage({ status: "success", text: "ปิดบิลขายสำเร็จ" });
+    if (updateTransaction?.status === true && transactionId) {
+
+        const orderBill = await fetchOrderBillData(session?.user.accessToken, transactionId);
+        if(!orderBill){
+          return showMessage({ status: "error", text: "สร้างบิลขายไม่สำเร็จ กรุณาติดต่อเจ้าหน้าที่" });
+        }
+
+        receiptCloseBill({orderBill: orderBill});
+        setTimeout(() => { onClick(); }, 1000);
+        return showMessage({ status: "success", text: "ปิดบิลขายสำเร็จ" });
     }
     return showMessage({ status: "error", text: "ปิดบิลขายไม่สำเร็จ กรุณาแก้ไขข้อผิดพลาด" });
   }
 
   const countDownTime = () => {
-    if(data.transactionOrder?.startOrder){
-      return  <div className="text-center">
-                <CountdownTime time={data.expiration} startOrder={data.transactionOrder.startOrder} />
-              </div>
+    if (data.transactionOrder?.startOrder) {
+      return <div className="text-center">
+        <CountdownTime time={data.expiration} startOrder={data.transactionOrder.startOrder} />
+      </div>
     }
     return <></>;
   }
-  
+
   return (
     <Card key={data.id} title={data.name} extra={countDownTime()} className="bg-slate-50 border border-stone-100 text-sm" hoverable bordered={false}>
       <div className="flex items-center justify-between p-2">
         <p>จำนวนลูกค้า : {data.transactionOrder?.peoples || "0"}/{data.people}</p>
         {isOpen ? (
-          <DeleteBtn bill name={data.name} onClick={() => handleCloseBill(data.id)} label="ปิดบิล" />
+          <DeleteBtn bill name={data.name} onClick={() => handleCloseBill(data.id, data.transactionOrder?.id)} label="ปิดบิล" />
         ) : (
           <AddModalTransaction data={data} onClick={onClick} />
         )}

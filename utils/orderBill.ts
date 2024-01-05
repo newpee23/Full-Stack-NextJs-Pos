@@ -86,9 +86,9 @@ export const setDataTotalOrderBill = async (data: orderBillTotal[]): Promise<num
 
 export const setDataDetailOrderBill = async (data: orderBillTotal[]): Promise<orderBillTotalType[] | null> => {
     try {
-
+        const totalItem = (data.length + 1);
         const dataDetail: orderBillTotalType[] = await Promise.all(data.map(async (orderBill, index) => {
-
+            
             let totalBill = 0;
             const itemTransactions: (itemTransactionsType | undefined)[] = await Promise.all(orderBill.ItemTransactions.map(async (item) => {
                 if (item.productId) {
@@ -122,7 +122,7 @@ export const setDataDetailOrderBill = async (data: orderBillTotal[]): Promise<or
 
             return {
                 ...orderBill,
-                index: index + 1,
+                index: (totalItem - (index + 1)),
                 totalBill: totalBill,
                 ItemTransactions: itemTransactions.filter(Boolean) as itemTransactionsType[],
             };
