@@ -67,6 +67,20 @@ export const VerifyUpdateImage = (data: dataUpdateImg): promiseDataVerify[] => {
     return verifyStatus;
 };
 
+export const VerifyhandleUpdateStatusSailProduct = (data: {productId: number, sailStatus: boolean}): promiseDataVerify[] => {
+    const verifyStatus: promiseDataVerify[] = [];
+    if (!data.productId) verifyStatus.push(pushData("ไม่พบข้อมูล : productId"));
+   
+    // Return
+    if (verifyStatus.length > 0) return verifyStatus;
+
+    if (!Number.isInteger(data.productId) || data.productId <= 0) verifyStatus.push(pushData("กรุณาระบุ : companyId เป็นตัวเลขจำนวนเต็มเท่านั้น"));
+    if (typeof data.sailStatus !== 'boolean') verifyStatus.push(pushData("sailStatus ต้องเป็น boolean เท่านั้น"));
+    
+    // Return
+    return verifyStatus;
+};
+
 export const fetchProductByName = async (name: string, companyId: number, id?: number): Promise<fetchProduct | null> => {
     try {
         let whereCondition: Prisma.ProductWhereInput = { name: name, companyId: companyId, };
@@ -248,12 +262,31 @@ export const deleteDataProduct = async (id: number): Promise<fetchProduct | null
     }
 }
 
-export const updateDataImage = async (body: dataUpdateImg, id: number) => {
+export const updateDataImage = async (body: dataUpdateImg, id: number): Promise<fetchProduct | null> => {
     try {
         const product = await prisma.product.update({
             where: { id },
             data: {
                img: body.fileName
+            },
+        });
+
+        if (!product) return null;
+        return product as fetchProduct;
+    } catch (error) {
+        console.error('Error updating product:', error);
+        return null;
+    } finally {
+        await prisma.$disconnect();
+    }
+}
+
+export const updateStatusSailProduct = async (productId: number, sailStatus: boolean): Promise<fetchProduct | null>  => {
+    try {
+        const product = await prisma.product.update({
+            where: { id: productId },
+            data: {
+               statusSail: sailStatus ? "Active" : "InActive"
             },
         });
 

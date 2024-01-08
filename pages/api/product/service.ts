@@ -1,6 +1,6 @@
 import { dataUpdateImg, dataVerifyProduct } from "@/types/verify";
 import { getCompanyById } from "@/utils/company";
-import { VerifyUpdateImage, deleteDataProduct, fetchAllProduct, fetchProductByCompanyId, fetchProductById, fetchProductByName, insertAddProduct, updateDataImage, updateDataProduct, verifyProductBody } from "@/utils/product";
+import { VerifyUpdateImage, VerifyhandleUpdateStatusSailProduct, deleteDataProduct, fetchAllProduct, fetchProductByCompanyId, fetchProductById, fetchProductByName, insertAddProduct, updateDataImage, updateDataProduct, updateStatusSailProduct, verifyProductBody } from "@/utils/product";
 import { fetchProductTypeById } from "@/utils/productType";
 import { fetchUnitById } from "@/utils/unit";
 import { NextApiResponse } from "next";
@@ -92,6 +92,20 @@ export const handleUpdateImage = async (body: dataUpdateImg, res: NextApiRespons
     // updateImage
     const updateImage = await updateDataImage(body, body.pdId);
     if (!updateImage) return res.status(404).json({ message: "An error occurred saving data.", updateImg: null, status: false });
-    
+
     return res.status(200).json({ message: "Data saved successfully.", updateImg: updateImage, status: true });
+}
+
+export const handleUpdateStatusSailProduct = async (body: {productId: number, sailStatus: boolean}, res: NextApiResponse) => {
+    // VerifyhandleUpdateStatusSailProduct
+    const verifyData = VerifyhandleUpdateStatusSailProduct(body);
+    if (verifyData.length > 0) return res.status(404).json({ message: verifyData, statusSailProduct: null, status: false });
+    // check productId
+    const checkProduct = await fetchProductById(body.productId);
+    if(!checkProduct) return res.status(404).json({ message: [{message: `ไม่พบข้อมูล product จาก productId : ${body.productId}`}], statusSailProduct: null, status: false });
+    // update sailStatusProduct
+    const updateData = await updateStatusSailProduct(body.productId, body.sailStatus);
+    if(!updateData) return res.status(404).json({ message: [{message: `An error occurred saving data.`}], statusSailProduct: null, status: false });
+
+    return res.status(200).json({ message: "Data saved successfully.", statusSailProduct: updateData, status: true });
 }

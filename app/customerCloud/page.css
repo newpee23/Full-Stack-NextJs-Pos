@@ -1,3 +1,23 @@
 .border-inline-end {
     border-inline-end: 1px solid rgba(5, 5, 5, 0.06);
 }
+
+:where(.css-dev-only-do-not-override-1adbn6x).ant-switch.ant-switch-checked, :where(.css-dev-only-do-not-override-1adbn6x).ant-switch.ant-switch-checked:hover:not(.ant-switch-disabled){
+    background: #ec641ee0 !important;
+}
+
+button.ant-switch.css-dev-only-do-not-override-1adbn6x{
+    background: #272c34;
+}
+
+:where(.css-dev-only-do-not-override-1adbn6x).ant-switch:not(.ant-switch-disabled) {
+    background: rgba(0, 0, 0, 0.45) !important;
+}
+
+button.ant-switch.css-dev-only-do-not-override-1adbn6x.ant-switch-checked{
+    background: #ec641ee0 !important;
+}
+
+button.ant-switch.css-dev-only-do-not-override-1adbn6x{
+    background: rgba(0, 0, 0, 0.45) !important;
+}

@@ -13,6 +13,12 @@ interface addProduct {
     , status: boolean
 }
 
+interface statusSailProductType {
+    message: { message: string }[] | string
+    , statusSailProduct: fetchProduct | null
+    , status: boolean
+}
+
 const deleteProduct = async (token: string | undefined, itemId: string): Promise<addProduct | null> => {
     try {
         const response = await axios.delete(
@@ -139,7 +145,7 @@ const fetchProductData = async (token: string | undefined, companyId: number | u
 const addProductData = async (token: string | undefined, productData: dataVerifyProduct, setLoadingQuery: React.Dispatch<React.SetStateAction<number>>): Promise<addProduct | null> => {
     try {
         const productDataImg = productData.img;
-        if(productDataImg){
+        if (productDataImg) {
             productData.img = undefined;
         }
         const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/product`,
@@ -161,26 +167,26 @@ const addProductData = async (token: string | undefined, productData: dataVerify
         // upload Img firebase
         if (productDataImg) {
             const fileSize = handleCheckFileSize(productDataImg.file);
-            if(fileSize){
+            if (fileSize) {
                 const productId = response.data.product[0]?.message;
                 const date = currentDateStrImg();
                 const dataProductImg: uploadImagesType = {
                     originFileObj: productDataImg.file,
                     fileName: `product/PMT_${productId}_${date}`
                 };
-    
+
                 const uploadImg = await handleUploadFileFirebaseStorage(dataProductImg);
                 if (uploadImg) {
-                  await updateImageProduct(token, { companyId: productData.companyId, fileName: uploadImg, pdId: typeNumber(productId) });
+                    await updateImageProduct(token, { companyId: productData.companyId, fileName: uploadImg, pdId: typeNumber(productId) });
                 }
-                
-            }else{
+
+            } else {
                 setLoadingQuery(100);
-                return {message:[{message: "ไฟล์รูปภาพต้องมีขนาดน้อยกว่า 5 MB"}] , product: null , status: false};
+                return { message: [{ message: "ไฟล์รูปภาพต้องมีขนาดน้อยกว่า 5 MB" }], product: null, status: false };
             }
 
-        } 
-        
+        }
+
         setLoadingQuery(100);
         return product;
     } catch (error) {
@@ -271,28 +277,28 @@ const updateProduct = async (token: string | undefined, productData: dataVerifyP
             }
         );
 
-         // upload Img firebase
-         if (productDataImg && productData.id) {
+        // upload Img firebase
+        if (productDataImg && productData.id) {
             const fileSize = handleCheckFileSize(productDataImg.file);
-            if(fileSize){
+            if (fileSize) {
                 const productId = productData.id;
                 const date = currentDateStrImg();
                 const dataProductImg: uploadImagesType = {
                     originFileObj: productDataImg.file,
                     fileName: `promotion/PMT_${productId}_${date}`
                 };
-    
+
                 const uploadImg = await handleUploadFileFirebaseStorage(dataProductImg);
                 if (uploadImg) {
-                  await updateImageProduct(token, { companyId: productData.companyId, fileName: uploadImg, pdId: productId });
+                    await updateImageProduct(token, { companyId: productData.companyId, fileName: uploadImg, pdId: productId });
                 }
-                
-            }else{
+
+            } else {
                 setLoadingQuery(100);
-                return {message:[{message: "ไฟล์รูปภาพต้องมีขนาดน้อยกว่า 5 MB"}] , product: null , status: false};
+                return { message: [{ message: "ไฟล์รูปภาพต้องมีขนาดน้อยกว่า 5 MB" }], product: null, status: false };
             }
 
-        } 
+        }
 
         const product: addProduct = response.data;
         return product;
@@ -324,6 +330,48 @@ const updateProduct = async (token: string | undefined, productData: dataVerifyP
     }
 };
 
+const updateStatusSailProduct = async (token: string | undefined, data: { productId: number, sailStatus: boolean }): Promise<statusSailProductType | null> => {
+    try {
+
+        const response = await axios.put(`${process.env.NEXT_PUBLIC_BASE_URL}/product/updateStatusSailProduct`,
+            data,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+
+        const product: statusSailProductType = response.data;
+        return product;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            // The error is an instance of AxiosError
+            const axiosError = error as any;
+
+            if (axiosError.response) {
+                // Server responded with a status code that falls outside the range of 2xx
+                const message: addProduct = axiosError.response.data;
+
+                console.error("Error data: ", axiosError.response.data);
+                console.error("Error status: ", axiosError.response.status);
+                console.error("Error headers: ", axiosError.response.headers);
+                return null;
+            } else if (axiosError.request) {
+                // Request was made but no response was received
+                console.error("Error request: ", axiosError.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.error("Error message: ", axiosError.message);
+            }
+        } else {
+            // Handle non-Axios error
+            console.error("Unexpected error: ", error);
+        }
+        return null;
+    }
+};
+
 // function React Query
 export const useUpdateDataProduct = () => {
     return useMutation(
@@ -332,6 +380,15 @@ export const useUpdateDataProduct = () => {
             productData: dataVerifyProduct;
             setLoadingQuery: React.Dispatch<React.SetStateAction<number>>;
         }) => updateProduct(variables.token, variables.productData, variables.setLoadingQuery)
+    );
+};
+
+export const useUpdateStatusSailProduct = () => {
+    return useMutation(
+        (variables: {
+            token: string | undefined;
+            data: { productId: number, sailStatus: boolean };
+        }) => updateStatusSailProduct(variables.token, variables.data)
     );
 };
 

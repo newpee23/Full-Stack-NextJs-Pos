@@ -9,7 +9,6 @@ interface Props {
     detailReceipt: detailReceiptType;
 }
 
-// Add your image
 const imageUrl = "/images/moonlamplogo.png";
 const imageWidth = 45;
 const imageHeight = 8;
@@ -17,10 +16,20 @@ const imageX = 18;
 const imageY = 5;
 let xPositionsArr = [4, 60];
 let yPositionsList = 62;
+let yPaper = 90;
 
 export const receiptCloseBill = async ({ orderBill, detailReceipt }: Props) => {
+
+    orderBill.orderBillData.map(item => {
+        yPaper += 5;
+        item.ItemTransactions.map(() => {
+            yPaper += 10;
+        })
+    });
+    yPaper += 10;
+
     const pdf = new jsPDF({
-        format: [80, 300],
+        format: [80, yPaper],
         unit: 'mm',
     });
 

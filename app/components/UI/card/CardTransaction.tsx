@@ -39,9 +39,15 @@ const CardTransaction = ({ data, isOpen, onClick }: Props) => {
 
 
   const handleCloseBill = async (id: string, transactionId?: string) => {
-    if(transactionId){
+    const updateTransaction = await updateDataTransactionMutation.mutateAsync({
+      token: session?.user.accessToken,
+      id: id
+    });
+
+    if (updateTransaction?.status === true && transactionId) {
+
       const detailReceipt = await fetchDetailReceiptData(session?.user.accessToken, session?.user.company_id, session?.user.branch_id, transactionId);
-      
+
       if (!detailReceipt) {
         return showMessage({ status: "error", text: "ไม่พบข้อมูลรายละเอียดบิลขาย" });
       }
@@ -50,29 +56,12 @@ const CardTransaction = ({ data, isOpen, onClick }: Props) => {
       if (!orderBill) {
         return showMessage({ status: "error", text: "สร้างบิลขายไม่สำเร็จ กรุณาติดต่อเจ้าหน้าที่" });
       }
-      receiptCloseBill({ orderBill: orderBill, detailReceipt:detailReceipt });
+
+      receiptCloseBill({ orderBill: orderBill, detailReceipt: detailReceipt });
+      setTimeout(() => { onClick(); }, 1000);
+      return showMessage({ status: "success", text: "ปิดบิลขายสำเร็จ" });
     }
- 
-
-   
-
-    // const updateTransaction = await updateDataTransactionMutation.mutateAsync({
-    //   token: session?.user.accessToken,
-    //   id: id
-    // });
-
-    // if (updateTransaction?.status === true && transactionId) {
-
-    //   const orderBill = await fetchOrderBillData(session?.user.accessToken, transactionId);
-    //   if (!orderBill) {
-    //     return showMessage({ status: "error", text: "สร้างบิลขายไม่สำเร็จ กรุณาติดต่อเจ้าหน้าที่" });
-    //   }
-
-    //   receiptCloseBill({ orderBill: orderBill });
-    //   setTimeout(() => { onClick(); }, 1000);
-    //   return showMessage({ status: "success", text: "ปิดบิลขายสำเร็จ" });
-    // }
-    // return showMessage({ status: "error", text: "ปิดบิลขายไม่สำเร็จ" });
+    return showMessage({ status: "error", text: "ปิดบิลขายไม่สำเร็จ" });
   }
 
   const countDownTime = () => {
