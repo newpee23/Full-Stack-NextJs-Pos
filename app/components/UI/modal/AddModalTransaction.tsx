@@ -74,6 +74,7 @@ const AddModalTransaction = ({ data , onClick }: Props) => {
       if(!detailReceipt){
         return showMessage({ status: "error", text: "ไม่พบข้อมูลรายละเอียดบิลขาย" });
       }
+      generatePdf({ details: data, page: "tableTransaction", detailReceipt: detailReceipt });
       setTimeout(() => { onClick(); }, 1000);
       setOpen(false);
       setConfirmLoading(false);
