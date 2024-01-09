@@ -162,7 +162,7 @@ export const fectOrderBillByTransaction = async (branchId: number, status: "proc
                 status: "Active",
                 orderBills: {
                     some: {
-                        status: "process"
+                        status: status
                     }
                 }
             }
