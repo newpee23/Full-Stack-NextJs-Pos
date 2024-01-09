@@ -242,7 +242,7 @@ export interface orderTransactionByBranch {
   stoves: number;
   people: number;
   expiration: number;
-  tokenOrder?: string | null ;
+  tokenOrder?: string | null;
   transactionOrder: order | null
 }
 
@@ -407,7 +407,7 @@ export interface itemTransactionsType {
   promotionId: number | null;
   orderBillId: number;
   price: number;
-} 
+}
 
 export interface orderBillTotalType {
   index: number;
@@ -427,5 +427,24 @@ export interface detailReceiptType {
   tableName: string;
   expiration: number;
   peoples: number;
+}
+
+export interface fectOrderBillByTransactionType {
+  id: string;
+  tableId: string;
+  orderBills: orderBills[];
+}
+
+export interface orderBills {
+  id: number;
+  status: string;
+  tableName: string;
+  transactionId: string;
+  orderDate: string;
+  ItemTransactions: itemTransactionsType[]
+}
+
+export interface enumOrderBill {
+  status: "process" | "succeed" | "cancel" | "making";
 }
 

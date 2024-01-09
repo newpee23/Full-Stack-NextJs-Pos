@@ -1,9 +1,11 @@
 import { myStateCartItem } from "@/app/store/slices/cartSlice";
 import { dataVerifyTransaction } from "@/types/verify";
 import { getBranchById } from "@/utils/branch";
+import { getCompanyById } from "@/utils/company";
 import { getEmployeeById } from "@/utils/employee";
 import { insertItemTransactionArray } from "@/utils/itemTransaction";
-import { fetchDataOrderBillByTransactionId, insertOrderBill, setDataDetailOrderBill, setDataTotalOrderBill } from "@/utils/orderBill";
+import { fectOrderBillByTransaction, fetchDataOrderBillByTransactionId, insertOrderBill, setDataDetailOrderBill, setDataTotalOrderBill } from "@/utils/orderBill";
+import { fetchProductByCompanyId } from "@/utils/product";
 import { checkOrderArrayProductId, checkOrderArrayPromotionId, closeDataTransaction, createTokenTransaction, fetchDataFrontDetailByTransactionId, fetchTransactionAll, fetchTransactionByBranchId, fetchTransactionByCompanyId, fetchTransactionById, fetchTransactionByTableId, insertTransaction, updateTokenOrderTransaction, verifyOrderBillBody, verifyTransactionBody } from "@/utils/transaction";
 import { NextApiResponse } from "next";
 
@@ -105,7 +107,7 @@ export const handleAddOrderBill = async (body: myStateCartItem, res: NextApiResp
 
 export const handleGetOrderTotalBill = async (id: string, res: NextApiResponse) => {
     // check Id
-    if (!id) return res.status(200).json({ message: [{ message: `เกิดข้อผิดพลาด: ไม่พบข้อมูล id` }], orderBillData: null, orderTotalBill: null, status: false });
+    if (!id) return res.status(404).json({ message: [{ message: `เกิดข้อผิดพลาด: ไม่พบข้อมูล id` }], orderBillData: null, orderTotalBill: null, status: false });
     // fetch OrderBill
     const orderBillData = await fetchDataOrderBillByTransactionId(id);
     if (!orderBillData) return res.status(200).json({ message: [{ message: "เรียกข้อมูลสำเร็จ" }], orderBillData: null, orderTotalBill: 0, status: true });
@@ -115,6 +117,17 @@ export const handleGetOrderTotalBill = async (id: string, res: NextApiResponse) 
     // setDataOrderBill
     const dataOrderBill = await setDataDetailOrderBill(orderBillData);
     if (!dataOrderBill) return res.status(200).json({ message: [{ message: "เกิดข้อผิดพลาด: dataOrderBill" }], orderBillData: null, status: true });
-    
+
     return res.status(200).json({ message: [{ message: "เรียกข้อมูลสำเร็จ" }], orderBillData: dataOrderBill, orderTotalBill: dataTotalOrderBill, status: true });
+}
+
+export const handleGetOrderBillByBranchId = async (res: NextApiResponse, branchId: number) => {
+    // check branchId
+    const checkBranch = await getBranchById(branchId);
+    if (!checkBranch) return res.status(404).json({ message: [{ message: "ไม่พบข้อมูล branchId ในระบบ" }], orderBillData: null, status: false });
+    // fectOrderBillByTransaction
+    const orderBill = await fectOrderBillByTransaction(branchId);
+    if (!orderBill) return res.status(200).json({ message: [{ message: "เกิดข้อผิดพลาด: fectOrderBillByTransaction" }], orderBillData: null, status: true });
+
+    return res.status(200).json({ message: [{ message: "เรียกข้อมูลสำเร็จ" }], orderBillData: orderBill, status: true });
 }

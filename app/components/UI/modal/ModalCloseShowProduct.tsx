@@ -15,9 +15,9 @@ interface Props {
     isError: boolean;
 }
 
-const ModalCloseShowProduct = ({ data, isLoading, isError, modalCloseShowProduct, setOpenModal }: Props) => {
+const ModalCloseShowProduct = ({ data,isLoading ,isError , modalCloseShowProduct, setOpenModal }: Props) => {
 
-    if (isError) {
+    if(isError){
         return <ErrPage />
     }
 

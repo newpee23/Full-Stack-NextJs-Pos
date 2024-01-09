@@ -68,6 +68,7 @@ const HomeCloudPage = () => {
     return <div>Loading...</div>;
   }
 
+
   return (
     <>
       <Navbar />

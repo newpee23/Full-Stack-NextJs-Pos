@@ -15,7 +15,6 @@ const imageHeight = 8;
 const imageX = 18;
 const imageY = 5;
 let xPositionsArr = [4, 60];
-let yPositionsList = 62;
 let yPaper = 90;
 
 export const receiptCloseBill = async ({ orderBill, detailReceipt }: Props) => {
@@ -89,6 +88,7 @@ export const receiptCloseBill = async ({ orderBill, detailReceipt }: Props) => {
     addText(`${detailReceipt.tableName} (${detailReceipt.peoples} ท่าน)`, 47, 16);
     // list Order
 
+    let yPositionsList = 62;
     addTextXPositionsArr(["รายการ", "จำนวนเงิน"], xPositionsArr, 57, 14);
     orderBill.orderBillData.sort((a, b) => a.id - b.id);
     orderBill.orderBillData.map(item => {

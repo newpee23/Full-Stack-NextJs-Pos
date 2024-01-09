@@ -4,7 +4,7 @@ import { handleAddTransaction, handleCloseTransaction, handleGetTransactionAll, 
 import { dataVerifyTransaction } from "@/types/verify";
 import authenticate from "../checkToken";
 
-export default authenticate(async (req: NextApiRequest, res: NextApiResponse) => {
+export default (async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === "GET") {
         GET(req, res);
     } else if (req.method === "POST") {
