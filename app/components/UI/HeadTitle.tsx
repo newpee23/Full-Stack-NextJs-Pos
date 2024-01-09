@@ -1,20 +1,40 @@
 import { MdProductionQuantityLimits } from "react-icons/md";
 import ModalCloseShowProduct from "./modal/ModalCloseShowProduct";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { useDataProduct } from "@/app/api/product";
 
 interface openModalType {
     modalCloseShowProduct: boolean;
 }
 
 function HeadTitle() {
+
+    const { data: session } = useSession();
+    const { data, isLoading, isError, refetch, remove } = useDataProduct(session?.user.accessToken, session?.user.company_id);
     const [openModal, setOpenModal] = useState<openModalType>({
         modalCloseShowProduct: false,
     });
+
+    const handleRefresh = async () => {
+        remove();
+        return await refetch();
+    };
 
     const handleButtonClick = () => {
         setOpenModal((prev) => ({ ...prev, modalCloseShowProduct: !prev.modalCloseShowProduct }));
     };
 
+    useEffect(() => {
+        const refreshSailShoeProduct = () => {
+            if(openModal.modalCloseShowProduct){
+                handleRefresh();
+            }
+        }
+
+        return refreshSailShoeProduct();
+      }, [openModal]);
+      
     return (
         <div className={`p-4 w-full top-0 bg-white shadow-md rounded-lg flex justify-between`}>
             <div className="flex items-center drop-shadow-md justify-between">
@@ -24,7 +44,7 @@ function HeadTitle() {
                             <MdProductionQuantityLimits className="mr-1" /> แสดงการขายสินค้ารายตัว
                         </span>
                     </button>
-                    {openModal.modalCloseShowProduct && <ModalCloseShowProduct modalCloseShowProduct={openModal.modalCloseShowProduct} setOpenModal={() => setOpenModal((prev) => ({ ...prev, modalCloseShowProduct: false }))}/>}
+                    {openModal.modalCloseShowProduct && <ModalCloseShowProduct data={data} isLoading={isLoading} isError={isError} modalCloseShowProduct={openModal.modalCloseShowProduct} setOpenModal={() => setOpenModal((prev) => ({ ...prev, modalCloseShowProduct: false }))}/>}
                 </div>
             </div>
         </div>

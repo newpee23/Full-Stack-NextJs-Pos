@@ -1,39 +1,31 @@
-import { useDataProduct } from '@/app/api/product';
 import { Empty, Modal } from 'antd';
-import { useSession } from 'next-auth/react';
 import { Dispatch, SetStateAction, useEffect } from 'react';
-import SkeletonTable from '../loading/SkeletonTable';
-import ErrPage from '../../ErrPage';
 import ListShowSaleProduct from '../list/ListShowSaleProduct';
+import { fetchProduct } from '@/types/fetchData';
+import ErrPage from '../../ErrPage';
+import SkeletonTable from '../loading/SkeletonTable';
 
 interface Props {
     modalCloseShowProduct: boolean;
     setOpenModal: Dispatch<SetStateAction<{
         modalCloseShowProduct: boolean;
     }>>;
+    data: fetchProduct[] | undefined;
+    isLoading: boolean;
+    isError: boolean;
 }
 
-const ModalCloseShowProduct = ({ modalCloseShowProduct, setOpenModal }: Props) => {
-
-    const { data: session } = useSession();
-    const { data, isLoading, isError, refetch, remove } = useDataProduct(session?.user.accessToken, session?.user.company_id);
-
-    const handleRefresh = async () => {
-        remove();
-        return await refetch();
-    };
+const ModalCloseShowProduct = ({ data, isLoading, isError, modalCloseShowProduct, setOpenModal }: Props) => {
 
     if (isError) {
-        return <ErrPage onClick={handleRefresh} />;
+        return <ErrPage />
     }
 
     return (
         <div>
             <Modal title="แสดงการขายสินค้ารายตัว" open={modalCloseShowProduct} footer={null} onCancel={() => setOpenModal((prev) => ({ ...prev, modalCloseShowProduct: false }))}>
-                {isLoading ?
-                    <SkeletonTable />
-                    :
-                    data ? <ListShowSaleProduct data={data} handleRefresh={handleRefresh}/> : <Empty />
+                {isLoading ? <SkeletonTable /> :
+                    data ? <ListShowSaleProduct data={data} /> : <Empty />
                 }
             </Modal>
         </div>
