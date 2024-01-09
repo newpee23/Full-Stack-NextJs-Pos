@@ -8,9 +8,9 @@ interface statusSailProductType {
     , status: boolean
 }
 
-const fetchDataOrderBill = async (token: string | undefined,branchId: number | undefined): Promise<statusSailProductType> => {
+const fetchDataProcessStatusOrderBill = async (token: string | undefined, branchId: number | undefined, status: "process" | "making"): Promise<statusSailProductType> => {
     try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/transaction/orderBill?branchId=${branchId}`, {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/transaction/orderBill?branchId=${branchId}&status=${status}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -48,8 +48,8 @@ const fetchDataOrderBill = async (token: string | undefined,branchId: number | u
 };
 
 // function React Query
-export const useDataHeadTitle = (token: string | undefined , branchId: number | undefined) => {
-    return useQuery('dataHeadTitle', () => fetchDataOrderBill(token, branchId), {
+export const useDataHeadTitle = (token: string | undefined, branchId: number | undefined, status: "process" | "making") => {
+    return useQuery('dataHeadTitle', () => fetchDataProcessStatusOrderBill(token, branchId, status), {
         refetchOnWindowFocus: false,
     });
 };

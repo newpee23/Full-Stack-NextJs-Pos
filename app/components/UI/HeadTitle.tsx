@@ -22,7 +22,7 @@ const HeadTitle = ({ setShowOrderBill, showOrderBill, setOrderBill }: Props) => 
 
     const { data: session } = useSession();
     const { data: dataSailProduct, isLoading: isLoadingSailProduct, isError: isErrorSailProduct, refetch: refetchSailProduct, remove: removeSailProduct } = useDataProduct(session?.user.accessToken, session?.user.company_id);
-    const { data: dataOrderBill, isLoading: isLoadingOrderBill, isError: isErrorOrderBill, refetch: refetchOrderBill, remove: removeOrderBill } = useDataHeadTitle(session?.user.accessToken, session?.user.branch_id);
+    const { data: dataOrderBill, isLoading: isLoadingOrderBill, isError: isErrorOrderBill, refetch: refetchOrderBill, remove: removeOrderBill } = useDataHeadTitle(session?.user.accessToken, session?.user.branch_id, "process");
 
     const [openModal, setOpenModal] = useState<openModalType>({
         modalCloseShowProduct: false,

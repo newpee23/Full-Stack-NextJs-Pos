@@ -20,8 +20,9 @@ export default (async (req: NextApiRequest, res: NextApiResponse) => {
 const GET = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
         const { query } = req;
+        const status = query.status as "process" | "making";
 
-        if (query.branchId) return await handleGetOrderBillByBranchId(res, typeNumber(query.branchId));
+        if (query.branchId && query.status) return await handleGetOrderBillByBranchId(res, typeNumber(query.branchId), status);
         
         return res.status(404).json({ message: [{ message: "เกิดข้อผิดพลาด: orderBill ไม่พบ companyId หรือ branchId" }], orderBillData: null, status: true });
     } catch (error: unknown) {

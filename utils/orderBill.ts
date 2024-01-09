@@ -139,7 +139,7 @@ export const setDataDetailOrderBill = async (data: orderBillTotal[]): Promise<or
     }
 }
 
-export const fectOrderBillByTransaction = async (branchId: number): Promise<orderBills[] | null> => {
+export const fectOrderBillByTransaction = async (branchId: number, status: "process" | "making"): Promise<orderBills[] | null> => {
     try {
         const transactions = await prisma.transaction.findMany({
             select: {
@@ -150,7 +150,7 @@ export const fectOrderBillByTransaction = async (branchId: number): Promise<orde
                         ItemTransactions: true
                     },
                     where: {
-                        status: "process"
+                        status: status
                     }
                 }
             },
