@@ -5,8 +5,6 @@ import { useAppDispatch, useAppSelector } from "@/app/store/store";
 import { cartIncrementItem, itemCartType, cartDecrementItem, removeCartItem, cleanCart } from "@/app/store/slices/cartSlice";
 import { useSession } from "next-auth/react";
 import { useAddDataItemTransaction } from "@/app/api/customerFront/addTransaction";
-import { plusOrderMakingCount, plusOrderProcessCount } from "@/app/store/slices/refetchOrderBillSlice";
-import { handle } from "@/utils/utils";
 
 export interface dataType {
     title: React.ReactNode;
@@ -27,7 +25,6 @@ const ListCartOrderItem = ({ setOpenCart }: Props) => {
     const [ loading, SetLoading ] = useState<boolean>(false);
     const { itemCart, totalPrice, totalQty, transactionId } = useAppSelector((state) => state?.cartSlice);
     const addDataItemTransactionMutation = useAddDataItemTransaction();
-    const { orderMakingCount, orderProcessCount } = useAppSelector((state) => state?.refetchOrderBillSlice);
 
     const handleIncrementItem = (cartItem: itemCartType) => {
         dispatch(cartIncrementItem({ productId: cartItem.productId, image: cartItem.image, name: cartItem.name, price: cartItem.price, qty: 1 }));

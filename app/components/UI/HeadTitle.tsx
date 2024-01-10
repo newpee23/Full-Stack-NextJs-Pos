@@ -4,12 +4,12 @@ import ModalCloseShowProduct from "./modal/ModalCloseShowProduct";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { Badge } from "antd";
-import { useDataHeadTitle } from "@/app/api/headTitle";
 import { useDataProduct } from "@/app/api/product";
 import { useAppDispatch, useAppSelector } from "@/app/store/store";
 import { setLoadingOrderDetail } from "@/app/store/slices/loadingSlice";
 import { setShowOrderBillMaking, setShowOrderBillProcess } from "@/app/store/slices/showSlice";
-import { cleanOrderMakingCount, cleanOrderProcessCount, setOrderBillDetail } from "@/app/store/slices/refetchOrderBillSlice";
+import { cleanOrderMakingCount, cleanOrderProcessCount, plusOrderProcessCount, setOrderBillDetail, setRefetchDataOrder, setRefetchDataOrderMaking } from "@/app/store/slices/refetchOrderBillSlice";
+import { useDataMakingHeadTitle, useDataProcessHeadTitle } from "@/app/api/headTitle";
 
 interface openModalType {
     modalCloseShowProduct: boolean;
@@ -20,10 +20,10 @@ const HeadTitle = () => {
     const { data: session } = useSession();
     const dispatch = useAppDispatch();
     const { showOrderBillMaking, showOrderBillProcess } = useAppSelector((state) => state?.showSlice);
-    const { orderMakingCount, orderProcessCount } = useAppSelector((state) => state?.refetchOrderBillSlice);
+    const { orderMakingCount, orderProcessCount, refetchDataOrder, refetchDataOrderMaking } = useAppSelector((state) => state?.refetchOrderBillSlice);
     const { data: dataSailProduct, isLoading: isLoadingSailProduct, isError: isErrorSailProduct, refetch: refetchSailProduct, remove: removeSailProduct } = useDataProduct(session?.user.accessToken, session?.user.company_id);
-    const { data: orderBillProcess, isLoading: isLoadingOrderBillProcess, isError: isErrorOrderBillProcess, refetch: refetchOrderBillProcess, remove: removeOrderBillProcess } = useDataHeadTitle(session?.user.accessToken, session?.user.branch_id, "process");
-    const { data: orderBillMaking, isLoading: isLoadingOrderBillMaking, isError: isErrorOrderBillMaking, refetch: refetchOrderBillMaking, remove: removeOrderBillMaking } = useDataHeadTitle(session?.user.accessToken, session?.user.branch_id, "making");
+    const { data: orderBillProcess, isLoading: isLoadingOrderBillProcess, isError: isErrorOrderBillProcess, refetch: refetchOrderBillProcess, remove: removeOrderBillProcess } = useDataProcessHeadTitle(session?.user.accessToken, session?.user.branch_id, "process");
+    const { data: orderBillMaking, isLoading: isLoadingOrderBillMaking, isError: isErrorOrderBillMaking, refetch: refetchOrderBillMaking, remove: removeOrderBillMaking } = useDataMakingHeadTitle(session?.user.accessToken, session?.user.branch_id, "making");
 
     const [openModal, setOpenModal] = useState<openModalType>({
         modalCloseShowProduct: false,
@@ -60,8 +60,42 @@ const HeadTitle = () => {
     }, [openModal]);
 
     useEffect(() => {
+        const refreshOrderProcess = () => {
+            if (refetchDataOrder) {
+                console.log(refetchDataOrder)
+                dispatch(setRefetchDataOrder(!refetchDataOrder));
+                handleRefreshProcess();
+            }
+        }
+
+        return refreshOrderProcess();
+    }, [refetchDataOrder]);
+
+    useEffect(() => {
+        const refreshOrderMaking = () => {
+          
+            if (refetchDataOrderMaking) {
+                dispatch(setRefetchDataOrderMaking(!refetchDataOrderMaking));
+                handleRefreshMaking();
+            }
+        }
+
+        return refreshOrderMaking();
+    }, [refetchDataOrderMaking]);
+
+    useEffect(() => {
         const refreshMaking = () => {
-            dispatch(cleanOrderMakingCount());
+            if (showOrderBillMaking) {
+                dispatch(cleanOrderMakingCount());
+                handleRefreshMaking();
+            }
+        }
+
+        return refreshMaking();
+    }, [showOrderBillMaking]);
+
+    useEffect(() => {
+        const refreshMaking = () => {
             if (orderBillMaking?.orderBillData) {
                 dispatch(setOrderBillDetail(orderBillMaking.orderBillData));
             }
@@ -71,14 +105,25 @@ const HeadTitle = () => {
     }, [orderBillMaking]);
 
     useEffect(() => {
-        const refreshMaking = () => {
-            dispatch(cleanOrderProcessCount());
+        const refreshProcess = () => {
+            if (showOrderBillProcess) {
+                dispatch(cleanOrderProcessCount());
+                handleRefreshProcess();
+            }
+        }
+
+        return refreshProcess();
+    }, [showOrderBillProcess]);
+
+    useEffect(() => {
+        const refreshProcess = () => {
             if (orderBillProcess?.orderBillData) {
+                dispatch(plusOrderProcessCount(orderBillProcess.orderBillData.length));
                 dispatch(setOrderBillDetail(orderBillProcess.orderBillData));
             }
         }
 
-        return refreshMaking();
+        return refreshProcess();
     }, [orderBillProcess]);
 
     useEffect(() => {
@@ -87,9 +132,9 @@ const HeadTitle = () => {
 
     useEffect(() => {
         dispatch(setLoadingOrderDetail(isLoadingOrderBillMaking));
-    }, [isLoadingOrderBillMaking]); 
+    }, [isLoadingOrderBillMaking]);
 
-  
+
     return (
         <div className={`p-4 w-full top-0 bg-white shadow-md rounded-lg`}>
             <div className="flex items-center drop-shadow-md justify-between">

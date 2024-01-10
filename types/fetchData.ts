@@ -448,3 +448,8 @@ export interface enumOrderBill {
   status: "process" | "succeed" | "cancel" | "making";
 }
 
+export interface dataVerifyOrderBill {
+  orderId: number;
+  status: "process" | "succeed" | "cancel" | "making";
+}
+

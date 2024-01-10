@@ -6,36 +6,65 @@ export interface MyStateRefetchOrderBillSlice {
     orderProcessCount: number;
     orderMakingCount: number;
     refetchDataOrder: boolean;
+    refetchDataOrderMaking: boolean;
 }
 
 const initialState: MyStateRefetchOrderBillSlice = {
     orderBill: [],
     orderProcessCount: 0,
     orderMakingCount: 0,
-    refetchDataOrder: true
+    refetchDataOrder: true,
+    refetchDataOrderMaking: true 
 };
 
 const refetchOrderBillSlice = createSlice({
     name: "refetchOrderBillSlice",
     initialState,
-    reducers: { 
+    reducers: {
         setOrderBillDetail: (state, action: PayloadAction<orderBills[]>) => {
-            state.orderBill = action.payload;
+            return {
+                ...state,
+                orderBill: action.payload,
+            };
         },
-        plusOrderProcessCount: (state) => {
-            state.orderProcessCount += 1;
+        plusOrderProcessCount: (state, action: PayloadAction<number>) => {
+            return {
+                ...state,
+                orderProcessCount: action.payload,
+            };
         },
         cleanOrderProcessCount: (state) => {
-            state.orderProcessCount = 0;
+            return {
+                ...state,
+                orderProcessCount: 0,
+            };
         },
         plusOrderMakingCount: (state) => {
-            state.orderMakingCount += 1;
+            return {
+                ...state,
+                orderMakingCount: state.orderMakingCount + 1,
+            };
         },
         cleanOrderMakingCount: (state) => {
-            state.orderMakingCount = 0;
-        }
+            return {
+                ...state,
+                orderMakingCount: 0,
+            };
+        },
+        setRefetchDataOrder: (state, action: PayloadAction<boolean>) => {
+            return {
+                ...state,
+                refetchDataOrder: action.payload,
+            };
+        },
+        setRefetchDataOrderMaking: (state, action: PayloadAction<boolean>) => {
+            return {
+                ...state,
+                refetchDataOrderMaking: action.payload,
+            };
+        },
     },
 });
 
-export const { setOrderBillDetail, plusOrderProcessCount , cleanOrderProcessCount , plusOrderMakingCount , cleanOrderMakingCount } = refetchOrderBillSlice.actions;
+export const { setOrderBillDetail, plusOrderProcessCount, cleanOrderProcessCount, plusOrderMakingCount, cleanOrderMakingCount, setRefetchDataOrder , setRefetchDataOrderMaking} = refetchOrderBillSlice.actions;
 export default refetchOrderBillSlice.reducer;

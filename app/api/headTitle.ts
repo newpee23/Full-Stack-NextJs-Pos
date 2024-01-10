@@ -48,8 +48,14 @@ const fetchDataProcessStatusOrderBill = async (token: string | undefined, branch
 };
 
 // function React Query
-export const useDataHeadTitle = (token: string | undefined, branchId: number | undefined, status: "process" | "making") => {
-    return useQuery('dataHeadTitle', () => fetchDataProcessStatusOrderBill(token, branchId, status), {
+export const useDataProcessHeadTitle = (token: string | undefined, branchId: number | undefined, status: "process" | "making") => {
+    return useQuery('dataProcessHeadTitle', () => fetchDataProcessStatusOrderBill(token, branchId, status), {
+        refetchOnWindowFocus: false,
+    });
+};
+
+export const useDataMakingHeadTitle = (token: string | undefined, branchId: number | undefined, status: "process" | "making") => {
+    return useQuery('dataMakingHeadTitle', () => fetchDataProcessStatusOrderBill(token, branchId, status), {
         refetchOnWindowFocus: false,
     });
 };

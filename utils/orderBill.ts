@@ -1,10 +1,16 @@
 import { myStateCartItem } from "@/app/store/slices/cartSlice";
-import { fectOrderBillByTransactionType, itemTransactionsType, orderBillTotal, orderBillTotalType, orderBillType, orderBills } from "@/types/fetchData";
+import { dataVerifyOrderBill, fectOrderBillByTransactionType, itemTransactionsType, orderBillTotal, orderBillTotalType, orderBillType, orderBills } from "@/types/fetchData";
 import { prisma } from "@/pages/lib/prismaDB";
 import { fetchProductById } from "./product";
 import { fetchPromotionById } from "./promotion";
 import { getDate, getMonthNow, getTime7H, getYearNow } from "./utils";
 import { fetchTableById } from "./table";
+import { enumOrderBill } from "@prisma/client";
+import { promiseDataVerify } from "@/types/verify";
+
+const pushData = (message: string) => {
+    return { message };
+};
 
 export const insertOrderBill = async (body: myStateCartItem): Promise<orderBillType | null> => {
     try {
@@ -168,11 +174,11 @@ export const fectOrderBillByTransaction = async (branchId: number, status: "proc
             }
         });
 
-        if(transactions.length === 0) return [];
+        if (transactions.length === 0) return [];
 
         // สร้างตัวแปรเพื่อเก็บข้อมูลที่ได้จากการ loop
         const processedTransactions: fectOrderBillByTransactionType[] = [];
-        const orderBills : orderBills[] = [];
+        const orderBills: orderBills[] = [];
 
         for (const transaction of transactions) {
             const table = await fetchTableById(transaction.tableId);
@@ -192,10 +198,10 @@ export const fectOrderBillByTransaction = async (branchId: number, status: "proc
                                 orderDate: `${getDate(orderBill.orderDate.toString())} ${getTime7H(orderBill.orderDate.toString())}`,
                                 ItemTransactions: await Promise.all(
                                     orderBill.ItemTransactions.map(async (item) => {
-                                       const product = await fetchProductById(item.productId ? item.productId : 0);
-                                       const promotion = await fetchPromotionById(item.promotionId ? item.promotionId : 0);
-                                        
-                                       return {
+                                        const product = await fetchProductById(item.productId ? item.productId : 0);
+                                        const promotion = await fetchPromotionById(item.promotionId ? item.promotionId : 0);
+
+                                        return {
                                             productName: product ? product.name : null,
                                             promotionName: promotion ? promotion.name : null,
                                             unitName: product ? product.unit.name : "ชิ้น",
@@ -231,4 +237,57 @@ export const fectOrderBillByTransaction = async (branchId: number, status: "proc
     } finally {
         await prisma.$disconnect();
     }
-} 
+}
+
+export const fectOrderBillById = async (orderId: number): Promise<orderBillType | null> => {
+    try {
+        const orderBill = await prisma.orderBill.findUnique({
+            where: {
+                id: orderId
+            }
+        })
+        if(!orderBill) return null;
+
+        return orderBill as orderBillType;
+    } catch (error) {
+        console.error('Error fectOrderBillById:', error);
+        return null;
+    } finally {
+        await prisma.$disconnect();
+    }
+}
+
+export const updateOrderBillStatus = async (id: number, status: enumOrderBill): Promise<orderBillType | null> => {
+    try {
+        const orderBill = await prisma.orderBill.update({
+            where: {
+                id: id
+            },
+            data: {
+                status: status
+            }
+        })
+
+        if (!orderBill) return null;
+
+        return orderBill as orderBillType;
+    } catch (error) {
+        console.error('Error updating updateOrderBillStatus:', error);
+        return null;
+    } finally {
+        await prisma.$disconnect();
+    }
+};
+
+export const verifyOrderBillStatus = (data: dataVerifyOrderBill): promiseDataVerify[] => {
+    const verifyStatus: promiseDataVerify[] = [];
+
+    if (!data.orderId) verifyStatus.push(pushData("ไม่พบข้อมูล : orderId"));
+    if (!data.status) verifyStatus.push(pushData("ไม่พบข้อมูล : status"));
+
+    if(verifyStatus.length > 0) return verifyStatus;
+ 
+    if (!Number.isInteger(data.orderId) || data.orderId <= 0) verifyStatus.push(pushData("กรุณาระบุ : orderId เป็นตัวเลขจำนวนเต็มเท่านั้น"));
+    if(data.status !== "cancel" && data.status !== "making" && data.status !== "process" && data.status !== "succeed") verifyStatus.push(pushData("กรุณาระบุ : status เป็น cancel making process หรือ succeed เท่านั้น"));
+    return verifyStatus;
+}

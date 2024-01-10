@@ -11,9 +11,10 @@ import { fetchDetailReceiptData } from '@/app/api/detailReceipt';
 type Props = {
   data: orderTransactionByBranch;
   onClick: () => void;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const AddModalTransaction = ({ data , onClick }: Props) => {
+const AddModalTransaction = ({ data, onClick, setLoading }: Props) => {
 
   const { data: session } = useSession();
   const [open, setOpen] = useState(false);
@@ -55,33 +56,40 @@ const AddModalTransaction = ({ data , onClick }: Props) => {
   };
 
   const handleSubmit = async (values: { peoples: string }) => {
-    if (!session?.user.branch_id || !session?.user.id) {
-      return showMessage({ status: "error", text: "พบข้อผิดพลาดกรุณาเข้าสู่ระบบใหม่อีกครั้ง" });
-    }
-    const addTransaction = await addDataTransactionMutation.mutateAsync({
-      token: session?.user.accessToken,
-      transactionData: {
-        tableId: data.id,
-        peoples: parseInt(values.peoples, 10),
-        expiration: data.expiration,
-        branchId: session?.user.branch_id,
-        employeeId: parseInt(session?.user.id, 10),
-      },
-    });
-
-    if (addTransaction?.status === true) {
-      const detailReceipt = await fetchDetailReceiptData(session?.user.accessToken, session?.user.company_id, session?.user.branch_id, addTransaction.transactionItem.id);
-      if(!detailReceipt){
-        return showMessage({ status: "error", text: "ไม่พบข้อมูลรายละเอียดบิลขาย" });
+    try {
+      setLoading(true);
+      if (!session?.user.branch_id || !session?.user.id) {
+        return showMessage({ status: "error", text: "พบข้อผิดพลาดกรุณาเข้าสู่ระบบใหม่อีกครั้ง" });
       }
+      const addTransaction = await addDataTransactionMutation.mutateAsync({
+        token: session?.user.accessToken,
+        transactionData: {
+          tableId: data.id,
+          peoples: parseInt(values.peoples, 10),
+          expiration: data.expiration,
+          branchId: session?.user.branch_id,
+          employeeId: parseInt(session?.user.id, 10),
+        },
+      });
 
-      generatePdf({ details: addTransaction.transactionItem, page: "modalAdd", detailReceipt: detailReceipt });
-      setTimeout(() => { onClick(); }, 1000);
-      setOpen(false);
-      setConfirmLoading(false);
-      return showMessage({ status: "success", text: "เปิดบิลสำเร็จ" });
-    } else {
-      return showMessage({ status: "error", text: "เปิดบิลไม่สำเร็จ กรุณาลองอีกครั้ง" });
+      if (addTransaction?.status === true) {
+        const detailReceipt = await fetchDetailReceiptData(session?.user.accessToken, session?.user.company_id, session?.user.branch_id, addTransaction.transactionItem.id);
+        if (!detailReceipt) {
+          return showMessage({ status: "error", text: "ไม่พบข้อมูลรายละเอียดบิลขาย" });
+        }
+
+        generatePdf({ details: addTransaction.transactionItem, page: "modalAdd", detailReceipt: detailReceipt });
+        setTimeout(() => { onClick(); }, 1000);
+        setOpen(false);
+        setConfirmLoading(false);
+        return showMessage({ status: "success", text: "เปิดบิลสำเร็จ" });
+      } else {
+        return showMessage({ status: "error", text: "เปิดบิลไม่สำเร็จ กรุณาลองอีกครั้ง" });
+      }
+    } catch (error) {
+      console.log("error handleSubmit :", error);
+    } finally {
+      setLoading(false);
     }
   }
 
