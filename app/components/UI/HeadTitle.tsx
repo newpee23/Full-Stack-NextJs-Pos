@@ -15,10 +15,6 @@ interface openModalType {
     modalCloseShowProduct: boolean;
 }
 
-let tot = 0;
-export const test = () => {
-    tot += 1;
-}
 const HeadTitle = () => {
 
     const { data: session } = useSession();
@@ -91,7 +87,7 @@ const HeadTitle = () => {
 
     useEffect(() => {
         dispatch(setLoadingOrderDetail(isLoadingOrderBillMaking));
-    }, [isLoadingOrderBillMaking]);
+    }, [isLoadingOrderBillMaking]); 
 
   
     return (

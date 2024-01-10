@@ -13,10 +13,10 @@ const initialState: MyStateshowSlice = {
 const showSlice = createSlice({
   name: "showSlice",
   initialState,
-  reducers: {
+  reducers: { 
     setShowOrderBillProcess: (state, action: PayloadAction<boolean>) => {
         state.showOrderBillProcess = action.payload
-    },
+    }, 
     setShowOrderBillMaking: (state, action: PayloadAction<boolean>) => {
         state.showOrderBillMaking = action.payload
     },

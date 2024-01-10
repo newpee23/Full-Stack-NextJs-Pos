@@ -74,37 +74,34 @@ const ListCartOrderItem = ({ setOpenCart }: Props) => {
     }));
 
     const handleAddItemCart = async () => {
-        // if(itemCart.length > 0){
-        //     try {
-        //         SetLoading(true);
-        //         // Insert addItemTransaction
-        //         const addBranch = await addDataItemTransactionMutation.mutateAsync({
-        //             token: session?.user.accessToken,
-        //             itemTransactionData: {
-        //                 itemCart: itemCart,
-        //                 totalPrice: totalPrice,
-        //                 totalQty: totalQty,
-        //                 transactionId: transactionId
-        //             }
-        //         });
+        if(itemCart.length > 0){
+            try {
+                SetLoading(true);
+                // Insert addItemTransaction
+                const addBranch = await addDataItemTransactionMutation.mutateAsync({
+                    token: session?.user.accessToken,
+                    itemTransactionData: {
+                        itemCart: itemCart,
+                        totalPrice: totalPrice,
+                        totalQty: totalQty,
+                        transactionId: transactionId
+                    }
+                });
     
-        //         if(!addBranch?.orderBill){
-        //             return showMessage({ status: "success", text: "เกิดข้อผิดพลาดสั่งอาหารไม่สำเร็จ" });
-        //         }
+                if(!addBranch?.orderBill){
+                    return showMessage({ status: "success", text: "เกิดข้อผิดพลาดสั่งอาหารไม่สำเร็จ" });
+                }
               
-        //         dispatch(cleanCart());
-        //         return showMessage({ status: "success", text: "สั่งอาหารสำเร็จ" });
-        //     } catch (error: unknown) {
-        //         console.error('Failed to add data:', error);
-        //     } finally {
-        //         SetLoading(false);
-        //         setOpenCart(false);
-        //     }
-        // }
-        handle(1);
-        return dispatch(plusOrderProcessCount());
+                dispatch(cleanCart());
+                return showMessage({ status: "success", text: "สั่งอาหารสำเร็จ" });
+            } catch (error: unknown) {
+                console.error('Failed to add data:', error);
+            } finally {
+                SetLoading(false);
+                setOpenCart(false);
+            }
+        }
     }
-console.log(orderMakingCount,orderProcessCount)
     return (
         <>
         <Spin tip="Loading..." spinning={loading}>

@@ -14,7 +14,6 @@ import PromotionTable from '../components/Table/PromotionTable';
 import ExpensesItemFrom from '../components/ฺFrom/ExpensesItemFrom';
 import PromotionItemTable from '../components/Table/PromotionItemTable';
 import OrderBillDetail from '../components/OrderBillDetail';
-import { orderBills } from '@/types/fetchData';
 import { useAppDispatch, useAppSelector } from '../store/store';
 import { setShowOrderBillMaking, setShowOrderBillProcess } from '../store/slices/showSlice';
 

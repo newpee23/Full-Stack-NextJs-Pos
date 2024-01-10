@@ -10,7 +10,7 @@ export const store = configureStore({
     loadingSlice,
     cartSlice,
     refetchOrderBillSlice,
-    showSlice,
+    showSlice, 
   },
 });
 

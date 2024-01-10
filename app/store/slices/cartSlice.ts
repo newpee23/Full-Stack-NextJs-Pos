@@ -18,7 +18,7 @@ export interface myStateCartItem {
 }
 
 const initialState: myStateCartItem = {
-  transactionId: "",
+  transactionId: "", 
   itemCart: [],
   totalPrice: 0,
   totalQty: 0

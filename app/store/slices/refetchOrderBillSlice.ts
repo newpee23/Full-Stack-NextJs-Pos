@@ -18,7 +18,7 @@ const initialState: MyStateRefetchOrderBillSlice = {
 const refetchOrderBillSlice = createSlice({
     name: "refetchOrderBillSlice",
     initialState,
-    reducers: {
+    reducers: { 
         setOrderBillDetail: (state, action: PayloadAction<orderBills[]>) => {
             state.orderBill = action.payload;
         },
