@@ -4,22 +4,36 @@ import { getDate } from "@/utils/utils";
 import { Collapse, CollapseProps } from "antd";
 import React from "react"
 import EmptyNodata from "./UI/EmptyNodata";
+import SkeletonTable from "./UI/loading/SkeletonTable";
+import { useAppDispatch, useAppSelector } from "../store/store";
+import { plusOrderMakingCount, plusOrderProcessCount } from "../store/slices/refetchOrderBillSlice";
 
 type Props = {
-  orderBill: orderBills[];
+  title: string;
 }
 
 const statusStr = (status: string): string => {
   switch (status) {
     case "process":
       return "รอรับออเดอร์";
-
+    case "making":
+      return "กำลังจัดเตรียม";
     default:
       return "";
   }
 }
 
-const OrderBillDetail = ({ orderBill }: Props) => {
+const OrderBillDetail = ({ title }: Props) => {
+  
+  const dispatch = useAppDispatch();
+  const { loadingOrderDetail } = useAppSelector((state) => state?.loadingSlice);
+  const { orderBill } = useAppSelector((state) => state?.refetchOrderBillSlice);
+
+  const handleTakingOrders = (value: orderBills) => {
+    console.log(value);
+    dispatch(plusOrderProcessCount())
+    return dispatch(plusOrderMakingCount());
+  }
 
   const items: CollapseProps["items"] = orderBill.map((orderBillData, index) => ({
     key: index,
@@ -42,16 +56,16 @@ const OrderBillDetail = ({ orderBill }: Props) => {
         <div className="flex items-end justify-between">
           <p>รายละเอียด</p>
           <div>
-          <button type="button" className="text-red-700 py-1 px-2 mr-1 border rounded-md text-sm drop-shadow-md hover:bg-red-600 hover:text-white hover:drop-shadow-xl whitespace-nowrap transition-transform transform hover:scale-105">
-            <span className="flex items-center">
-              <IoMdPrint className="mr-1" /> ยกเลิกออเดอร์
-            </span>
-          </button>
-          <button type="button" className="text-gray-700 py-1 ml-1 px-2 border rounded-md text-sm drop-shadow-md hover:bg-gray-600 hover:text-white hover:drop-shadow-xl whitespace-nowrap transition-transform transform hover:scale-105">
-            <span className="flex items-center">
-              <IoMdPrint className="mr-1" /> รับออเดอร์
-            </span>
-          </button>
+            <button type="button" className="text-red-700 py-1 px-2 mr-1 border rounded-md text-sm drop-shadow-md hover:bg-red-600 hover:text-white hover:drop-shadow-xl whitespace-nowrap transition-transform transform hover:scale-105">
+              <span className="flex items-center">
+                <IoMdPrint className="mr-1" /> ยกเลิกออเดอร์
+              </span>
+            </button>
+            <button type="button" onClick={() => handleTakingOrders(orderBillData)} className="text-gray-700 py-1 ml-1 px-2 border rounded-md text-sm drop-shadow-md hover:bg-gray-600 hover:text-white hover:drop-shadow-xl whitespace-nowrap transition-transform transform hover:scale-105">
+              <span className="flex items-center">
+                <IoMdPrint className="mr-1" /> รับออเดอร์
+              </span>
+            </button>
           </div>
         </div>
         {orderBillData.ItemTransactions.map((detail, i) => (
@@ -76,13 +90,14 @@ const OrderBillDetail = ({ orderBill }: Props) => {
   return (
     <div className="p-3">
       <div className=" text-orange-600 text-center">
-        <p>แสดงออเดอร์ประจำวัน {getDate(new Date().toString())}</p>
+        <p>{title} {getDate(new Date().toString())}</p>
       </div>
       <div>
-        {items.length > 0 ?
-          <Collapse className="mt-3" items={items} size="small" />
-          :
-          <EmptyNodata />
+        {loadingOrderDetail ? <SkeletonTable /> :
+          items.length > 0 ?
+            <Collapse className="mt-3" items={items} size="small" />
+            :
+            <EmptyNodata />
         }
       </div>
     </div>

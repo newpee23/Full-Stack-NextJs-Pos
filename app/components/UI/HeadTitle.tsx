@@ -6,23 +6,28 @@ import { useSession } from "next-auth/react";
 import { Badge } from "antd";
 import { useDataHeadTitle } from "@/app/api/headTitle";
 import { useDataProduct } from "@/app/api/product";
-import { orderBills } from "@/types/fetchData";
+import { useAppDispatch, useAppSelector } from "@/app/store/store";
+import { setLoadingOrderDetail } from "@/app/store/slices/loadingSlice";
+import { setShowOrderBillMaking, setShowOrderBillProcess } from "@/app/store/slices/showSlice";
+import { cleanOrderMakingCount, cleanOrderProcessCount, setOrderBillDetail } from "@/app/store/slices/refetchOrderBillSlice";
 
 interface openModalType {
     modalCloseShowProduct: boolean;
 }
 
-type Props = {
-    showOrderBill: boolean;
-    setShowOrderBill: (value: boolean) => void;
-    setOrderBill: (value: orderBills[]) => void;
+let tot = 0;
+export const test = () => {
+    tot += 1;
 }
-
-const HeadTitle = ({ setShowOrderBill, showOrderBill, setOrderBill }: Props) => {
+const HeadTitle = () => {
 
     const { data: session } = useSession();
+    const dispatch = useAppDispatch();
+    const { showOrderBillMaking, showOrderBillProcess } = useAppSelector((state) => state?.showSlice);
+    const { orderMakingCount, orderProcessCount } = useAppSelector((state) => state?.refetchOrderBillSlice);
     const { data: dataSailProduct, isLoading: isLoadingSailProduct, isError: isErrorSailProduct, refetch: refetchSailProduct, remove: removeSailProduct } = useDataProduct(session?.user.accessToken, session?.user.company_id);
-    const { data: dataOrderBill, isLoading: isLoadingOrderBill, isError: isErrorOrderBill, refetch: refetchOrderBill, remove: removeOrderBill } = useDataHeadTitle(session?.user.accessToken, session?.user.branch_id, "process");
+    const { data: orderBillProcess, isLoading: isLoadingOrderBillProcess, isError: isErrorOrderBillProcess, refetch: refetchOrderBillProcess, remove: removeOrderBillProcess } = useDataHeadTitle(session?.user.accessToken, session?.user.branch_id, "process");
+    const { data: orderBillMaking, isLoading: isLoadingOrderBillMaking, isError: isErrorOrderBillMaking, refetch: refetchOrderBillMaking, remove: removeOrderBillMaking } = useDataHeadTitle(session?.user.accessToken, session?.user.branch_id, "making");
 
     const [openModal, setOpenModal] = useState<openModalType>({
         modalCloseShowProduct: false,
@@ -32,6 +37,17 @@ const HeadTitle = ({ setShowOrderBill, showOrderBill, setOrderBill }: Props) => 
         removeSailProduct();
         return await refetchSailProduct();
     };
+
+    const handleRefreshProcess = async () => {
+        removeOrderBillProcess();
+        return await refetchOrderBillProcess();
+    };
+
+    const handleRefreshMaking = async () => {
+        removeOrderBillMaking();
+        return await refetchOrderBillMaking();
+    };
+
 
     const handleButtonClick = () => {
         setOpenModal((prev) => ({ ...prev, modalCloseShowProduct: !prev.modalCloseShowProduct }));
@@ -47,6 +63,37 @@ const HeadTitle = ({ setShowOrderBill, showOrderBill, setOrderBill }: Props) => 
         return refreshSailShoeProduct();
     }, [openModal]);
 
+    useEffect(() => {
+        const refreshMaking = () => {
+            dispatch(cleanOrderMakingCount());
+            if (orderBillMaking?.orderBillData) {
+                dispatch(setOrderBillDetail(orderBillMaking.orderBillData));
+            }
+        }
+
+        return refreshMaking();
+    }, [orderBillMaking]);
+
+    useEffect(() => {
+        const refreshMaking = () => {
+            dispatch(cleanOrderProcessCount());
+            if (orderBillProcess?.orderBillData) {
+                dispatch(setOrderBillDetail(orderBillProcess.orderBillData));
+            }
+        }
+
+        return refreshMaking();
+    }, [orderBillProcess]);
+
+    useEffect(() => {
+        dispatch(setLoadingOrderDetail(isLoadingOrderBillProcess));
+    }, [isLoadingOrderBillProcess]);
+
+    useEffect(() => {
+        dispatch(setLoadingOrderDetail(isLoadingOrderBillMaking));
+    }, [isLoadingOrderBillMaking]);
+
+  
     return (
         <div className={`p-4 w-full top-0 bg-white shadow-md rounded-lg`}>
             <div className="flex items-center drop-shadow-md justify-between">
@@ -60,26 +107,33 @@ const HeadTitle = ({ setShowOrderBill, showOrderBill, setOrderBill }: Props) => 
                 </div>
                 <div className="flex">
                     <div className="mr-2">
-                        <Badge size="default" count={5}>
-                         
-                                <button onClick={() => { setShowOrderBill(!showOrderBill); setOrderBill([]); }} type="button" className="text-gray-700 py-2 px-3 border rounded-md text-sm drop-shadow-md hover:bg-gray-600 hover:text-white hover:drop-shadow-xl whitespace-nowrap transition-transform transform hover:scale-105">
+                        <Badge size="default" count={orderMakingCount}>
+                            {showOrderBillMaking ?
+                                <button onClick={() => { dispatch(setShowOrderBillMaking(!showOrderBillMaking)) }} type="button" className="text-red-700 py-2 px-3 border rounded-md text-sm drop-shadow-md hover:bg-red-600 hover:text-white hover:drop-shadow-xl whitespace-nowrap transition-transform transform hover:scale-105">
+                                    <span className="flex items-center">
+                                        ปิดแสดงออเดอร์กำลังเตรียมประจำวัน
+                                    </span>
+                                </button>
+                                :
+                                <button onClick={() => { dispatch(setShowOrderBillMaking(!showOrderBillMaking)); dispatch(setShowOrderBillProcess(false)); handleRefreshMaking(); }} type="button" className="text-gray-700 py-2 px-3 border rounded-md text-sm drop-shadow-md hover:bg-gray-600 hover:text-white hover:drop-shadow-xl whitespace-nowrap transition-transform transform hover:scale-105">
                                     <span className="flex items-center">
                                         แสดงออเดอร์กำลังเตรียมประจำวัน
                                     </span>
                                 </button>
-                        
+                            }
+
                         </Badge>
                     </div>
                     <div className="ml-2">
-                        <Badge size="default" count={dataOrderBill?.orderBillData?.length}>
-                            {showOrderBill ?
-                                <button onClick={() => { setShowOrderBill(!showOrderBill); setOrderBill([]); }} type="button" className="text-red-700 py-2 px-3 border rounded-md text-sm drop-shadow-md hover:bg-red-600 hover:text-white hover:drop-shadow-xl whitespace-nowrap transition-transform transform hover:scale-105">
+                        <Badge size="default" count={orderProcessCount}>
+                            {showOrderBillProcess ?
+                                <button onClick={() => { dispatch(setShowOrderBillProcess(!showOrderBillProcess)); }} type="button" className="text-red-700 py-2 px-3 border rounded-md text-sm drop-shadow-md hover:bg-red-600 hover:text-white hover:drop-shadow-xl whitespace-nowrap transition-transform transform hover:scale-105">
                                     <span className="flex items-center">
                                         ปิดแสดงออเดอร์ประจำวัน
                                     </span>
                                 </button>
                                 :
-                                <button onClick={() => { setShowOrderBill(!showOrderBill); setOrderBill(dataOrderBill?.orderBillData ? dataOrderBill.orderBillData : []); }} type="button" className="text-gray-700 py-2 px-3 border rounded-md text-sm drop-shadow-md hover:bg-gray-600 hover:text-white hover:drop-shadow-xl whitespace-nowrap transition-transform transform hover:scale-105">
+                                <button onClick={() => { dispatch(setShowOrderBillProcess(!showOrderBillProcess)); dispatch(setShowOrderBillMaking(false)); handleRefreshProcess(); }} type="button" className="text-gray-700 py-2 px-3 border rounded-md text-sm drop-shadow-md hover:bg-gray-600 hover:text-white hover:drop-shadow-xl whitespace-nowrap transition-transform transform hover:scale-105">
                                     <span className="flex items-center">
                                         <RiBillLine className="mr-1" /> แสดงออเดอร์ประจำวัน
                                     </span>

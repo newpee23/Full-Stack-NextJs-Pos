@@ -63,3 +63,12 @@ export const getDate = (timestamp: string): string => {
   
   return originalFormattedDate;
 }
+
+let total = 0;
+export const handle = (number: number) => {
+   total += number;
+};
+
+export const returnHandle = (): number => {
+  return total;
+};

@@ -15,17 +15,21 @@ import ExpensesItemFrom from '../components/ฺFrom/ExpensesItemFrom';
 import PromotionItemTable from '../components/Table/PromotionItemTable';
 import OrderBillDetail from '../components/OrderBillDetail';
 import { orderBills } from '@/types/fetchData';
+import { useAppDispatch, useAppSelector } from '../store/store';
+import { setShowOrderBillMaking, setShowOrderBillProcess } from '../store/slices/showSlice';
 
 type Props = { idComponents: React.Key | null; };
 
 const BlockContens = (props: Props) => {
+  
+  const dispatch = useAppDispatch();
+  const { showOrderBillMaking, showOrderBillProcess } = useAppSelector((state) => state?.showSlice);
   const [component, setComponent] = useState<ReactNode | null>(null);
-  const [orderBill, setOrderBill] = useState<orderBills[]>([]);
-  const [showOrderBill, setShowOrderBill] = useState(false);
 
   useEffect(() => {
     const loadComponents = () => {
-      setShowOrderBill(false);
+      dispatch(setShowOrderBillProcess(false));
+      dispatch(setShowOrderBillMaking(false));
       switch (props.idComponents) {
         case '1':
           setComponent(<HomePage />);
@@ -70,15 +74,14 @@ const BlockContens = (props: Props) => {
     };
     loadComponents();
   }, [props.idComponents]);
-
-
+ 
   return (
     <section className="w-full">
       <div className="flex justify-center m-3">
-        <HeadTitle showOrderBill={showOrderBill} setOrderBill={(value) => setOrderBill(value)} setShowOrderBill={(value) => setShowOrderBill(value)} />
+        <HeadTitle />
       </div>
       <div className="flex flex-col justify-center m-3 bg-white shadow-md rounded-lg">
-        {showOrderBill ? <OrderBillDetail orderBill={orderBill}/> : component}
+        {showOrderBillProcess ? <OrderBillDetail title="แสดงออเดอร์ประจำวัน"/> : showOrderBillMaking ? <OrderBillDetail title="แสดงออเดอร์กำลังเตรียมประจำวัน"/> : component}
       </div>
     </section>
   );

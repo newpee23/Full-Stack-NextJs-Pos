@@ -5,6 +5,8 @@ import { useAppDispatch, useAppSelector } from "@/app/store/store";
 import { cartIncrementItem, itemCartType, cartDecrementItem, removeCartItem, cleanCart } from "@/app/store/slices/cartSlice";
 import { useSession } from "next-auth/react";
 import { useAddDataItemTransaction } from "@/app/api/customerFront/addTransaction";
+import { plusOrderMakingCount, plusOrderProcessCount } from "@/app/store/slices/refetchOrderBillSlice";
+import { handle } from "@/utils/utils";
 
 export interface dataType {
     title: React.ReactNode;
@@ -25,6 +27,7 @@ const ListCartOrderItem = ({ setOpenCart }: Props) => {
     const [ loading, SetLoading ] = useState<boolean>(false);
     const { itemCart, totalPrice, totalQty, transactionId } = useAppSelector((state) => state?.cartSlice);
     const addDataItemTransactionMutation = useAddDataItemTransaction();
+    const { orderMakingCount, orderProcessCount } = useAppSelector((state) => state?.refetchOrderBillSlice);
 
     const handleIncrementItem = (cartItem: itemCartType) => {
         dispatch(cartIncrementItem({ productId: cartItem.productId, image: cartItem.image, name: cartItem.name, price: cartItem.price, qty: 1 }));
@@ -71,35 +74,37 @@ const ListCartOrderItem = ({ setOpenCart }: Props) => {
     }));
 
     const handleAddItemCart = async () => {
-        if(itemCart.length > 0){
-            try {
-                SetLoading(true);
-                // Insert addItemTransaction
-                const addBranch = await addDataItemTransactionMutation.mutateAsync({
-                    token: session?.user.accessToken,
-                    itemTransactionData: {
-                        itemCart: itemCart,
-                        totalPrice: totalPrice,
-                        totalQty: totalQty,
-                        transactionId: transactionId
-                    }
-                });
+        // if(itemCart.length > 0){
+        //     try {
+        //         SetLoading(true);
+        //         // Insert addItemTransaction
+        //         const addBranch = await addDataItemTransactionMutation.mutateAsync({
+        //             token: session?.user.accessToken,
+        //             itemTransactionData: {
+        //                 itemCart: itemCart,
+        //                 totalPrice: totalPrice,
+        //                 totalQty: totalQty,
+        //                 transactionId: transactionId
+        //             }
+        //         });
     
-                if(!addBranch?.orderBill){
-                    return showMessage({ status: "success", text: "เกิดข้อผิดพลาดสั่งอาหารไม่สำเร็จ" });
-                }
-                dispatch(cleanCart());
-                return showMessage({ status: "success", text: "สั่งอาหารสำเร็จ" });
-            } catch (error: unknown) {
-                console.error('Failed to add data:', error);
-            } finally {
-                SetLoading(false);
-                setOpenCart(false);
-            }
-        }
-      
+        //         if(!addBranch?.orderBill){
+        //             return showMessage({ status: "success", text: "เกิดข้อผิดพลาดสั่งอาหารไม่สำเร็จ" });
+        //         }
+              
+        //         dispatch(cleanCart());
+        //         return showMessage({ status: "success", text: "สั่งอาหารสำเร็จ" });
+        //     } catch (error: unknown) {
+        //         console.error('Failed to add data:', error);
+        //     } finally {
+        //         SetLoading(false);
+        //         setOpenCart(false);
+        //     }
+        // }
+        handle(1);
+        return dispatch(plusOrderProcessCount());
     }
-
+console.log(orderMakingCount,orderProcessCount)
     return (
         <>
         <Spin tip="Loading..." spinning={loading}>
