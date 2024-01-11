@@ -71,13 +71,17 @@ export const setDataTotalOrderBill = async (data: orderBillTotal[]): Promise<num
                 if (item.productId) {
                     const productPrice = await fetchProductById(item.productId);
                     if (productPrice) {
-                        totalBill += (item.qty * productPrice.price);
+                        if(orderBill.status !== "cancel"){
+                            totalBill += (item.qty * productPrice.price);
+                        }
                     }
                 }
                 if (item.promotionId) {
                     const promotionPrice = await fetchPromotionById(item.promotionId);
                     if (promotionPrice) {
-                        totalBill += (item.qty * promotionPrice.promotionalPrice);
+                        if(orderBill.status !== "cancel"){
+                            totalBill += (item.qty * promotionPrice.promotionalPrice);
+                        }
                     }
                 }
             }

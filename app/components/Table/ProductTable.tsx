@@ -10,6 +10,7 @@ import { ColumnsType } from 'antd/lib/table';
 import { fetchProduct } from '@/types/fetchData';
 import TagStatus from '../UI/TagStatus';
 import DeleteBtn from '../UI/btn/DeleteBtn';
+import HeadNameComponent from '../UI/HeadNameComponent';
 
 const ProductTable = () => {
     const [messageApi, contextHolder] = message.useMessage();
@@ -130,6 +131,7 @@ const ProductTable = () => {
 
     return (
         <div>
+            <HeadNameComponent name="จัดการข้อมูลสินค้า" />
             <div className="flex items-center justify-between">
                 <ProductFrom onClick={handleRefresh} statusAction="add" title="เพิ่มข้อมูลสินค้า" />
                 <RefreshBtn label="Refresh Data" onClick={handleRefresh} />

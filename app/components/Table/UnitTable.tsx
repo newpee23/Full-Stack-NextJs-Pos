@@ -10,6 +10,7 @@ import TagStatus from '../UI/TagStatus';
 import DeleteBtn from '../UI/btn/DeleteBtn';
 import RefreshBtn from '../UI/btn/RefreshBtn';
 import UnitFrom from '../ฺFrom/UnitFrom';
+import HeadNameComponent from '../UI/HeadNameComponent';
 
 const UnitTable = () => {
     const [messageApi, contextHolder] = message.useMessage();
@@ -90,6 +91,7 @@ const UnitTable = () => {
 
     return (
         <div>
+        <HeadNameComponent name="จัดการข้อมูลหน่วยนับสินค้า" />
         <div className="flex items-center justify-between">
             <UnitFrom onClick={handleRefresh} statusAction="add" title="เพิ่มข้อมูลหน่วยนับสินค้า" />
             <RefreshBtn label="Refresh Data" onClick={handleRefresh} />

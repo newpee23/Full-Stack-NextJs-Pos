@@ -1,11 +1,11 @@
 import jsPDF from "jspdf";
 import '@/app/lib/receipt/THSarabunNew-normal';
-import { orderBillDataType } from "@/app/api/customerFront/getOrderBill";
-import { detailReceiptType } from "@/types/fetchData";
+
+import { detailReceiptType, orderBills } from "@/types/fetchData";
 import { getDate, getTime7H } from "@/utils/utils";
 
 interface Props {
-    orderBill: orderBillDataType;
+    orderBill: orderBills;
     detailReceipt: detailReceiptType;
 }
 
@@ -17,13 +17,10 @@ const imageY = 5;
 let xPositionsArr = [4, 60];
 let yPaper = 0;
 
-export const receiptCloseBill = async ({ orderBill, detailReceipt }: Props) => {
-    yPaper = 90;
-    orderBill.orderBillData.map(item => {
-        yPaper += 5;
-        item.ItemTransactions.map(() => {
-            yPaper += 10;
-        })
+export const receiptDetailBill = async ({ orderBill, detailReceipt }: Props) => {
+    yPaper = 85;
+    orderBill.ItemTransactions.map(item => {
+        yPaper += 10;
     });
     yPaper += 10;
 
@@ -39,7 +36,7 @@ export const receiptCloseBill = async ({ orderBill, detailReceipt }: Props) => {
     pdf.setFont("THSarabunNew-normal");
 
     // Function to add text to the PDF and handle page breaks
-    const addText = (text: string, y: number, fontSize: number = 12,x?: number) => {
+    const addText = (text: string, y: number, fontSize: number = 12, x?: number) => {
         const lineHeight = 10;
         const textWidth = pdf.getStringUnitWidth(text) * fontSize / pdf.internal.scaleFactor;
         const xx = (pdf.internal.pageSize.width - textWidth) / 2;
@@ -54,7 +51,7 @@ export const receiptCloseBill = async ({ orderBill, detailReceipt }: Props) => {
         // Set the font size
         pdf.setFontSize(fontSize);
 
-        pdf.text(text, x? x : xx, y);
+        pdf.text(text, x ? x : xx, y);
     };
 
     const addTextXPositionsArr = (texts: string[], xPositions: number[], y: number, fontSize: number = 12) => {
@@ -89,24 +86,23 @@ export const receiptCloseBill = async ({ orderBill, detailReceipt }: Props) => {
     // list Order
 
     let yPositionsList = 62;
+    let orderTotalBill = 0;
     addTextXPositionsArr(["รายการ", "จำนวนเงิน"], xPositionsArr, 57, 14);
-    orderBill.orderBillData.sort((a, b) => a.id - b.id);
-    orderBill.orderBillData.map(item => {
-        addText(`รายละเอียดบิลที่ ${item.index} ${item.status === "cancel" && "ยกเลิก"}`, yPositionsList, 13, 4);
+
+    orderBill.ItemTransactions.map((detail, index) => {
+        orderTotalBill += (detail.price * detail.qty);
+        addText(`${(index + 1)}.${detail.productName ? detail.productName : detail.promotionName}`, yPositionsList, 12, 6);
         yPositionsList += 5;
-        item.ItemTransactions.map((detail, index) => {
-            addText(`${(index+1)}.${detail.productName ? detail.productName : detail.promotionName}`, yPositionsList, 12, 6);
-            yPositionsList += 5;
-            addText(`จำนวน ${detail.qty} * ${detail.price} ${detail.unitName}`, yPositionsList, 13, 8);
-            addText(`${item.status === "cancel" ? detail.qty * detail.price : 0}`, yPositionsList, 12, 65);
-            yPositionsList += 5;
-        })
+        addText(`จำนวน ${detail.qty} * ${detail.price} ${detail.unitName}`, yPositionsList, 13, 8);
+        addText(`${detail.qty * detail.price}`, yPositionsList, 12, 65);
+        yPositionsList += 5;
+
     });
 
     yPositionsList += 5;
     addText("------------------------------------------------------------------------", yPositionsList, 14);
     yPositionsList += 5;
-    addText(`ราคาสุทธิ ${orderBill.orderTotalBill.toString()} บาท`, yPositionsList, 16);
+    addText(`ราคาสุทธิ ${orderTotalBill.toString()} บาท`, yPositionsList, 16);
     yPositionsList += 6;
     addText(`ชำระเมื่อ : ${getDate(new Date().toString())} ${getTime7H(new Date().toString())}`, yPositionsList, 14);
 

@@ -14,6 +14,7 @@ import { Moment } from 'moment';
 import { useAppDispatch } from '@/app/store/store';
 import { setLoading } from '@/app/store/slices/loadingSlice';
 import ErrFrom from '../ErrFrom';
+import HeadNameComponent from '../UI/HeadNameComponent';
 
 interface expensesItemSubmit {
   expensesId: number | undefined;
@@ -38,7 +39,7 @@ const ExpensesItemFrom = () => {
     branchId: undefined,
     status: "Active",
   });
-  
+
   useEffect(() => {
     const loadComponents = () => {
       if (loadingQuery > 0) {
@@ -74,7 +75,7 @@ const ExpensesItemFrom = () => {
 
   const handleSubmit = async (values: expensesItemSubmit) => {
     try {
-    
+
       if (!session?.user.branch_id) return showMessage({ status: "error", text: "พบข้อผิดพลาดกรุณาเข้าสู่ระบบใหม่อีกครั้ง" });
       if (!values.expensesId) return showMessage({ status: "error", text: "กรุณาระบุหัวข้อค่าใช้จ่าย" });
       if (!values.orderDate) return showMessage({ status: "error", text: "กรุณาระบุค่าใช้จ่าย" });
@@ -115,30 +116,33 @@ const ExpensesItemFrom = () => {
 
 
   return (
-    <div className="p-3">
-      <Form layout="vertical" onFinish={(values: expensesItemSubmit) => { setFormValues(values); handleSubmit(values) }} initialValues={formValues}>
-        {/* หัวข้อค่าใช้จ่าย */}
-        <div className="grid gap-3 mb-4 grid-cols-1 sml:grid-cols-2 lgl:grid-cols-4">
-          <SelectExpenses option={data} />
-          <div className="flex items-center ml-[-0.75rem] mt-3">
-            <RefreshBtn label="Refresh" onClick={handleRefresh} />
+    <div>
+      <HeadNameComponent name="จัดการข้อมูลบันทึกค่าใช้จ่าย" />
+      <div className="p-3 mt-3">
+        <Form layout="vertical" onFinish={(values: expensesItemSubmit) => { setFormValues(values); handleSubmit(values) }} initialValues={formValues}>
+          {/* หัวข้อค่าใช้จ่าย */}
+          <div className="grid gap-3 mb-4 grid-cols-1 sml:grid-cols-2 lgl:grid-cols-4">
+            <SelectExpenses option={data} />
+            <div className="flex items-center ml-[-0.75rem] mt-3">
+              <RefreshBtn label="Refresh" onClick={handleRefresh} />
+            </div>
           </div>
-        </div>
-        {/* ค่าใช้จ่าย, วันที่ */}
-        <div className="grid gap-3 mb-4 grid-cols-1 sml:grid-cols-2 lgl:grid-cols-4">
-          <InputFrom label="ค่าใช้จ่าย" name="price" required={true} type="float" />
-          <InputFrom label="วันที่ใช้จ่าย" name="orderDate" required={true} type="datePicker" />
-        </div>
-        {/* สถานะ */}
-        <div className="grid gap-3 mb-4 grid-cols-1 sml:grid-cols-2 lgl:grid-cols-4">
-          <StatusFrom label="สถานะ" name="status" />
-        </div>
+          {/* ค่าใช้จ่าย, วันที่ */}
+          <div className="grid gap-3 mb-4 grid-cols-1 sml:grid-cols-2 lgl:grid-cols-4">
+            <InputFrom label="ค่าใช้จ่าย" name="price" required={true} type="float" />
+            <InputFrom label="วันที่ใช้จ่าย" name="orderDate" required={true} type="datePicker" />
+          </div>
+          {/* สถานะ */}
+          <div className="grid gap-3 mb-4 grid-cols-1 sml:grid-cols-2 lgl:grid-cols-4">
+            <StatusFrom label="สถานะ" name="status" />
+          </div>
 
-        <ProgressBar />
-        <SaveBtn label="บันทึกข้อมูล" />
-      </Form>
-      {contextHolder}
-      {messageError.length > 0 && <ErrFrom showError={messageError}/>}
+          <ProgressBar />
+          <SaveBtn label="บันทึกข้อมูล" />
+        </Form>
+        {contextHolder}
+        {messageError.length > 0 && <ErrFrom showError={messageError} />}
+      </div>
     </div>
   )
 }

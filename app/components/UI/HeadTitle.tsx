@@ -1,5 +1,4 @@
-import { MdProductionQuantityLimits } from "react-icons/md";
-import { RiBillLine } from "react-icons/ri";
+import { MdCoffeeMaker, MdProductionQuantityLimits } from "react-icons/md";
 import ModalCloseShowProduct from "./modal/ModalCloseShowProduct";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
@@ -10,6 +9,7 @@ import { setLoadingOrderDetail } from "@/app/store/slices/loadingSlice";
 import { setShowOrderBillMaking, setShowOrderBillProcess } from "@/app/store/slices/showSlice";
 import { cleanOrderMakingCount, cleanOrderProcessCount, plusOrderProcessCount, setOrderBillDetail, setRefetchDataOrder, setRefetchDataOrderMaking } from "@/app/store/slices/refetchOrderBillSlice";
 import { useDataMakingHeadTitle, useDataProcessHeadTitle } from "@/app/api/headTitle";
+import { FaMoneyBillWheat } from "react-icons/fa6";
 
 interface openModalType {
     modalCloseShowProduct: boolean;
@@ -62,7 +62,6 @@ const HeadTitle = () => {
     useEffect(() => {
         const refreshOrderProcess = () => {
             if (refetchDataOrder) {
-                console.log(refetchDataOrder)
                 dispatch(setRefetchDataOrder(!refetchDataOrder));
                 handleRefreshProcess();
             }
@@ -73,7 +72,7 @@ const HeadTitle = () => {
 
     useEffect(() => {
         const refreshOrderMaking = () => {
-          
+
             if (refetchDataOrderMaking) {
                 dispatch(setRefetchDataOrderMaking(!refetchDataOrderMaking));
                 handleRefreshMaking();
@@ -137,7 +136,7 @@ const HeadTitle = () => {
 
     return (
         <div className={`p-4 w-full top-0 bg-white shadow-md rounded-lg`}>
-            <div className="flex items-center drop-shadow-md justify-between">
+            <div className="flex items-center drop-shadow-md flex-col justify-center mdl:flex-row mdl:justify-between">
                 <div>
                     <button onClick={handleButtonClick} type="button" className="text-gray-700 py-2 px-3 border rounded-md text-sm drop-shadow-md hover:bg-gray-600 hover:text-white hover:drop-shadow-xl whitespace-nowrap transition-transform transform hover:scale-105">
                         <span className="flex items-center">
@@ -146,8 +145,8 @@ const HeadTitle = () => {
                     </button>
                     {openModal.modalCloseShowProduct && <ModalCloseShowProduct data={dataSailProduct} isLoading={isLoadingSailProduct} isError={isErrorSailProduct} modalCloseShowProduct={openModal.modalCloseShowProduct} setOpenModal={() => setOpenModal((prev) => ({ ...prev, modalCloseShowProduct: false }))} />}
                 </div>
-                <div className="flex">
-                    <div className="mr-2">
+                <div className="flex flex-col justify-center lgl:flex-row">
+                    <div className="text-center mx-2 my-2  lgl:my-0">
                         <Badge size="default" count={orderMakingCount}>
                             {showOrderBillMaking ?
                                 <button onClick={() => { dispatch(setShowOrderBillMaking(!showOrderBillMaking)) }} type="button" className="text-red-700 py-2 px-3 border rounded-md text-sm drop-shadow-md hover:bg-red-600 hover:text-white hover:drop-shadow-xl whitespace-nowrap transition-transform transform hover:scale-105">
@@ -158,14 +157,14 @@ const HeadTitle = () => {
                                 :
                                 <button onClick={() => { dispatch(setShowOrderBillMaking(!showOrderBillMaking)); dispatch(setShowOrderBillProcess(false)); handleRefreshMaking(); }} type="button" className="text-gray-700 py-2 px-3 border rounded-md text-sm drop-shadow-md hover:bg-gray-600 hover:text-white hover:drop-shadow-xl whitespace-nowrap transition-transform transform hover:scale-105">
                                     <span className="flex items-center">
-                                        แสดงออเดอร์กำลังเตรียมประจำวัน
+                                        <MdCoffeeMaker className="mr-1"/> แสดงออเดอร์กำลังเตรียมประจำวัน
                                     </span>
                                 </button>
                             }
 
                         </Badge>
                     </div>
-                    <div className="ml-2">
+                    <div className="text-center mdl:text-right mdl:mr-2 lgl:mr-0">
                         <Badge size="default" count={orderProcessCount}>
                             {showOrderBillProcess ?
                                 <button onClick={() => { dispatch(setShowOrderBillProcess(!showOrderBillProcess)); }} type="button" className="text-red-700 py-2 px-3 border rounded-md text-sm drop-shadow-md hover:bg-red-600 hover:text-white hover:drop-shadow-xl whitespace-nowrap transition-transform transform hover:scale-105">
@@ -176,7 +175,7 @@ const HeadTitle = () => {
                                 :
                                 <button onClick={() => { dispatch(setShowOrderBillProcess(!showOrderBillProcess)); dispatch(setShowOrderBillMaking(false)); handleRefreshProcess(); }} type="button" className="text-gray-700 py-2 px-3 border rounded-md text-sm drop-shadow-md hover:bg-gray-600 hover:text-white hover:drop-shadow-xl whitespace-nowrap transition-transform transform hover:scale-105">
                                     <span className="flex items-center">
-                                        <RiBillLine className="mr-1" /> แสดงออเดอร์ประจำวัน
+                                        <FaMoneyBillWheat className="mr-1"/> แสดงออเดอร์ประจำวัน
                                     </span>
                                 </button>
                             }

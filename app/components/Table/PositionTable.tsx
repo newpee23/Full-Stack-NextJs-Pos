@@ -10,6 +10,7 @@ import ErrPage from '../ErrPage';
 import RefreshBtn from '../UI/btn/RefreshBtn';
 import PositionFrom from '../ฺFrom/PositionFrom';
 import DeleteBtn from '../UI/btn/DeleteBtn';
+import HeadNameComponent from '../UI/HeadNameComponent';
 
 const PositionTable = () => {
   const [messageApi, contextHolder] = message.useMessage();
@@ -101,6 +102,7 @@ const PositionTable = () => {
 
   return (
     <div>
+      <HeadNameComponent name="จัดการข้อมูลตำแหน่งพนักงาน"/>
       <div className="flex items-center justify-between">
         <PositionFrom onClick={handleRefresh} statusAction="add" title="เพิ่มข้อมูลตำแหน่งพนักงาน" />
         <RefreshBtn label="Refresh Data" onClick={handleRefresh} />

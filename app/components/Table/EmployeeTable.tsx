@@ -10,6 +10,7 @@ import TagStatus from '../UI/TagStatus';
 import RefreshBtn from '../UI/btn/RefreshBtn';
 import EmployeeFrom from '../ฺFrom/EmployeeFrom';
 import DeleteBtn from '../UI/btn/DeleteBtn';
+import HeadNameComponent from '../UI/HeadNameComponent';
 
 const EmployeeTable = () => {
 
@@ -39,7 +40,7 @@ const EmployeeTable = () => {
     } catch (error) {
       showMessage({ status: "error", text: "ลบข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง" });
     } finally {
-      setTimeout(() => {handleRefresh(); }, 1500);
+      setTimeout(() => { handleRefresh(); }, 1500);
     }
   };
 
@@ -120,7 +121,7 @@ const EmployeeTable = () => {
       className: "text-center",
       render: (_, record) => (
         <Space size="middle">
-          <EmployeeFrom onClick={handleRefresh} editData={record}  title="แก้ไขข้อมูลสาขา" statusAction="update"/>
+          <EmployeeFrom onClick={handleRefresh} editData={record} title="แก้ไขข้อมูลสาขา" statusAction="update" />
           <DeleteBtn name={record.name} onClick={() => handleDeleteClick(record.key)} label="ลบข้อมูล" />
         </Space>
       ),
@@ -129,8 +130,9 @@ const EmployeeTable = () => {
 
   return (
     <div>
+      <HeadNameComponent name="จัดการข้อมูลพนักงาน" />
       <div className="flex items-center justify-between">
-        <EmployeeFrom onClick={handleRefresh} statusAction="add" title="เพิ่มข้อมูลตำแหน่งพนักงาน"/>
+        <EmployeeFrom onClick={handleRefresh} statusAction="add" title="เพิ่มข้อมูลตำแหน่งพนักงาน" />
         <RefreshBtn label="Refresh Data" onClick={handleRefresh} />
       </div>
       <div className="overflow-x-auto m-3">

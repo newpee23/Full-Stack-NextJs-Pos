@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
-import "@/app/components/menuPage.css";
 import { productDataCustomerFrontData } from "@/types/fetchData";
 import ModalOrderHistory from "./UI/modal/ModalOrderHistory";
 

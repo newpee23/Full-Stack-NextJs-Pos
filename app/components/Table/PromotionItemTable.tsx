@@ -9,11 +9,14 @@ import ErrPage from '../ErrPage';
 import { ColumnsType } from 'antd/lib/table';
 import { fetchItemPromotionInPromotion } from '@/types/fetchData';
 import DeleteBtn from '../UI/btn/DeleteBtn';
+import { useDeleteDataPromotion } from '@/app/api/promotion';
+import HeadNameComponent from '../UI/HeadNameComponent';
 
 const PromotionItemTable = () => {
     const { data: session } = useSession();
     const [messageApi, contextHolder] = message.useMessage();
     const { data, isLoading, isError, refetch, remove } = useDataItemPromotion(session?.user.accessToken, session?.user.company_id);
+
 
     const showMessage = ({ status, text }: { status: string, text: string }) => {
         if (status === 'success') { messageApi.success(text); }
@@ -23,7 +26,7 @@ const PromotionItemTable = () => {
 
     const handleDeleteClick = async (id: string) => {
         try {
-            const token = session?.user.accessToken;
+            // const token = session?.user.accessToken;
             // const promotion = await deleteDataPromotion.mutateAsync({ token, id });
 
             // if (!promotion) return showMessage({ status: "error", text: "ไม่สามารถลบข้อมูลได้เนื่องจากมีการนำไปใช้งานแล้ว" });
@@ -82,14 +85,15 @@ const PromotionItemTable = () => {
             render: (_, record) => (
                 <Space size="middle">
                     <PromotionItemFrom onClick={handleRefresh} editData={record} title="แก้ไขข้อมูลสินค้าในโปรโมชั่น" statusAction="update" />
-                    <DeleteBtn name={record.name} onClick={() => handleDeleteClick(record.key)} label="ลบข้อมูล" />
+                    {/* <DeleteBtn name={record.name} onClick={() => handleDeleteClick(record.key)} label="ลบข้อมูล" /> */}
                 </Space>
             ),
         },
     ];
 
-  return (
-    <div>
+    return (
+        <div>
+            <HeadNameComponent name="จัดการข้อมูลสินค้าในโปรโมชั่น" />
             <div className="flex items-center justify-between">
                 <PromotionItemFrom onClick={handleRefresh} statusAction="add" title="เพิ่มข้อมูลโปรโมชั่น" />
                 <RefreshBtn label="Refresh Data" onClick={handleRefresh} />
@@ -99,7 +103,7 @@ const PromotionItemTable = () => {
             </div>
             {contextHolder}
         </div>
-  )
+    )
 }
 
 export default PromotionItemTable

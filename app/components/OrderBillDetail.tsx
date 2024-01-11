@@ -1,6 +1,6 @@
 import { IoMdPrint } from "react-icons/io";
 import { orderBills } from "@/types/fetchData";
-import { getDate } from "@/utils/utils";
+import { getDate, historyStatus } from "@/utils/utils";
 import { Collapse, CollapseProps, Spin, message } from "antd";
 import React, { useState } from "react"
 import EmptyNodata from "./UI/EmptyNodata";
@@ -12,20 +12,11 @@ import { FaShippingFast } from "react-icons/fa";
 import { useUpdateOrderBillStatus } from "../api/orderBill";
 import { useSession } from "next-auth/react";
 import CancelBtnBill from "./UI/btn/CancelBtnBill";
+import { fetchDetailReceiptData } from "../api/detailReceipt";
+import { receiptDetailBill } from "../lib/receipt/receiptDetailBill";
 
 type Props = {
   title: string;
-}
-
-const statusStr = (status: string): string => {
-  switch (status) {
-    case "process":
-      return "รอรับออเดอร์";
-    case "making":
-      return "กำลังจัดเตรียม";
-    default:
-      return "";
-  }
 }
 
 const OrderBillDetail = ({ title }: Props) => {
@@ -38,9 +29,22 @@ const OrderBillDetail = ({ title }: Props) => {
   const [messageApi, contextHolder] = message.useMessage();
   const updateDataOrderBillStatus = useUpdateOrderBillStatus();
 
-  const handleTakingOrders = (value: orderBills) => {
-    console.log(value);
-    dispatch(plusOrderMakingCount());
+  const handleTakingOrders = async (value: orderBills) => {
+    try {
+      setLoading(true);
+      dispatch(plusOrderMakingCount());
+      const detailReceipt = await fetchDetailReceiptData(session?.user.accessToken, session?.user.company_id, session?.user.branch_id, value.transactionId);
+
+      if (!detailReceipt) return showMessage({ status: "error", text: "รับออเดอร์ไม่สำเร็จ กรุณาแก้ไขข้อผิดพลาด" });
+      receiptDetailBill({ detailReceipt: detailReceipt, orderBill: value });
+      await handleUpdateOrderStatus(value.id, "making")
+
+    } catch (error) {
+      console.error('Failed to handleServeOrders:', error);
+      return showMessage({ status: "error", text: "รับออเดอร์ไม่สำเร็จ กรุณาแก้ไขข้อผิดพลาด" });
+    } finally {
+      setLoading(false);
+    }
   }
 
   const showMessage = ({ status, text }: { status: string, text: string }) => {
@@ -49,15 +53,15 @@ const OrderBillDetail = ({ title }: Props) => {
     else if (status === "warning") { messageApi.warning(text); }
   };
 
-  const handleActionOrders = async (orderId: number, status: "process" | "succeed" | "cancel" | "making") => {
+  const handleUpdateOrderStatus = async (orderId: number, status: "process" | "succeed" | "cancel" | "making") => {
     try {
       setLoading(true);
       let str = "";
 
-      if(status === "succeed"){
+      if (status === "succeed") {
         str = "เสิร์ฟออเดอร์";
       }
-      if(status === "cancel"){
+      if (status === "cancel") {
         str = "ยกเลิกออเดอร์";
       }
 
@@ -71,15 +75,13 @@ const OrderBillDetail = ({ title }: Props) => {
 
       if (updateOrderBill === null) return showMessage({ status: "error", text: `${str}ไม่สำเร็จ กรุณาแก้ไขข้อผิดพลาด` });
       if (updateOrderBill?.status === true) {
-        setTimeout(() => { 
-          handleRefetchData(); 
+        setTimeout(() => {
+          handleRefetchData();
         }, 500);
         return showMessage({ status: "success", text: `${str}สำเร็จ` });
       }
-
     } catch (error) {
-      console.error('Failed to handleServeOrders:', error);
-      return showMessage({ status: "error", text: "เสิร์ฟออเดอร์ไม่สำเร็จ กรุณาแก้ไขข้อผิดพลาด" });
+      console.error('Failed to functionUpdateOrderStatus:', error);
     } finally {
       setLoading(false);
     }
@@ -98,7 +100,7 @@ const OrderBillDetail = ({ title }: Props) => {
     if (title === "แสดงออเดอร์ประจำวัน") {
       return (
         <div>
-          <CancelBtnBill name={`รายการการสั่งอาหารออเดอร์ที่ : ${(index + 1)}`} onClick={() => handleActionOrders(val.id, "cancel")} />
+          <CancelBtnBill name={`รายการการสั่งอาหารออเดอร์ที่ : ${(index + 1)}`} onClick={() => handleUpdateOrderStatus(val.id, "cancel")} />
           <button type="button" onClick={() => handleTakingOrders(val)} className="text-gray-700 py-1 ml-1 px-2 border rounded-md text-sm drop-shadow-md hover:bg-gray-600 hover:text-white hover:drop-shadow-xl whitespace-nowrap transition-transform transform hover:scale-105">
             <span className="flex items-center">
               <IoMdPrint className="mr-1" /> รับออเดอร์
@@ -108,7 +110,7 @@ const OrderBillDetail = ({ title }: Props) => {
     }
 
     return (
-      <button type="button" onClick={() => handleActionOrders(val.id, "succeed")} className="text-gray-700 py-1 ml-1 px-2 border rounded-md text-sm drop-shadow-md hover:bg-gray-600 hover:text-white hover:drop-shadow-xl whitespace-nowrap transition-transform transform hover:scale-105">
+      <button type="button" onClick={() => handleUpdateOrderStatus(val.id, "succeed")} className="text-gray-700 py-1 ml-1 px-2 border rounded-md text-sm drop-shadow-md hover:bg-gray-600 hover:text-white hover:drop-shadow-xl whitespace-nowrap transition-transform transform hover:scale-105">
         <span className="flex items-center">
           <FaShippingFast className="mr-1" /> เสิร์ฟออเดอร์
         </span>
@@ -127,7 +129,7 @@ const OrderBillDetail = ({ title }: Props) => {
         <p>
           สถานะ :{" "}
           <span className="text-orange-600">
-            ({statusStr(orderBillData.status)})
+            ({historyStatus(orderBillData.status as "process" | "making" | "succeed" | "cancel")})
           </span>
         </p>
       </div>
@@ -164,14 +166,12 @@ const OrderBillDetail = ({ title }: Props) => {
       </div>
       <Spin tip="Loading..." spinning={loading}>
         <div>
+          <div className="w-full flex justify-end mb-[-13px]">
+            <RefreshBtn label="Refresh Data" onClick={() => handleRefetchData()} />
+          </div>
           {loadingOrderDetail ? <SkeletonTable /> :
             items.length > 0 ?
               <div className="mt-3">
-
-                <div className="w-full flex justify-end mb-[-13px]">
-                  <RefreshBtn label="Refresh Data" onClick={() => handleRefetchData()} />
-                </div>
-
                 <Collapse className="mt-3" items={items} size="small" />
               </div>
               :

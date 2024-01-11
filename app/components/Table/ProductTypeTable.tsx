@@ -10,6 +10,7 @@ import TagStatus from '../UI/TagStatus';
 import RefreshBtn from '../UI/btn/RefreshBtn';
 import ProductTypeFrom from '../ฺFrom/ProductTypeFrom';
 import DeleteBtn from '../UI/btn/DeleteBtn';
+import HeadNameComponent from '../UI/HeadNameComponent';
 
 const ProductTypeTable = () => {
   const { data: session } = useSession();
@@ -91,6 +92,7 @@ const ProductTypeTable = () => {
 
   return (
     <div>
+      <HeadNameComponent name="จัดการข้อมูลประเภทสินค้า" />
       <div className="flex items-center justify-between">
         <ProductTypeFrom onClick={handleRefresh} statusAction="add" title="เพิ่มข้อมูลประเภทสินค้า" />
         <RefreshBtn label="Refresh Data" onClick={handleRefresh} />

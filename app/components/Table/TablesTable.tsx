@@ -10,6 +10,7 @@ import TagStatus from '../UI/TagStatus';
 import TablesFrom from '../ฺFrom/TablesFrom';
 import DeleteBtn from '../UI/btn/DeleteBtn';
 import { fetchTable } from '@/types/fetchData';
+import HeadNameComponent from '../UI/HeadNameComponent';
 
 const TablesTable = () => {
   const [messageApi, contextHolder] = message.useMessage();
@@ -109,7 +110,7 @@ const TablesTable = () => {
       className: "text-center",
       render: (_, record) => (
         <Space size="middle">
-          <TablesFrom onClick={handleRefresh} editData={record}  title="แก้ไขข้อมูลสาขา" statusAction="update"/>
+          <TablesFrom onClick={handleRefresh} editData={record} title="แก้ไขข้อมูลสาขา" statusAction="update" />
           <DeleteBtn name={record.name} onClick={() => handleDeleteClick(record.key)} label="ลบข้อมูล" />
         </Space>
       ),
@@ -118,6 +119,7 @@ const TablesTable = () => {
 
   return (
     <div>
+      <HeadNameComponent name="จัดการข้อมูลโต๊ะ" />
       <div className="flex items-center justify-between">
         <TablesFrom onClick={handleRefresh} statusAction="add" title="เพิ่มข้อมูลโต๊ะ" />
         <RefreshBtn label="Refresh Data" onClick={handleRefresh} />

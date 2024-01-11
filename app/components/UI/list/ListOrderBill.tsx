@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react"
 import SkeletonTable from "../loading/SkeletonTable";
 import ErrPage from "../../ErrPage";
 import { btnActionType } from "../modal/ModalOrderHistory";
+import TimeLineHistoryBill from "../TimeLineHistoryBill";
 
 
 
@@ -42,12 +43,13 @@ const ListOrderBill = ({ btnAction, setBtnAction }: prop) => {
 
     const items: CollapseProps["items"] = data?.orderBillData.map((item, index) => ({
         key: index,
-        label: <div className="flex justify-between"><p>ประวัติการสั่งอาหารบิลที่ {item.index}</p><p className="text-orange-600">({item.totalBill}) บาท</p></div>,
+        label: <div className="flex justify-between"><p>ประวัติการสั่งอาหารบิลที่ {item.index}</p><p className="text-orange-600">({item.status !== "cancel" ? item.totalBill : 0 }) บาท</p></div>,
         children: (
             <div>
 
                 {item.ItemTransactions.map((detail, i) => (
                     <div key={i}>
+                        {i === 0 && <TimeLineHistoryBill status={item.status}/>}
                         <div className="text-sm text-orange-600">
                             <p>{i + 1}. {detail?.productName ? detail.productName : detail.promotionName}</p>
                         </div>
@@ -64,7 +66,7 @@ const ListOrderBill = ({ btnAction, setBtnAction }: prop) => {
 
     return (
         <>
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-end">
                 {
                     !btnAction.btnTotalPrice ?
                         <button onClick={() => setBtnAction({ btnOrderHistory: !btnAction.btnOrderHistory, btnTotalPrice: !btnAction.btnTotalPrice })} type="button" className="text-orange-600 py-1 px-2 border rounded-md text-sm drop-shadow-md hover:bg-orange-700 hover:text-white hover:drop-shadow-xl whitespace-nowrap transition-transform transform hover:scale-105">

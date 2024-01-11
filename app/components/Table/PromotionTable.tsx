@@ -10,6 +10,7 @@ import { fetchPromotion } from '@/types/fetchData';
 import { ColumnsType } from 'antd/lib/table';
 import TagStatus from '../UI/TagStatus';
 import DeleteBtn from '../UI/btn/DeleteBtn';
+import HeadNameComponent from '../UI/HeadNameComponent';
 
 
 const PromotionTable = () => {
@@ -106,6 +107,7 @@ const PromotionTable = () => {
 
     return (
         <div>
+            <HeadNameComponent name="จัดการข้อมูลหัวข้อโปรโมชั่น" />
             <div className="flex items-center justify-between">
                 <PromotionFrom onClick={handleRefresh} statusAction="add" title="เพิ่มข้อมูลหัวข้อโปรโมชั่น" />
                 <RefreshBtn label="Refresh Data" onClick={handleRefresh} />

@@ -453,3 +453,8 @@ export interface dataVerifyOrderBill {
   status: "process" | "succeed" | "cancel" | "making";
 }
 
+export interface dateFetchReport {
+  startDate: string;
+  endDate: string;
+}
+

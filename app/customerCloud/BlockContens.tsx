@@ -16,11 +16,13 @@ import PromotionItemTable from '../components/Table/PromotionItemTable';
 import OrderBillDetail from '../components/OrderBillDetail';
 import { useAppDispatch, useAppSelector } from '../store/store';
 import { setShowOrderBillMaking, setShowOrderBillProcess } from '../store/slices/showSlice';
+import RpSummaryOfBranch from '../components/report/RpSummaryOfBranch';
+import RpExpensesOfBranch from '../components/report/RpExpensesOfBranch';
 
 type Props = { idComponents: React.Key | null; };
 
 const BlockContens = (props: Props) => {
-  
+
   const dispatch = useAppDispatch();
   const { showOrderBillMaking, showOrderBillProcess } = useAppSelector((state) => state?.showSlice);
   const [component, setComponent] = useState<ReactNode | null>(null);
@@ -66,6 +68,12 @@ const BlockContens = (props: Props) => {
         case '16':
           setComponent(<PromotionItemTable />);
           break;
+        case '17':
+          setComponent(<RpSummaryOfBranch />);
+          break;
+        case '18':
+          setComponent(<RpExpensesOfBranch />);
+          break;
         // เพิ่ม case ตามต้องการ
         default:
           setComponent(null);
@@ -73,14 +81,14 @@ const BlockContens = (props: Props) => {
     };
     loadComponents();
   }, [props.idComponents]);
- 
+
   return (
     <section className="w-full">
       <div className="flex justify-center m-3">
         <HeadTitle />
       </div>
       <div className="flex flex-col justify-center m-3 bg-white shadow-md rounded-lg">
-        {showOrderBillProcess ? <OrderBillDetail title="แสดงออเดอร์ประจำวัน"/> : showOrderBillMaking ? <OrderBillDetail title="แสดงออเดอร์กำลังเตรียมประจำวัน"/> : component}
+        {showOrderBillProcess ? <OrderBillDetail title="แสดงออเดอร์ประจำวัน" /> : showOrderBillMaking ? <OrderBillDetail title="แสดงออเดอร์กำลังเตรียมประจำวัน" /> : component}
       </div>
     </section>
   );

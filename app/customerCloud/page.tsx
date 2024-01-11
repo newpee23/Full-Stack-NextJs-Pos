@@ -7,8 +7,10 @@ import axios from "axios";
 import MenuPage from "../components/MenuPage";
 import BlockContens from "./BlockContens";
 import Navbar from "../components/Navbar";
-import "@/app/customerCloud/page.css"
 import FloatBtn from "../components/UI/btn/FloatBtn";
+import "@/app/customerCloud/page.css"
+import "@/app/components/menuPage.css";
+import "@/app/components/Table/table.css";
 
 const HomeCloudPage = () => {
   const { data: session, status } = useSession();
@@ -75,7 +77,7 @@ const HomeCloudPage = () => {
       <main>
         <div className="flex mt-14 bg-slate-50">
           <MenuPage onMenuClick={handleMenuClick} />
-          <div className="w-full min-w-[400px]">
+          <div className="w-full min-w-[400px] bg-slate-50">
             {selectedComponent ? (
               // แสดง component ที่ถูกเลือก
               <BlockContens idComponents={selectedComponent} />

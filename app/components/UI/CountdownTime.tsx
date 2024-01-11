@@ -1,7 +1,6 @@
-import React from 'react'
-import type { CountdownProps } from 'antd';
-import { Col, Row, Statistic } from 'antd';
-import Countdown from 'antd/lib/statistic/Countdown';
+import React, { useEffect } from "react"
+import type { CountdownProps } from "antd";
+import Countdown from "antd/lib/statistic/Countdown";
 
 type Props = {
   startOrder: Date;
@@ -13,15 +12,27 @@ const CountdownTime = ({ startOrder , time , setBeOver }: Props) => {
 
   // ปรับเวลานับถอยหลังให้นับจากเวลาปัจจุบัน
   const now = new Date(startOrder).getTime();
-
+  const dateNow = new Date().getTime();
   const deadline = now + time * 60 * 1000;
+  const deadlineNow = dateNow + 0 * 60 * 1000;
 
-  const onFinish: CountdownProps['onFinish'] = () => {
+  const onFinish: CountdownProps["onFinish"] = () => {
     if(setBeOver){
       setBeOver(true);
     }
   };
-  
+
+  useEffect(() => {
+    const checkDateState = () => {
+      if(deadlineNow > deadline){
+        if(setBeOver){
+          setBeOver(true);
+        }
+      }
+    }
+
+    return () => checkDateState();
+}, []);
 
   return (
     <div className="w-full flex justify-center">

@@ -60,6 +60,40 @@ export const getDate = (timestamp: string): string => {
 
   const originalFormattedDate = `${day}/${month}/${year}`;
   const newFormattedDate = `${newDay}/${newMonth}/${newYear}`;
-  
+
   return originalFormattedDate;
 }
+
+export const getDateQuery = (timestamp: string): string => {
+
+  // Parse the timestamp and get the date
+  const dateObject = new Date(timestamp);
+  const day = String(dateObject.getUTCDate()).padStart(2, '0');
+  const month = String(dateObject.getUTCMonth() + 1).padStart(2, '0'); // Month is 0-indexed
+  const year = dateObject.getUTCFullYear();
+
+  // Add 7 hours to the date
+  const newDateObject = new Date(dateObject.getTime() + 7 * 60 * 60 * 1000);
+  const newDay = String(newDateObject.getUTCDate()).padStart(2, '0');
+  const newMonth = String(newDateObject.getUTCMonth() + 1).padStart(2, '0');
+  const newYear = newDateObject.getUTCFullYear();
+
+  const originalFormattedDate = `${year}-${month}-${day}`;
+  const newFormattedDate = `${newYear}-${newMonth}-${newDay}`;
+
+  return originalFormattedDate;
+}
+
+export const historyStatus = (status: "process" | "succeed" | "cancel" | "making"): "รอรับออเดอร์" | "สำเร็จ" | "กำลังจัดเตรียม" | "ยกเลิก" => {
+  switch (status) {
+    case "process":
+      return "รอรับออเดอร์"
+    case "succeed":
+      return "สำเร็จ"
+    case "making":
+      return "กำลังจัดเตรียม"
+    default:
+      return "ยกเลิก"
+  }
+};
+
