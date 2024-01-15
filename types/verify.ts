@@ -1,3 +1,5 @@
+import { enumStatus } from "@prisma/client";
+
 export interface tokenType {
   id: string;
   username: string;
@@ -168,4 +170,26 @@ export interface dataVerifyTransaction {
   expiration: number;
   branchId: number;
   employeeId: number;
+}
+
+export interface dataVerifyRpSummaryOfBranch {
+  branchRpSummaryOfBranchForm: [number];
+  rangeRpSummaryOfBranchForm: [Date, Date];
+}
+
+export interface getRpSummaryOfBranchType {
+  id: string;
+  tableId: string;
+  receipt: string;
+  startOrder: Date;
+  endOrder: Date;
+  peoples: number;
+  totalPrice: number;
+  branchId: number;
+  employeeId: number;
+  tokenOrder: string | null;
+  status: enumStatus;
+  branch: {
+    name: string;
+  }
 }

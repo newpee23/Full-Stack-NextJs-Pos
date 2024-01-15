@@ -61,6 +61,9 @@ const OrderBillDetail = ({ title }: Props) => {
       if (status === "succeed") {
         str = "เสิร์ฟออเดอร์";
       }
+      if (status === "making") {
+        str = "รับออเดอร์";
+      }
       if (status === "cancel") {
         str = "ยกเลิกออเดอร์";
       }

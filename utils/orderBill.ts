@@ -96,6 +96,39 @@ export const setDataTotalOrderBill = async (data: orderBillTotal[]): Promise<num
     }
 }
 
+export const setDataTotalOrderBillStatusSucceed = async (data: orderBillTotal[]): Promise<number | null> => {
+    try {
+        let totalBill = 0;
+        for (const orderBill of data) {
+            for (const item of orderBill.ItemTransactions) {
+                if (item.productId) {
+                    const productPrice = await fetchProductById(item.productId);
+                    if (productPrice) {
+                        if(orderBill.status === "succeed"){
+                            totalBill += (item.qty * productPrice.price);
+                        }
+                    }
+                }
+                if (item.promotionId) {
+                    const promotionPrice = await fetchPromotionById(item.promotionId);
+                    if (promotionPrice) {
+                        if(orderBill.status === "succeed"){
+                            totalBill += (item.qty * promotionPrice.promotionalPrice);
+                        }
+                    }
+                }
+            }
+        }
+
+        return totalBill;
+    } catch (error) {
+        console.error('Error updating setDataOrderBill:', error);
+        return null;
+    } finally {
+        await prisma.$disconnect();
+    }
+}
+
 export const setDataDetailOrderBill = async (data: orderBillTotal[]): Promise<orderBillTotalType[] | null> => {
     try {
         const totalItem = (data.length + 1);

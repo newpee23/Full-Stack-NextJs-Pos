@@ -19,7 +19,6 @@ const key = 'loadingMessageKey';
 
 const SignIn = () => {
 
-  const { data: session } = useSession();
   const router = useRouter();
   const [messageApi, contextHolder] = message.useMessage();
   const [isLogin , setIsLogin] = useState<boolean>(false);

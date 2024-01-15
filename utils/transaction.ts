@@ -365,12 +365,13 @@ export const insertTransaction = async (body: dataVerifyTransaction): Promise<fe
     }
 };
 
-export const closeDataTransaction = async (id: string): Promise<fetchTransaction | null> => {
+export const closeDataTransaction = async (id: string, totalPrice: number): Promise<fetchTransaction | null> => {
     try {
 
         const transaction = await prisma.transaction.update({
             where: { id },
             data: {
+                totalPrice: totalPrice,
                 status: "InActive"
             },
         });

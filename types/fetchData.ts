@@ -454,7 +454,25 @@ export interface dataVerifyOrderBill {
 }
 
 export interface dateFetchReport {
+  branchRpSummaryOfBranchForm: [number];
+  rangeRpSummaryOfBranchForm: {
+    startDate: string;
+    endDate: string;
+  }
+}
+
+export interface fetchRpSummaryOfBranchType {
+  branch: string;
   startDate: string;
   endDate: string;
+  resultRpSummaryOfBranch: resultRpSummaryOfBranch[]
+}
+
+export interface resultRpSummaryOfBranch {
+  index: number;
+  branchId: number;
+  branchName: string;
+  toalPeoples: number;
+  totalPrice: number;
 }
 

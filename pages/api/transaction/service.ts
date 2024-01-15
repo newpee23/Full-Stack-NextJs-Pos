@@ -4,7 +4,7 @@ import { getBranchById } from "@/utils/branch";
 import { getCompanyById } from "@/utils/company";
 import { getEmployeeById } from "@/utils/employee";
 import { insertItemTransactionArray } from "@/utils/itemTransaction";
-import { fectOrderBillByTransaction, fetchDataOrderBillByTransactionId, insertOrderBill, setDataDetailOrderBill, setDataTotalOrderBill } from "@/utils/orderBill";
+import { fectOrderBillByTransaction, fetchDataOrderBillByTransactionId, insertOrderBill, setDataDetailOrderBill, setDataTotalOrderBill, setDataTotalOrderBillStatusSucceed } from "@/utils/orderBill";
 import { fetchProductByCompanyId } from "@/utils/product";
 import { checkOrderArrayProductId, checkOrderArrayPromotionId, closeDataTransaction, createTokenTransaction, fetchDataFrontDetailByTransactionId, fetchTransactionAll, fetchTransactionByBranchId, fetchTransactionByCompanyId, fetchTransactionById, fetchTransactionByTableId, insertTransaction, updateTokenOrderTransaction, verifyOrderBillBody, verifyTransactionBody } from "@/utils/transaction";
 import { NextApiResponse } from "next";
@@ -33,14 +33,20 @@ export const handleAddTransaction = async (body: dataVerifyTransaction, res: Nex
 }
 
 export const handleCloseTransaction = async (id: string, res: NextApiResponse) => {
+    // VerifyUnitData
     if (!id) return res.status(404).json({ message: [{ message: "Please specify transactionId." }], transactionItem: null, status: false });
     const transaction = await fetchTransactionByTableId(id);
     if (!transaction) return res.status(404).json({ message: `No transaction found with Id : ${id}`, transactionItem: null, status: false });
     if (!transaction.transactionOrder?.id) return res.status(404).json({ message: `No transactionOrder found with Id : ${id}`, transactionItem: null, status: false });
-    const closeTransaction = await closeDataTransaction(transaction.transactionOrder?.id);
+    // sum totalBill
+    const transactionOrder = await fetchDataOrderBillByTransactionId(transaction.transactionOrder.id);
+    if(!transactionOrder)  return res.status(404).json({ message: "An error occurred transactionOrder data.", transactionItem: null, status: false });
+    const totalPrice = await setDataTotalOrderBillStatusSucceed(transactionOrder);
+    // closeTransaction
+    const closeTransaction = await closeDataTransaction(transaction.transactionOrder?.id, totalPrice ? totalPrice :0);
     if (!closeTransaction) return res.status(404).json({ message: "An error occurred deleting data.", transactionItem: null, status: false });
 
-    return res.status(200).json({ message: "Successfully deleted data", transactionItem: closeTransaction, status: true });
+    return res.status(200).json({ message: "Successfully deleted data", transactionItem: null, status: true });
 }
 
 export const handleGetTransactionByBranchId = async (res: NextApiResponse, branchId: number) => {

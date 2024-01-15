@@ -1,5 +1,5 @@
 import { getCompanyById } from "@/utils/company";
-import { fetchOptionAddEmployee, fetchOptionExpensesItem, fetchOptionProduct, fetchOptionPromotionItem, fetchOptionTables } from "@/utils/optionSelect";
+import { fetchOptionAddEmployee, fetchOptionBranch, fetchOptionExpensesItem, fetchOptionProduct, fetchOptionPromotionItem, fetchOptionTables } from "@/utils/optionSelect";
 import { NextApiResponse } from "next";
 
 export const handleGetOptionAddEmployee = async (res: NextApiResponse, companyId: number) => {
@@ -35,4 +35,12 @@ export const handleGetOptionPromotionItem  = async (res: NextApiResponse, compan
     if (!checkCompanyId) return res.status(404).json({ message: `ไม่พบข้อมูลบริษัทจากรหัส : ${companyId}`, optionPromotionItem: null, status: false });
     const option = await fetchOptionPromotionItem(companyId);
     return res.status(200).json({ message: "Options found", optionPromotionItem: option, status: true });
+}
+
+export const handleGetOptionBranch  = async (res: NextApiResponse, companyId: number) => {
+    const checkCompanyId = await getCompanyById(companyId);
+    if (!checkCompanyId) return res.status(404).json({ message: `ไม่พบข้อมูลบริษัทจากรหัส : ${companyId}`, optionPromotionItem: null, status: false });
+    const option = await fetchOptionBranch(companyId);
+
+    return res.status(200).json({ message: "Options found", optionBranchItem: option, status: true });
 }

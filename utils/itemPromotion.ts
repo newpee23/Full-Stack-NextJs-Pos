@@ -62,7 +62,7 @@ export const checkArrayPdIdInPromotionId = async (data: dataVerifyItemPromotion[
     for (let index = 0; index < data.length; index++) {
         const item = data[index];
         const checkProductId = await fetchProductInItemPromotion(item.productId, item.promotionId);
-        if (checkProductId && checkProductId?.length > 0) verifyStatus.push(pushData(`พบข้อมล : สินค้า แถวที่ ${index + 1} ถูกใช้งานในโปรโมชั่นนี้แล้ว`));
+        if (checkProductId && checkProductId?.length > 0) verifyStatus.push(pushData(`พบข้อมูล : สินค้า แถวที่ ${index + 1} ถูกใช้งานในโปรโมชั่นนี้แล้ว`));
     }
 
     return verifyStatus;

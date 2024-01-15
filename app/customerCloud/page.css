@@ -21,3 +21,7 @@ button.ant-switch.css-dev-only-do-not-override-1adbn6x.ant-switch-checked{
 button.ant-switch.css-dev-only-do-not-override-1adbn6x{
     background: rgba(0, 0, 0, 0.45) !important;
 }
+
+.ant-select-selector{
+    min-width: 150px;
+}

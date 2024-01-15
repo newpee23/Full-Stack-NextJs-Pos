@@ -57,3 +57,10 @@ export const convertStatusToOption = (status: string): { value: string, label: s
     return { value: status, label };
 }
 
+export const rangeConfig = {
+    rules: [{ type: "array" as const, required: true, message: "กรุณาเลือกช่วงเวลา" }],
+};
+
+export const branchConfig = {
+    rules: [{ type: "array" as const, required: true, message: "กรุณาเลือกสาขา" }],
+};

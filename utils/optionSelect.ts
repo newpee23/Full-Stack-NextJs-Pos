@@ -61,6 +61,26 @@ const fetchProducts = async (companyId: number): Promise<optionSelect[]> => {
     }
 };
 
+const fetchBranchs = async (companyId: number): Promise<optionSelect[]> => {
+    try {
+        const branchs = await prisma.branch.findMany({
+            where: {
+                companyId: companyId,
+                status: "Active"
+            },
+            orderBy: { id: 'asc' },
+        });
+
+        return branchs.map((item) => ({
+            value: item.id,
+            label: item.name,
+        }));
+    } catch (error) {
+        console.error('Error fetching branchs:', error);
+        return [];
+    }
+};
+
 const fetchPromotions = async (companyId: number): Promise<optionSelect[]> => {
     try {
         const promotions = await prisma.promotion.findMany({
@@ -203,6 +223,19 @@ export const fetchOptionPromotionItem = async (companyId: number): Promise<fetch
     } catch (error) {
         console.error('Error fetching optionAddTables:', error);
         return { product: [], promotion: [] };
+    } finally {
+        await prisma.$disconnect();
+    }
+};
+
+export const fetchOptionBranch = async (companyId: number): Promise<optionSelect[]> => {
+    try {
+        const branchs = await fetchBranchs(companyId);
+
+        return branchs;
+    } catch (error) {
+        console.error('Error fetching optionAddTables:', error);
+        return [];
     } finally {
         await prisma.$disconnect();
     }
