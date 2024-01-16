@@ -78,7 +78,7 @@ const RpSummaryOfBranch = () => {
       {loading ?
         <SkeletonTable />
         : searchData === null ?
-          <ErrPage />
+          <EmptyNodata />
           :
           <div>
             <div className="mt-5 text-center p-4">

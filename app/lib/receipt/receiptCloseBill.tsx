@@ -92,13 +92,13 @@ export const receiptCloseBill = async ({ orderBill, detailReceipt }: Props) => {
     addTextXPositionsArr(["รายการ", "จำนวนเงิน"], xPositionsArr, 57, 14);
     orderBill.orderBillData.sort((a, b) => a.id - b.id);
     orderBill.orderBillData.map(item => {
-        addText(`รายละเอียดบิลที่ ${item.index} ${item.status === "cancel" && "ยกเลิก"}`, yPositionsList, 13, 4);
+        addText(`รายละเอียดบิลที่ ${item.index} ${item.status === "cancel" ? "ยกเลิก" : ""}`, yPositionsList, 13, 4);
         yPositionsList += 5;
         item.ItemTransactions.map((detail, index) => {
             addText(`${(index+1)}.${detail.productName ? detail.productName : detail.promotionName}`, yPositionsList, 12, 6);
             yPositionsList += 5;
             addText(`จำนวน ${detail.qty} * ${detail.price} ${detail.unitName}`, yPositionsList, 13, 8);
-            addText(`${item.status === "cancel" ? detail.qty * detail.price : 0}`, yPositionsList, 12, 65);
+            addText(`${item.status !== "cancel" ? detail.qty * detail.price : 0}`, yPositionsList, 12, 65);
             yPositionsList += 5;
         })
     });

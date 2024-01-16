@@ -1,7 +1,6 @@
 
 import { exportRpSummaryOfBranchTableToExcel } from "@/app/lib/excel/rpSummaryOfBranchTableToExcel";
 import { resultRpSummaryOfBranch } from "@/types/fetchData"
-import { Button } from "antd";
 import Table, { ColumnsType } from "antd/lib/table";
 import React from "react"
 import ExportExcelBtn from "../../UI/btn/ExportExcelBtn";
@@ -59,7 +58,12 @@ const RpSummaryOfBranchTable = ({ data, endDate, startDate }: Props) => {
                 <ExportExcelBtn onClick={() => exportRpSummaryOfBranchTableToExcel(data, endDate, startDate)}/>
             </div>
             <div className="overflow-x-auto m-3">
-                <Table columns={columnsRpSummaryOfBranchTable} dataSource={data || []} bordered />
+                {/* <Table columns={columnsRpSummaryOfBranchTable} dataSource={data || []} bordered /> */}
+                <Table
+                    columns={columnsRpSummaryOfBranchTable}
+                    dataSource={data.map((item) => ({ ...item, key: item.index }))} // Replace 'uniqueIdentifier' with the actual unique identifier property
+                    bordered
+                />
             </div>
         </div>
     )

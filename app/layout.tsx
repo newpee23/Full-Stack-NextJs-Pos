@@ -7,7 +7,9 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Provider } from 'react-redux';
 import store from "./store/store";
-
+// Import Css
+import "@/app/auth/auth.css"
+import LoadingPage from './components/LoadingPage';
 const queryClient = new QueryClient();
 
 export default function RootLayout({ children, }: { children: React.ReactNode; }) {
@@ -19,7 +21,9 @@ export default function RootLayout({ children, }: { children: React.ReactNode; }
           <SessionProvider>
             <Provider store={store}>
               <QueryClientProvider client={queryClient}>
-                {children}
+                <LoadingPage>
+                  {children}
+                </LoadingPage>
                 <ReactQueryDevtools />
               </QueryClientProvider>
             </Provider>

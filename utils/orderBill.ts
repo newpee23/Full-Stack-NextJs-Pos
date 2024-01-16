@@ -184,6 +184,12 @@ export const setDataDetailOrderBill = async (data: orderBillTotal[]): Promise<or
 
 export const fectOrderBillByTransaction = async (branchId: number, status: "process" | "making"): Promise<orderBills[] | null> => {
     try {
+     
+        const today = new Date(); 
+        today.setHours(0, 0, 0, 0);
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1); 
+    
         const transactions = await prisma.transaction.findMany({
             select: {
                 id: true,
@@ -200,7 +206,8 @@ export const fectOrderBillByTransaction = async (branchId: number, status: "proc
             where: {
                 branchId: branchId,
                 startOrder: {
-                    gte: new Date(getYearNow(), getMonthNow() - 1, 1), // Start of the current month
+                    gte: today,
+                    lte: tomorrow,
                 },
                 status: "Active",
                 orderBills: {
