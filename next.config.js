@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false,
   env: {
     NEXTAUTH_SECRET: "NEXTAUTH_SECRET_DEV",
     SECRET_KEY: "SECRET_KEY_JWT ",

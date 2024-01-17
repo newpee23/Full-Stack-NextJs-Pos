@@ -35,7 +35,8 @@ export const insertDataItemExpenses = async (body: dataVerifyItemExpenses): Prom
                 orderDate: dateTimeIso(body.orderDate),
                 price: body.price,
                 expensesId: body.expensesId,
-                branchId: body.branchId
+                branchId: body.branchId,
+                status: "Active"
             },
         });
 

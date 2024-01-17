@@ -198,6 +198,7 @@ CREATE TABLE "ItemExpenses" (
     "orderDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "expensesId" INTEGER NOT NULL,
     "branchId" INTEGER NOT NULL,
+    "status" "enumStatus" NOT NULL DEFAULT 'Active',
 
     CONSTRAINT "ItemExpenses_pkey" PRIMARY KEY ("id")
 );

@@ -200,6 +200,7 @@ model ItemExpenses {
   expensesId Int
   branchs    Branch   @relation(fields: [branchId], references: [id])
   branchId   Int
+  status     enumStatus     @default(Active)
 }
 
 enum enumStatus {

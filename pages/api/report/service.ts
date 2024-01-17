@@ -1,6 +1,6 @@
-import { dateFetchReport } from "@/types/fetchData";
-import { getRpSummaryOfBranch, setDataRpSummaryOfBranch } from "@/utils/report/getReport";
-import { checkBranchArr, getBranchNameArr, verifyRpSummaryOfBranch } from "@/utils/report/verifyReport";
+import { dateFetchExpensesReport, dateFetchReport } from "@/types/fetchData";
+import { getRpExpensesItemsOfBranch, getRpSummaryOfBranch, setDataRpExpensesOfBranch, setDataRpSummaryOfBranch } from "@/utils/report/getReport";
+import { checkBranchArr, getBranchNameArr, verifyRpExpensesOfBranch, verifyRpSummaryOfBranch } from "@/utils/report/verifyReport";
 import { getDate } from "@/utils/utils";
 import { NextApiResponse } from "next";
 
@@ -37,5 +37,33 @@ export const handleGetRpSummaryOfBranch = async (res: NextApiResponse, body: dat
         resultRpSummaryOfBranch: dataTotalBranch,
     };
 
-    return res.status(200).json({ message: "Options found", resultRpSummaryOfBranch, status: true });
+    return res.status(200).json({ message: "Data found", resultRpSummaryOfBranch, status: true });
+}
+
+export const handleGetRpExpensesOfBranch = async (res: NextApiResponse, body: dateFetchExpensesReport) => {
+    // Verify report
+    const verifyReport = verifyRpExpensesOfBranch(body);
+    if (verifyReport.length > 0) return res.status(404).json({ message: verifyReport, resultRpExpensesOfBranch: null, status: false });
+    // Check branches
+    const branchs = await checkBranchArr(body.branchRpExpensesOfBranchForm);
+    if (branchs.length > 0) return res.status(404).json({ message: branchs, resultRpExpensesOfBranch: null, status: false });
+    // Get branch names
+    const branchName = await getBranchNameArr(body.branchRpExpensesOfBranchForm);
+    // Get ExpensesItem
+    const expensesItem = await getRpExpensesItemsOfBranch(body);
+    if (expensesItem.length === 0) {
+        return res.status(200).json({
+            message: [{ message: "ไม่พบข้อมูลยอดขายประจำช่วงเวลาที่ท่านเลือก" }],
+            resultRpExpensesOfBranch: {
+                branch: branchName,
+                startDate: getDate(body.rangeRpExpensesOfBranchForm.startDate),
+                endDate: getDate(body.rangeRpExpensesOfBranchForm.endDate),
+                resultRpExpensesOfBranch: [],
+            },
+            status: false,
+        });
+    }
+    // Set data
+    const dataRpExpensesOfBranch = setDataRpExpensesOfBranch(expensesItem);
+    return res.status(200).json({ message: "Data found", resultRpExpensesOfBranch: dataRpExpensesOfBranch, status: true });
 }

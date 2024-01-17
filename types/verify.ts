@@ -72,9 +72,11 @@ export interface dataVerifyProduct {
   cost: number;
   price: number;
   stock: number;
-  img?: {
-    file: File;
-  } | undefined;
+  img?:
+    | {
+        file: File;
+      }
+    | undefined;
   imageUrl?: string;
   unitId: number;
   productTypeId: number;
@@ -90,9 +92,11 @@ export interface dataVerifyPromotion {
   promotionalPrice: number;
   startDate: Date;
   endDate: Date;
-  img?: {
-    file: File;
-  } | undefined;
+  img?:
+    | {
+        file: File;
+      }
+    | undefined;
   imageUrl?: string;
   companyId: number;
   status: "Active" | "InActive";
@@ -190,6 +194,21 @@ export interface getRpSummaryOfBranchType {
   tokenOrder: string | null;
   status: enumStatus;
   branch: {
+    name: string;
+  };
+}
+
+export interface getRpExpensesOfBranchType {
+  id: number;
+  price: number;
+  orderDate: Date;
+  expensesId: number;
+  branchId: number;
+  status: enumStatus;
+  branchs: {
+    name: string;
+  }
+  expenses: {
     name: string;
   }
 }

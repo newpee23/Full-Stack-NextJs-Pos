@@ -1,3 +1,5 @@
+import { enumStatus } from "@prisma/client";
+
 export interface fetchCompany {
   id: number;
   name: string;
@@ -461,6 +463,14 @@ export interface dateFetchReport {
   }
 }
 
+export interface dateFetchExpensesReport {
+  branchRpExpensesOfBranchForm: [number];
+  rangeRpExpensesOfBranchForm: {
+    startDate: string;
+    endDate: string;
+  }
+}
+
 export interface fetchRpSummaryOfBranchType {
   branch: string;
   startDate: string;
@@ -475,4 +485,21 @@ export interface resultRpSummaryOfBranch {
   toalPeoples: number;
   totalPrice: number;
 }
+
+export interface resultRpExpensesOfBranch {
+  index: number;
+  id: number;
+  price: number;
+  orderDate: Date;
+  expensesId: number;
+  branchId: number;
+  status: enumStatus;
+  branchs: {
+    name: string;
+  }
+  expenses: {
+    name: string;
+  }
+}
+
 
