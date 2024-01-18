@@ -478,6 +478,13 @@ export interface fetchRpSummaryOfBranchType {
   resultRpSummaryOfBranch: resultRpSummaryOfBranch[]
 }
 
+export interface fetchRpExpensesOfBranchType {
+  branch: string;
+  startDate: string;
+  endDate: string;
+  resultRpExpensesOfBranch: resultRpExpensesOfBranch[]
+}
+
 export interface resultRpSummaryOfBranch {
   index: number;
   branchId: number;
@@ -496,10 +503,11 @@ export interface resultRpExpensesOfBranch {
   status: enumStatus;
   branchs: {
     name: string;
-  }
+  };
   expenses: {
     name: string;
-  }
+  };
+  orderShow: string;
 }
 
 

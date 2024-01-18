@@ -181,6 +181,11 @@ export interface dataVerifyRpSummaryOfBranch {
   rangeRpSummaryOfBranchForm: [Date, Date];
 }
 
+export interface dataVerifyRpExpensesOfBranch {
+  branchRpExpensesOfBranchForm: [number];
+  rangeRpExpensesOfBranchForm: [Date, Date];
+}
+
 export interface getRpSummaryOfBranchType {
   id: string;
   tableId: string;

@@ -31,6 +31,7 @@ export const handleGetRpSummaryOfBranch = async (res: NextApiResponse, body: dat
     // Set data for total branch
     const dataTotalBranch = setDataRpSummaryOfBranch(transactions);
     const resultRpSummaryOfBranch = {
+        message: [{ message: "พบข้อมูลช่วงเวลาที่ท่านเลือก" }],
         branch: branchName,
         startDate: getDate(body.rangeRpSummaryOfBranchForm.startDate),
         endDate: getDate(body.rangeRpSummaryOfBranchForm.endDate),
@@ -65,5 +66,15 @@ export const handleGetRpExpensesOfBranch = async (res: NextApiResponse, body: da
     }
     // Set data
     const dataRpExpensesOfBranch = setDataRpExpensesOfBranch(expensesItem);
-    return res.status(200).json({ message: "Data found", resultRpExpensesOfBranch: dataRpExpensesOfBranch, status: true });
+    const resultRpExpensesOfBranch ={
+        message: [{ message: "พบข้อมูลช่วงเวลาที่ท่านเลือก" }],
+        resultRpExpensesOfBranch: {
+            branch: branchName,
+            startDate: getDate(body.rangeRpExpensesOfBranchForm.startDate),
+            endDate: getDate(body.rangeRpExpensesOfBranchForm.endDate),
+            resultRpExpensesOfBranch: dataRpExpensesOfBranch,
+        },
+        status: false,
+    }
+    return res.status(200).json({ message: "Data found", resultRpExpensesOfBranch: resultRpExpensesOfBranch, status: true });
 }

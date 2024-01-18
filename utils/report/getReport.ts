@@ -1,6 +1,7 @@
 import { prisma } from "@/pages/lib/prismaDB";
 import { dateFetchExpensesReport, dateFetchReport, resultRpExpensesOfBranch, resultRpSummaryOfBranch,} from "@/types/fetchData";
 import { getRpExpensesOfBranchType, getRpSummaryOfBranchType,} from "@/types/verify";
+import { getDate, getTime7H } from "../utils";
 
 // rpSummaryOfBranch
 export const getRpSummaryOfBranch = async ( body: dateFetchReport): Promise<getRpSummaryOfBranchType[]> => {
@@ -106,6 +107,7 @@ export const setDataRpExpensesOfBranch = (data: getRpExpensesOfBranchType[]): re
         expenses: {
             name: item.expenses.name,
         },
+        orderShow: getDate(item.orderDate.toString()) + " " + getTime7H(item.orderDate.toString())
     }));
 
     return dataRpExpensesOfBranch;
