@@ -21,7 +21,7 @@ export const handleAddTransaction = async (body: dataVerifyTransaction, res: Nex
     if (!checkEmployee) return res.status(404).json({ message: { message: `ไม่พบข้อมูล checkEmployeeId` }, transactionItem: null, status: false });
     // Add Transaction
     const addTransaction = await insertTransaction(body);
-    if (!addTransaction) return res.status(404).json({ message: "An error occurred saving data.", transactionItem: null, status: false });
+    if (!addTransaction) return res.status(404).json({ message: "บันทึกข้อมูลไม่สำเร็จ", transactionItem: null, status: false });
     // Create Token
     const tokenOrder = await createTokenTransaction({ id: addTransaction.id, tableId: addTransaction.tableId });
     if (!tokenOrder) return res.status(404).json({ message: "An error occurred tokenOrder data.", transactionItem: null, status: false });
@@ -29,7 +29,7 @@ export const handleAddTransaction = async (body: dataVerifyTransaction, res: Nex
     const updateToken = await updateTokenOrderTransaction({ id: addTransaction.id, tokenOrder: tokenOrder });
     if (!updateToken) return res.status(404).json({ message: "An error occurred updateTokenOrder data.", transactionItem: null, status: false });
 
-    return res.status(200).json({ message: "Data saved successfully.", transactionItem: updateToken, status: true });
+    return res.status(200).json({ message: "บันทึกข้อมูลสำเร็จ", transactionItem: updateToken, status: true });
 }
 
 export const handleCloseTransaction = async (id: string, res: NextApiResponse) => {
@@ -103,7 +103,7 @@ export const handleAddOrderBill = async (body: myStateCartItem, res: NextApiResp
     if (checkPromotion.length > 0) return res.status(404).json({ message: checkPromotion, orderBill: null, status: false });
     // add orderBill
     const addOrderBill = await insertOrderBill(body);
-    if (!addOrderBill) return res.status(404).json({ message: [{ message: "An error occurred saving data." }], orderBill: null, status: false });
+    if (!addOrderBill) return res.status(404).json({ message: [{ message: "บันทึกข้อมูลไม่สำเร็จ" }], orderBill: null, status: false });
     // add productItemTransaction
     const addItemTransaction = await insertItemTransactionArray(body.itemCart, addOrderBill.id);
     if (addItemTransaction.length > 0) return res.status(404).json({ message: addItemTransaction, orderBill: null, status: false });

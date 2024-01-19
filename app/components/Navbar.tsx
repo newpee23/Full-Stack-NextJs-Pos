@@ -10,13 +10,15 @@ import { Badge } from "antd";
 import { fetchCustomerFrontData } from "@/types/fetchData";
 import ModalCart from "./UI/modal/ModalCart";
 import { useAppSelector } from "../store/store";
+import { useSession } from "next-auth/react";
 
 interface Props {
   orderDetail?: fetchCustomerFrontData;
 }
 
 const Navbar = ({ orderDetail }: Props) => {
-
+  
+  const { data: session } = useSession();
   const [isScrolling, setIsScrolling] = useState<boolean>(false);
   const [openCart, setOpenCart] = useState<boolean>(false);
   const { itemCart } = useAppSelector((state) => state?.cartSlice);
@@ -46,7 +48,7 @@ const Navbar = ({ orderDetail }: Props) => {
         </a>
 
         <div className="flex gap-4 items-center text-dark ml-auto md:ml-0">
-          {orderDetail &&
+          {orderDetail ?
             <>
               <div className="cursor-pointer relative" aria-label="Shopping Cart" onClick={() => setOpenCart(true)}>
                 <Badge count={itemCart.length} size="small">
@@ -55,6 +57,10 @@ const Navbar = ({ orderDetail }: Props) => {
               </div>
               <ModalCart openCart={openCart} setOpenCart={setOpenCart} orderDetail={orderDetail}/>
             </>
+          : 
+          <div>
+            <p>{session?.user.branch_name} ({session?.user.name} {session?.user.sub_name})</p>
+          </div>
           }
         </div>
       </div>

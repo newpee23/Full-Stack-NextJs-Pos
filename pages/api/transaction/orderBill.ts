@@ -1,3 +1,4 @@
+"use server";
 import { typeNumber } from "@/utils/utils";
 import { NextApiRequest, NextApiResponse } from "next";
 import authenticate from "../checkToken";

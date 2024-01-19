@@ -18,9 +18,9 @@ export const handleAddUnit = async (body: dataVerifyUnit, res: NextApiResponse) 
     
     // addUnit
     const addUnit = await insertUnit(body);
-    if (!addUnit) return res.status(404).json({ message: "An error occurred saving data.", unit: null, status: false });
+    if (!addUnit) return res.status(404).json({ message: "บันทึกข้อมูลไม่สำเร็จ", unit: null, status: false });
 
-    return res.status(200).json({ message: "Data saved successfully.", unit: addUnit, status: true });
+    return res.status(200).json({ message: "บันทึกข้อมูลสำเร็จ", unit: addUnit, status: true });
 }
 
 export const handleGetUnitById = async (res: NextApiResponse, id: number) => {
@@ -60,9 +60,9 @@ export const handleUpdateUnit = async (body: dataVerifyUnit, res: NextApiRespons
     if(!checkCompanyId) return res.status(404).json({ message: `No company information found from companyId : ${body.companyId}.`, unit: null, status: false });
     // updateUnit
     const updateUnit = await updateDataUnit(body, body.id);
-    if(!updateUnit) return res.status(404).json({ message: "An error occurred saving data.", unit: null, status: false });
+    if(!updateUnit) return res.status(404).json({ message: "บันทึกข้อมูลไม่สำเร็จ", unit: null, status: false });
 
-    return res.status(200).json({ message: "Data saved successfully.", unit: updateUnit, status: true });
+    return res.status(200).json({ message: "บันทึกข้อมูลสำเร็จ", unit: updateUnit, status: true });
 }
 
 export const handleDeleteUnit = async (res: NextApiResponse, id: number) => {

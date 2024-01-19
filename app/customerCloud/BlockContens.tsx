@@ -18,12 +18,15 @@ import { useAppDispatch, useAppSelector } from '../store/store';
 import { setShowOrderBillMaking, setShowOrderBillProcess } from '../store/slices/showSlice';
 import RpSummaryOfBranch from '../components/report/RpSummaryOfBranch';
 import RpExpensesOfBranch from '../components/report/RpExpensesOfBranch';
+import { useSession } from 'next-auth/react';
+import HomeAdminPage from '../components/HomeAdminPage';
 
 type Props = { idComponents: React.Key | null; };
 
 const BlockContens = (props: Props) => {
 
   const dispatch = useAppDispatch();
+  const { data: session } = useSession();
   const { showOrderBillMaking, showOrderBillProcess } = useAppSelector((state) => state?.showSlice);
   const [component, setComponent] = useState<ReactNode | null>(null);
 
@@ -33,6 +36,10 @@ const BlockContens = (props: Props) => {
       dispatch(setShowOrderBillMaking(false));
       switch (props.idComponents) {
         case '1':
+          if(session?.user.role === "admin"){
+            setComponent(<HomeAdminPage />);
+            break;
+          }
           setComponent(<HomePage />);
           break;
         case '2':
@@ -74,6 +81,15 @@ const BlockContens = (props: Props) => {
         case '18':
           setComponent(<RpExpensesOfBranch />);
           break;
+        case '19':
+          setComponent(<HomeAdminPage />);
+          break;
+        case '20':
+          setComponent(<RpExpensesOfBranch />);
+          break;
+        case '21':
+          setComponent(<RpExpensesOfBranch />);
+          break;
         // เพิ่ม case ตามต้องการ
         default:
           setComponent(null);
@@ -84,9 +100,11 @@ const BlockContens = (props: Props) => {
 
   return (
     <section className="w-full">
-      <div className="flex justify-center m-3">
-        <HeadTitle />
-      </div>
+      { session?.user.role !== "admin" && 
+        <div className="flex justify-center m-3">
+          <HeadTitle />
+        </div>  
+      }
       <div className="flex flex-col justify-center m-3 bg-white shadow-md rounded-lg">
         {showOrderBillProcess ? <OrderBillDetail title="แสดงออเดอร์ประจำวัน" /> : showOrderBillMaking ? <OrderBillDetail title="แสดงออเดอร์กำลังเตรียมประจำวัน" /> : component}
       </div>

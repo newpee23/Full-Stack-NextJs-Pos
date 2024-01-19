@@ -41,9 +41,9 @@ export const handleAddPosition = async (body: dataVerifyPosition, res: NextApiRe
     if (checkCompanyName.length > 0) return res.status(404).json({ message: checkCompanyName, position: null, status: false });
     // addPosition
     const addPosition = await insertPosition(body);
-    if (!addPosition) return res.status(404).json({ message: "An error occurred saving data.", position: null, status: false });
+    if (!addPosition) return res.status(404).json({ message: "บันทึกข้อมูลไม่สำเร็จ", position: null, status: false });
 
-    return res.status(200).json({ message: "Data saved successfully.", position: addPosition, status: true });
+    return res.status(200).json({ message: "บันทึกข้อมูลสำเร็จ", position: addPosition, status: true });
 }
 
 export const handleUpdatePosition = async (body: dataVerifyPosition, res: NextApiResponse) => {
@@ -60,8 +60,8 @@ export const handleUpdatePosition = async (body: dataVerifyPosition, res: NextAp
     if (checkCompanyName.length > 0) return res.status(404).json({ message: checkCompanyName, position: null, status: false });
     // updatePosition
     const position = await updatePosition(body.id, body);
-    if (!position) return res.status(404).json({ message: "An error occurred saving data.", position: null, status: false });
+    if (!position) return res.status(404).json({ message: "บันทึกข้อมูลไม่สำเร็จ", position: null, status: false });
 
-    return res.status(200).json({ message: "Data saved successfully.", position: position, status: true });
+    return res.status(200).json({ message: "บันทึกข้อมูลสำเร็จ", position: position, status: true });
 }
 

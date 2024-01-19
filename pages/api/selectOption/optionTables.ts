@@ -1,3 +1,4 @@
+"use server";
 import { NextApiRequest, NextApiResponse } from "next";
 import { typeNumber } from "@/utils/utils";
 import { handleGetOptionTables } from "./service";

@@ -13,5 +13,5 @@ export const handleUpdateOrderBillStatus = async (body: dataVerifyOrderBill, res
     const updateStatus = await updateOrderBillStatus(body.orderId, body.status);
     if (!updateStatus) return res.status(404).json({ message: [{ message: `เกิดข้อผิดพลาด: updateOrderBillStatus` }], orderBill: null, status: false });
 
-    return res.status(200).json({ message: [{ message: "Data saved successfully." }], orderBill: orderBill, status: true });
+    return res.status(200).json({ message: [{ message: "บันทึกข้อมูลสำเร็จ" }], orderBill: orderBill, status: true });
 }

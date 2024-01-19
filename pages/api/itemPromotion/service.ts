@@ -73,7 +73,7 @@ export const handleUpdateItemPromotion = async (body: dataVerifyIUpdatetemPromot
     const updateItemPromotion = await updateItemPromotionArr(body.itemPromotionData);
     if (updateItemPromotion.length > 0) return res.status(404).json({ message: updateItemPromotion, itemPromotion: null, status: false });
 
-    return res.status(200).json({ message: "Data saved successfully.", itemPromotion: [], status: true });
+    return res.status(200).json({ message: "บันทึกข้อมูลสำเร็จ", itemPromotion: [], status: true });
 }
 
 export const handleDeleteItemPromotion = async (res: NextApiResponse, id: number) => {

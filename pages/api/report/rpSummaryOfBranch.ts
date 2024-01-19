@@ -1,3 +1,4 @@
+"use server";
 import { NextApiRequest, NextApiResponse } from "next";
 import { handleGetRpSummaryOfBranch } from "./service";
 import { dateFetchReport } from "@/types/fetchData";

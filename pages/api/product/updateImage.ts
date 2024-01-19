@@ -1,3 +1,4 @@
+"use server";
 import { dataUpdateImg } from "@/types/verify";
 import { NextApiRequest, NextApiResponse } from "next";
 import { handleUpdateImage } from "./service";

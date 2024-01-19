@@ -7,8 +7,10 @@ declare module "next-auth" {
       id: string;
       role: string;
       name: string;
+      sub_name: string;
       company_id: number;
       branch_id: number;
+      branch_name: string;
       accessToken: string;
     };
  
@@ -18,8 +20,10 @@ declare module "next-auth" {
     id: string;
     role: string;
     name: string;
+    sub_name: string;
     company_id: number;
     branch_id: number;
+    branch_name: string;
     accessToken: string;
   }
 }

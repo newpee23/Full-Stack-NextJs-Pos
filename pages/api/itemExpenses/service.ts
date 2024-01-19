@@ -12,9 +12,9 @@ export const handleAddItemExpenses = async (body: dataVerifyItemExpenses, res: N
     if (!checkExpensesId) return res.status(404).json({ message: `No expenses found with expensesId : ${body.expensesId}`, itemExpenses: null, status: false });
     // addItemExpenses
     const addItemExpenses = await insertDataItemExpenses(body);
-    if (!addItemExpenses) return res.status(404).json({ message: "An error occurred saving data.", itemExpenses: null, status: false });
+    if (!addItemExpenses) return res.status(404).json({ message: "บันทึกข้อมูลไม่สำเร็จ", itemExpenses: null, status: false });
 
-    return res.status(200).json({ message: "Data saved successfully.", itemExpenses: addItemExpenses, status: true });
+    return res.status(200).json({ message: "บันทึกข้อมูลสำเร็จ", itemExpenses: addItemExpenses, status: true });
 }
 
 export const handleGetItemExpensesById = async (res: NextApiResponse, id: number) => {
@@ -51,9 +51,9 @@ export const handleUpdateItemExpenses = async (body: dataVerifyItemExpenses, res
     if (!checkExpensesId) return res.status(404).json({ message: `No expenses found with expensesId : ${body.expensesId}`, itemExpenses: null, status: false });
     // updateDataItemExpenses
     const updateItemExpenses = await updateDataItemExpenses(body, body.id);
-    if (!updateItemExpenses) return res.status(404).json({ message: "An error occurred saving data.", itemExpenses: null, status: false });
+    if (!updateItemExpenses) return res.status(404).json({ message: "บันทึกข้อมูลไม่สำเร็จ", itemExpenses: null, status: false });
 
-    return res.status(200).json({ message: "Data saved successfully.", itemExpenses: updateItemExpenses, status: true });
+    return res.status(200).json({ message: "บันทึกข้อมูลสำเร็จ", itemExpenses: updateItemExpenses, status: true });
 }
 
 export const handleDeleteItemExpenses = async (res: NextApiResponse, id: number) => {

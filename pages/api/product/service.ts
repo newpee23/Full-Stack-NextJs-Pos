@@ -23,9 +23,9 @@ export const handleAddProduct = async (body: dataVerifyProduct, res: NextApiResp
     if (checkName) return res.status(404).json({ message: `Found information name : ${body.name} has already been used in the system.`, product: null, status: false });
     // addProduct
     const addProduct = await insertAddProduct(body);
-    if (!addProduct) return res.status(404).json({ message: "An error occurred saving data.", product: null, status: false });
+    if (!addProduct) return res.status(404).json({ message: "บันทึกข้อมูลไม่สำเร็จ", product: null, status: false });
 
-    return res.status(200).json({ message: "Data saved successfully.", product: addProduct, status: true });
+    return res.status(200).json({ message: "บันทึกข้อมูลสำเร็จ", product: addProduct, status: true });
 }
 
 export const handleGetProductById = async (res: NextApiResponse, id: number) => {
@@ -68,9 +68,9 @@ export const handleUpdateProduct = async (body: dataVerifyProduct, res: NextApiR
     if (checkName) return res.status(404).json({ message: `Found information name : ${body.name} has already been used in the system.`, product: null, status: false });
     // updateProduct
     const updateProduct = await updateDataProduct(body, body.id);
-    if (!updateProduct) return res.status(404).json({ message: "An error occurred saving data.", product: null, status: false });
+    if (!updateProduct) return res.status(404).json({ message: "บันทึกข้อมูลไม่สำเร็จ", product: null, status: false });
 
-    return res.status(200).json({ message: "Data saved successfully.", product: updateProduct, status: true });
+    return res.status(200).json({ message: "บันทึกข้อมูลสำเร็จ", product: updateProduct, status: true });
 }
 
 export const handleDeleteProduct = async (res: NextApiResponse, id: number) => {
@@ -91,9 +91,9 @@ export const handleUpdateImage = async (body: dataUpdateImg, res: NextApiRespons
     if (!checkCompanyId) return res.status(404).json({ message: `No company found with companyId : ${body.companyId}`, updateImg: null, status: false });
     // updateImage
     const updateImage = await updateDataImage(body, body.pdId);
-    if (!updateImage) return res.status(404).json({ message: "An error occurred saving data.", updateImg: null, status: false });
+    if (!updateImage) return res.status(404).json({ message: "บันทึกข้อมูลไม่สำเร็จ", updateImg: null, status: false });
 
-    return res.status(200).json({ message: "Data saved successfully.", updateImg: updateImage, status: true });
+    return res.status(200).json({ message: "บันทึกข้อมูลสำเร็จ", updateImg: updateImage, status: true });
 }
 
 export const handleUpdateStatusSailProduct = async (body: {productId: number, sailStatus: boolean}, res: NextApiResponse) => {
@@ -105,7 +105,7 @@ export const handleUpdateStatusSailProduct = async (body: {productId: number, sa
     if(!checkProduct) return res.status(404).json({ message: [{message: `ไม่พบข้อมูล product จาก productId : ${body.productId}`}], statusSailProduct: null, status: false });
     // update sailStatusProduct
     const updateData = await updateStatusSailProduct(body.productId, body.sailStatus);
-    if(!updateData) return res.status(404).json({ message: [{message: `An error occurred saving data.`}], statusSailProduct: null, status: false });
+    if(!updateData) return res.status(404).json({ message: [{message: `บันทึกข้อมูลไม่สำเร็จ`}], statusSailProduct: null, status: false });
 
-    return res.status(200).json({ message: "Data saved successfully.", statusSailProduct: updateData, status: true });
+    return res.status(200).json({ message: "บันทึกข้อมูลสำเร็จ", statusSailProduct: updateData, status: true });
 }

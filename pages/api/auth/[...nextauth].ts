@@ -9,9 +9,11 @@ import jwt from "jsonwebtoken";
 interface UserLogin {
   id: string;
   name: string;
+  sub_name: string;
   role: string;
   company_id: number;
   branch_id: number;
+  branch_name: string;
   accessToken: string;
 }
 
@@ -34,6 +36,9 @@ export default NextAuth({
           where: {
             userName: username,
           },
+          include: {
+            branch: true
+          }
         });
 
         if (!user) {
@@ -59,9 +64,11 @@ export default NextAuth({
         const userLogin: UserLogin = {
           id: user.id.toString(),
           name: user.name,
+          sub_name: user.subname,
           role: user.role,
           company_id: user.companyId,
           branch_id: user.branchId,
+          branch_name: user.branch.name,
           accessToken: token,
         };
 

@@ -15,9 +15,9 @@ export const handleAddPromotion = async (body: dataVerifyPromotion, res: NextApi
     if (checkName) return res.status(404).json({ message: `Found information name : ${body.name} has already been used in the system.`, promotion: null, status: false });
     // addPromotion
     const addPromotion = await insertPromotion(body);
-    if (!addPromotion) return res.status(404).json({ message: "An error occurred saving data.", promotion: null, status: false });
+    if (!addPromotion) return res.status(404).json({ message: "บันทึกข้อมูลไม่สำเร็จ", promotion: null, status: false });
 
-    return res.status(200).json({ message: "Data saved successfully.", promotion: addPromotion, status: true });
+    return res.status(200).json({ message: "บันทึกข้อมูลสำเร็จ", promotion: addPromotion, status: true });
 }
 
 export const handleGetPromotionById = async (res: NextApiResponse, id: number) => {
@@ -57,9 +57,9 @@ export const handleUpdatePromotion = async (body: dataVerifyPromotion, res: Next
     if (checkName) return res.status(404).json({ message: `Found information name : ${body.name} has already been used in the system.`, promotion: null, status: false });
     // updatePromotion
     const updatePromotion = await updateDataPromotion(body, body.id);
-    if (!updatePromotion) return res.status(404).json({ message: "An error occurred saving data.", promotion: null, status: false });
+    if (!updatePromotion) return res.status(404).json({ message: "บันทึกข้อมูลไม่สำเร็จ", promotion: null, status: false });
 
-    return res.status(200).json({ message: "Data saved successfully.", promotion: updatePromotion, status: true });
+    return res.status(200).json({ message: "บันทึกข้อมูลสำเร็จ", promotion: updatePromotion, status: true });
 }
 
 export const handleDeletePromotion = async (res: NextApiResponse, id: number) => {
@@ -80,7 +80,7 @@ export const handleUpdateImage = async (body: dataUpdateImgPromotion, res: NextA
     if (!checkCompanyId) return res.status(404).json({ message: `No company found with companyId : ${body.companyId}`, updateImg: null, status: false });
     // updateImage
     const updateImage = await updateDataImagePromotion(body, body.promotionId);
-    if (!updateImage) return res.status(404).json({ message: "An error occurred saving data.", updateImg: null, status: false });
+    if (!updateImage) return res.status(404).json({ message: "บันทึกข้อมูลไม่สำเร็จ", updateImg: null, status: false });
     
-    return res.status(200).json({ message: "Data saved successfully.", updateImg: updateImage, status: true });
+    return res.status(200).json({ message: "บันทึกข้อมูลสำเร็จ", updateImg: updateImage, status: true });
 }

@@ -1,3 +1,4 @@
+"use server";
 import { typeNumber } from "@/utils/utils";
 import { NextApiRequest, NextApiResponse } from "next";
 import { handleAddTransaction, handleCloseTransaction, handleGetTransactionAll, handleGetTransactionByBranchId, handleGetTransactionByCompanyId, handleGetTransactionById } from "./service";

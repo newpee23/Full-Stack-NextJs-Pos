@@ -1,3 +1,4 @@
+"use server";
 import { NextApiRequest, NextApiResponse } from "next";
 import { authOrderTransaction } from "../checkToken";
 import { handleGetOrderTotalBill } from "./service";

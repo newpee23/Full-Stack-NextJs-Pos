@@ -1,3 +1,5 @@
+"use server";
+
 import { NextApiRequest, NextApiResponse } from "next";
 import authenticate from "../checkToken";
 import { dataVerifyBranch } from "@/types/verify";

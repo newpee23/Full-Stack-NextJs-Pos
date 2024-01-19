@@ -19,9 +19,9 @@ export const handleAddTable = async (body: dataVerifyTable, res: NextApiResponse
     if (checkName) return res.status(404).json({ message: `Found information name : ${body.name} has already been used in the system.`, tables: null, status: false });
     // add Tables
     const addTables = await insertTable(body);
-    if (!addTables) return res.status(404).json({ message: "An error occurred saving data.", tables: null, status: false });
+    if (!addTables) return res.status(404).json({ message: "บันทึกข้อมูลไม่สำเร็จ", tables: null, status: false });
 
-    return res.status(200).json({ message: "Data saved successfully.", tables: addTables, status: true });
+    return res.status(200).json({ message: "บันทึกข้อมูลสำเร็จ", tables: addTables, status: true });
 }
 
 export const handleGetTableById = async (res: NextApiResponse, id: string) => {
@@ -71,9 +71,9 @@ export const handleUpdateTable = async (body: dataVerifyTable, res: NextApiRespo
     if (checkName) return res.status(404).json({ message: [{message: `Found information name : ${body.name} has already been used in the system.`}], tables: null, status: false });
     // updateTables
     const updateTables = await updateDataTables(body, body.id);
-    if (!updateTables) return res.status(404).json({ message: [{message: "An error occurred saving data."}], tables: null, status: false });
+    if (!updateTables) return res.status(404).json({ message: [{message: "บันทึกข้อมูลไม่สำเร็จ"}], tables: null, status: false });
 
-    return res.status(200).json({ message: "Data saved successfully.", tables: updateTables, status: true });
+    return res.status(200).json({ message: "บันทึกข้อมูลสำเร็จ", tables: updateTables, status: true });
 }
 
 export const handleDeleteTable = async (res: NextApiResponse, id: string) => {

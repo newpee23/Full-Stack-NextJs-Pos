@@ -73,7 +73,7 @@ const TransactionTable = ({ segmentedShow }: Props) => {
       ) :
         data && data?.length > 0 ? (
           renderCardByTransaction(data)
-        ) : null}
+        ) : <EmptyNodata />}
     </div>
   )
 }

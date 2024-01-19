@@ -11,9 +11,9 @@ export const handleAddProductType = async (body: dataVerifyProductType, res: Nex
     if (checkProductTypeName.length > 0) return res.status(404).json({ message: checkProductTypeName, productType: null, status: false });
     // addProductType
     const addProductType = await insertaddProductType(body);
-    if (!addProductType) return res.status(404).json({ message: "An error occurred saving data.", productType: null, status: false });
+    if (!addProductType) return res.status(404).json({ message: "บันทึกข้อมูลไม่สำเร็จ", productType: null, status: false });
 
-    return res.status(200).json({ message: "Data saved successfully.", productType: addProductType, status: true });
+    return res.status(200).json({ message: "บันทึกข้อมูลสำเร็จ", productType: addProductType, status: true });
 }
 
 export const handleGetProductTypeById = async (res: NextApiResponse, id: number) => {
@@ -50,9 +50,9 @@ export const handleUpdateProductType = async (body: dataVerifyProductType, res: 
     if (checkProductTypeName.length > 0) return res.status(404).json({ message: checkProductTypeName, productType: null, status: false });
     // updateProductType
     const updateProductType = await updateDataProductType(body, body.id);
-    if (!updateProductType) return res.status(404).json({ message: "An error occurred saving data.", productType: null, status: false });
+    if (!updateProductType) return res.status(404).json({ message: "บันทึกข้อมูลไม่สำเร็จ", productType: null, status: false });
 
-    return res.status(200).json({ message: "Data saved successfully.", productType: updateProductType, status: true });
+    return res.status(200).json({ message: "บันทึกข้อมูลสำเร็จ", productType: updateProductType, status: true });
 }
 
 export const handleDeleteProductType = async (res: NextApiResponse, id: number) => {
