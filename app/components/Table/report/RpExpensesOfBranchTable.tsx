@@ -4,6 +4,7 @@ import ExportExcelBtn from '../../UI/btn/ExportExcelBtn';
 import { Table } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import TagStatus from '../../UI/TagStatus';
+import { exportRpExpensesOfBranchTableToExcel } from '@/app/lib/excel/rpExpensesOfBranchTableToExcel';
 
 type Props = {
     data: resultRpExpensesOfBranch[];
@@ -67,7 +68,7 @@ const RpExpensesOfBranchTable = ({ data, endDate, startDate }: Props) => {
     return (
         <div className="mt-5">
             <div className="w-full flex justify-end pr-3">
-                {/* <ExportExcelBtn onClick={() => exportRpExpensesOfBranchTableToExcel(data, endDate, startDate)}/> */}
+                <ExportExcelBtn onClick={() => exportRpExpensesOfBranchTableToExcel(data, endDate, startDate)}/> 
             </div>
             <div className="overflow-x-auto m-3">
                 {/* <Table columns={columnsRpExpensesOfBranchTable} dataSource={data || []} bordered /> */}
