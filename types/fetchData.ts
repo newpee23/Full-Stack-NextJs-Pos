@@ -1,6 +1,8 @@
 import { enumStatus } from "@prisma/client";
 
 export interface fetchCompany {
+  index: number;
+  key: string
   id: number;
   name: string;
   createdAt: Date;
@@ -8,7 +10,8 @@ export interface fetchCompany {
   tax: string;
   phone: string;
   email: string;
-  logo: string;
+  logo: string | null;
+  createdAtStr: string;
   status: "Active" | "InActive";
 }
 
@@ -509,5 +512,3 @@ export interface resultRpExpensesOfBranch {
   };
   orderShow: string;
 }
-
-

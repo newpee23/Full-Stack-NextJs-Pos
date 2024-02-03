@@ -78,7 +78,7 @@ const BranchTable = () => {
       align: "center",
     },
     {
-      title: "ที่อยู่บริษัท",
+      title: "ที่อยู่สาขา",
       dataIndex: "address",
       key: "address",
       className: "min-w-[250px]",

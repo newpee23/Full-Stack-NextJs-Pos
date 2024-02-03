@@ -1,6 +1,7 @@
 import { dataVerifyCompany, promiseDataVerify } from "@/types/verify";
 import { prisma } from "@/pages/lib/prismaDB";
 import { fetchCompany } from "@/types/fetchData";
+import { formatDate } from "./timeZone";
 
 const pushData = (message: string) => {
   return { message };
@@ -123,7 +124,13 @@ export const getAllCompany = async (): Promise<fetchCompany[] | null> => {
     const company = await prisma.company.findMany();
 
     if (!company) return null;
-    return company as fetchCompany[];
+    const companyWithKey: fetchCompany[] = company.map((item, index) => ({
+      ...item,
+      index: (index + 1),
+      key: item.id.toString(),
+      createdAtStr: formatDate(item.createdAt),
+    }));
+    return companyWithKey;
   } catch (error) {
     // Handle any errors here or log them
     console.error('Error fetching companies:', error);
