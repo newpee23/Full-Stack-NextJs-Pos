@@ -11,6 +11,7 @@ import ErrPage from "../ErrPage";
 import { Space, message } from "antd";
 import BranchFrom from "../ฺFrom/BranchFrom";
 import DeleteBtn from "../UI/btn/DeleteBtn";
+import CompanyFrom from "../ฺFrom/CompanyFrom";
 
 const CompanyTable = () => {
 
@@ -106,7 +107,7 @@ const CompanyTable = () => {
     <div>
       <HeadNameComponent name="จัดการข้อมูลบริษัท" />
       <div className="flex items-center justify-between">
-        <BranchFrom
+        <CompanyFrom
           onClick={handleRefresh}
           title="เพิ่มข้อมูลสาขา"
           statusAction="add"
