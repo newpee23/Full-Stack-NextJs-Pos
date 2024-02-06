@@ -6,7 +6,7 @@ type Props = {
     name: string;
     label: string;
     required: boolean;
-    type: "text" | "textArea" | "number" | "datePicker" | "float" | "hidden";
+    type: "text" | "textArea" | "number" | "datePicker" | "float" | "hidden" | "email";
 };
 
 const InputFrom: React.FC<Props> = ({ name, label, required, type }) => {
@@ -27,6 +27,23 @@ const InputFrom: React.FC<Props> = ({ name, label, required, type }) => {
                     ]}
                 >
                     <Input placeholder={`ระบุ${label}`} />
+                </Form.Item>
+            </Col>
+        );
+    }
+
+    if (type === "email") {
+        return (
+            <Col>
+                <Form.Item
+                    name={name}
+                    label={label}
+                    rules={[
+                        { required, message: `กรุณาระบุ${label}` },
+                        { validator: validateWhitespace },
+                    ]}
+                >
+                    <Input placeholder={`ระบุ${label}`} type='email'/>
                 </Form.Item>
             </Col>
         );

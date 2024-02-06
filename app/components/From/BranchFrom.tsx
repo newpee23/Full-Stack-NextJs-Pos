@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Col, DatePicker, Form, Input, message, Row, Select } from "antd";
+import { Form, message } from "antd";
 
-import { convertStatusToOption, optionStatus, parseDateStringToMoment, validateExpirationDate, validateWhitespace } from "./validate/validate";
+import { parseDateStringToMoment } from "./validate/validate";
 import SaveBtn from "../UI/btn/SaveBtn";
 import moment, { Moment } from "moment";
 

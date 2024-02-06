@@ -1,4 +1,4 @@
-import { useDataCompanyAll } from "@/app/api/company";
+import { useDataCompanyAll, useDeleteDataCompany } from "@/app/api/company";
 import { fetchCompany } from "@/types/fetchData";
 import Table, { ColumnsType } from "antd/lib/table";
 import { useSession } from "next-auth/react";
@@ -14,22 +14,45 @@ import DeleteBtn from "../UI/btn/DeleteBtn";
 import CompanyFrom from "../From/CompanyFrom";
 
 const CompanyTable = () => {
-
   const [messageApi, contextHolder] = message.useMessage();
   const { data: session } = useSession();
+  const deleteDataCompany = useDeleteDataCompany();
   const { data, isLoading, isError, refetch, remove } = useDataCompanyAll(
     session?.user.accessToken
   );
 
-  const showMessage = ({ status, text }: { status: string, text: string }) => {
-    if (status === 'success') { messageApi.success(text); }
-    else if (status === 'error') { messageApi.error(text); }
-    else if (status === 'warning') { messageApi.warning(text); }
+  const showMessage = ({ status, text }: { status: string; text: string }) => {
+    if (status === "success") {
+      messageApi.success(text);
+    } else if (status === "error") {
+      messageApi.error(text);
+    } else if (status === "warning") {
+      messageApi.warning(text);
+    }
   };
 
   const handleDeleteClick = async (id: string) => {
-    console.log(id);
-  }
+    try {
+      const token = session?.user.accessToken;
+      const branch = await deleteDataCompany.mutateAsync({ token, id });
+
+      if (!branch)
+        return showMessage({
+          status: "error",
+          text: "ไม่สามารถลบข้อมูลได้เนื่องจากมีการนำไปใช้งานแล้ว",
+        });
+      return showMessage({ status: "success", text: "ลบข้อมูลสำเร็จ" });
+    } catch (error) {
+      showMessage({
+        status: "error",
+        text: "ลบข้อมูลไม่สำเร็จ กรุณาลองอีกครั้ง",
+      });
+    } finally {
+      setTimeout(() => {
+        handleRefresh();
+      }, 1500);
+    }
+  };
 
   const handleRefresh = async () => {
     remove();
@@ -56,7 +79,7 @@ const CompanyTable = () => {
       },
     },
     {
-      title: "ชื่อสาขา",
+      title: "ชื่อบริษัท",
       dataIndex: "name",
       key: "name",
       className: "min-w-[230px]",
@@ -65,12 +88,6 @@ const CompanyTable = () => {
       title: "เบอร์โทรศัพท์",
       dataIndex: "phone",
       key: "phone",
-    },
-    {
-      title: "ที่อยู่บริษัท",
-      dataIndex: "address",
-      key: "address",
-      className: "min-w-[250px]",
     },
     {
       title: "วันที่สร้างข้อมูล",
@@ -96,8 +113,12 @@ const CompanyTable = () => {
       className: "text-center",
       render: (_, record) => (
         <Space size="middle">
-          {/* <BranchFrom onClick={handleRefresh} editData={record} title="แก้ไขข้อมูลสาขา" statusAction="update" /> */}
-          <DeleteBtn name={record.name} onClick={() => handleDeleteClick(record.key)} label="ลบข้อมูล" />
+          <CompanyFrom onClick={handleRefresh} editData={record} title="แก้ไขข้อมูลบริษัท" statusAction="update" />
+          <DeleteBtn
+            name={record.name}
+            onClick={() => handleDeleteClick(record.key)}
+            label="ลบข้อมูล"
+          />
         </Space>
       ),
     },
@@ -109,7 +130,7 @@ const CompanyTable = () => {
       <div className="flex items-center justify-between">
         <CompanyFrom
           onClick={handleRefresh}
-          title="เพิ่มข้อมูลสาขา"
+          title="เพิ่มข้อมูลบริษัท"
           statusAction="add"
         />
         <RefreshBtn label="Refresh Data" onClick={handleRefresh} />
@@ -119,9 +140,10 @@ const CompanyTable = () => {
           columns={columnsCompanys}
           dataSource={data || []}
           bordered
-          title={() => "ฐานข้อมูลสาขา"}
+          title={() => "ฐานข้อมูลบริษัท"}
         />
       </div>
+      {contextHolder}
     </div>
   );
 };
