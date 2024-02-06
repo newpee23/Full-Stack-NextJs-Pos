@@ -8,7 +8,7 @@ import { fetchEmployee } from '@/types/fetchData';
 import { ColumnsType } from 'antd/lib/table';
 import TagStatus from '../UI/TagStatus';
 import RefreshBtn from '../UI/btn/RefreshBtn';
-import EmployeeFrom from '../ฺFrom/EmployeeFrom';
+import EmployeeFrom from '../From/EmployeeFrom';
 import DeleteBtn from '../UI/btn/DeleteBtn';
 import HeadNameComponent from '../UI/HeadNameComponent';
 

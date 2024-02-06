@@ -5,7 +5,7 @@ import SpinDiv from "../loading/SpinDiv";
 import InputFrom from "../InputFrom";
 import StatusFrom from "../select/StatusFrom";
 import SaveBtn from "../btn/SaveBtn";
-import { promotionItem } from "../../ฺFrom/PromotionItemFrom";
+import { promotionItem } from "../../From/PromotionItemFrom";
 import { useAddDataItemPromotion, useUpdateDataItemPromotion } from "@/app/api/promotionItem";
 import { useAppDispatch } from "@/app/store/store";
 import { setLoading } from "@/app/store/slices/loadingSlice";

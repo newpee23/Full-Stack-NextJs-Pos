@@ -2,7 +2,7 @@ import { Space, Table, message } from 'antd';
 import { useSession } from 'next-auth/react';
 import React from 'react'
 import RefreshBtn from '../UI/btn/RefreshBtn';
-import PromotionItemFrom from '../ฺFrom/PromotionItemFrom';
+import PromotionItemFrom from '../From/PromotionItemFrom';
 import { useDataItemPromotion } from '@/app/api/promotionItem';
 import SkeletonTable from '../UI/loading/SkeletonTable';
 import ErrPage from '../ErrPage';

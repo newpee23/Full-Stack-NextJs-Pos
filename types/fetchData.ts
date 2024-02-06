@@ -15,6 +15,19 @@ export interface fetchCompany {
   status: "Active" | "InActive";
 }
 
+export interface fetchsCompany {
+  id: number;
+  name: string;
+  createdAt: Date;
+  address: string;
+  tax: string;
+  phone: string;
+  email: string;
+  logo: string | null;
+  createdAtStr: string;
+  status: "Active" | "InActive";
+}
+
 export interface fetchBranch {
   key: string;
   id: number;

@@ -1,6 +1,6 @@
 import React from 'react'
 import RefreshBtn from '../UI/btn/RefreshBtn';
-import PromotionFrom from '../ฺFrom/PromotionFrom';
+import PromotionFrom from '../From/PromotionFrom';
 import { useSession } from 'next-auth/react';
 import { Space, Table, message } from 'antd';
 import { useDataPromotion, useDeleteDataPromotion } from '@/app/api/promotion';

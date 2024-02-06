@@ -1,6 +1,6 @@
 import { Col, DatePicker, Form, Input, InputNumber } from 'antd';
 import React from 'react';
-import { validateExpirationDate, validateWhitespace } from '../ฺFrom/validate/validate';
+import { validateExpirationDate, validateWhitespace } from '../From/validate/validate';
 
 type Props = {
     name: string;

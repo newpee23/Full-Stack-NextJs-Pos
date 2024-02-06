@@ -9,9 +9,9 @@ import RefreshBtn from "../UI/btn/RefreshBtn";
 import SkeletonTable from "../UI/loading/SkeletonTable";
 import ErrPage from "../ErrPage";
 import { Space, message } from "antd";
-import BranchFrom from "../ฺFrom/BranchFrom";
+import BranchFrom from "../From/BranchFrom";
 import DeleteBtn from "../UI/btn/DeleteBtn";
-import CompanyFrom from "../ฺFrom/CompanyFrom";
+import CompanyFrom from "../From/CompanyFrom";
 
 const CompanyTable = () => {
 

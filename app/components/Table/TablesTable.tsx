@@ -7,7 +7,7 @@ import ErrPage from '../ErrPage';
 import RefreshBtn from '../UI/btn/RefreshBtn';
 import { ColumnsType } from 'antd/lib/table';
 import TagStatus from '../UI/TagStatus';
-import TablesFrom from '../ฺFrom/TablesFrom';
+import TablesFrom from '../From/TablesFrom';
 import DeleteBtn from '../UI/btn/DeleteBtn';
 import { fetchTable } from '@/types/fetchData';
 import HeadNameComponent from '../UI/HeadNameComponent';

@@ -4,7 +4,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { Form, Modal, Upload } from "antd";
 import type { RcFile, UploadProps } from "antd/es/upload";
 import type { UploadFile } from "antd/es/upload/interface";
-import { productSubmit } from "../../ฺFrom/ProductFrom";
+import { productSubmit } from "../../From/ProductFrom";
 import { getBase64 } from "@/app/lib/getLocalBase64";
 
 type Props = {

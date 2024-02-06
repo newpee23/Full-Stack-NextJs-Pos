@@ -8,7 +8,7 @@ import { fetchProductType } from '@/types/fetchData';
 import { ColumnsType } from 'antd/lib/table';
 import TagStatus from '../UI/TagStatus';
 import RefreshBtn from '../UI/btn/RefreshBtn';
-import ProductTypeFrom from '../ฺFrom/ProductTypeFrom';
+import ProductTypeFrom from '../From/ProductTypeFrom';
 import DeleteBtn from '../UI/btn/DeleteBtn';
 import HeadNameComponent from '../UI/HeadNameComponent';
 

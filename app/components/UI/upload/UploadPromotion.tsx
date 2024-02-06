@@ -5,7 +5,7 @@ import { Form, Modal, Upload } from "antd";
 import type { RcFile, UploadProps } from "antd/es/upload";
 import type { UploadFile } from "antd/es/upload/interface";
 import { getBase64 } from "@/app/lib/getLocalBase64";
-import { promotionSubmit } from "../../ฺFrom/PromotionFrom";
+import { promotionSubmit } from "../../From/PromotionFrom";
 
 type Props = {
     name: string;

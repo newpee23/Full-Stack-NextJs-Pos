@@ -2,7 +2,7 @@
 import React from "react";
 import { Space, Table, message } from "antd";
 import { ColumnsType } from "antd/es/table";
-import BranchFrom from "../ฺFrom/BranchFrom";
+import BranchFrom from "../From/BranchFrom";
 
 import { useSession } from "next-auth/react";
 import SkeletonTable from "../UI/loading/SkeletonTable";

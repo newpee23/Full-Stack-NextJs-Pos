@@ -11,7 +11,7 @@ import ProductTypeTable from '../components/Table/ProductTypeTable';
 import UnitTable from '../components/Table/UnitTable';
 import ProductTable from '../components/Table/ProductTable';
 import PromotionTable from '../components/Table/PromotionTable';
-import ExpensesItemFrom from '../components/ฺFrom/ExpensesItemFrom';
+import ExpensesItemFrom from '../components/From/ExpensesItemFrom';
 import PromotionItemTable from '../components/Table/PromotionItemTable';
 import OrderBillDetail from '../components/OrderBillDetail';
 import { useAppDispatch, useAppSelector } from '../store/store';

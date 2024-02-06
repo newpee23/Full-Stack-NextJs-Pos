@@ -1,6 +1,6 @@
 import { Col, Form, Select } from 'antd'
 import React from 'react'
-import { optionStatus } from '../../ฺFrom/validate/validate'
+import { optionStatus } from '../../From/validate/validate'
 
 type Props = {
     label: string;

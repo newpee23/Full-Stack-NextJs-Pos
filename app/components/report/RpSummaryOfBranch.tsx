@@ -4,7 +4,7 @@ import { DatePicker, Form, Select, SelectProps, Spin } from "antd";
 import SearchBtn from "../UI/btn/SearchBtn";
 import { dateFetchReport, fetchRpSummaryOfBranchType } from "@/types/fetchData";
 import { getDateQuery, typeNumber } from "@/utils/utils";
-import { branchConfig, rangeConfig } from "../ฺFrom/validate/validate";
+import { branchConfig, rangeConfig } from "../From/validate/validate";
 import { useSession } from "next-auth/react";
 import { useSearchDataRpSummaryOfBranch, useSelectOpRpSummaryOfBranch } from "@/app/api/rp/RpSummaryOfBranch";
 import SkeletonTable from "../UI/loading/SkeletonTable";

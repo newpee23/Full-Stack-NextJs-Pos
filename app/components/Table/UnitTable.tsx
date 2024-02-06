@@ -9,7 +9,7 @@ import { fetchUnit } from '@/types/fetchData';
 import TagStatus from '../UI/TagStatus';
 import DeleteBtn from '../UI/btn/DeleteBtn';
 import RefreshBtn from '../UI/btn/RefreshBtn';
-import UnitFrom from '../ฺFrom/UnitFrom';
+import UnitFrom from '../From/UnitFrom';
 import HeadNameComponent from '../UI/HeadNameComponent';
 
 const UnitTable = () => {

@@ -8,7 +8,7 @@ import { ColumnsType } from 'antd/lib/table';
 import { fetchExpenses } from '@/types/fetchData';
 import TagStatus from '../UI/TagStatus';
 import RefreshBtn from '../UI/btn/RefreshBtn';
-import ExpensesFrom from '../ฺFrom/ExpensesFrom';
+import ExpensesFrom from '../From/ExpensesFrom';
 import DeleteBtn from '../UI/btn/DeleteBtn';
 import HeadNameComponent from '../UI/HeadNameComponent';
 

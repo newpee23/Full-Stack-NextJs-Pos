@@ -1,5 +1,5 @@
 import React from 'react'
-import ProductFrom from '../ฺFrom/ProductFrom'
+import ProductFrom from '../From/ProductFrom'
 import { Space, Table, message } from 'antd';
 import { useSession } from 'next-auth/react';
 import { useDataProduct, useDeleteDataProduct } from '@/app/api/product';

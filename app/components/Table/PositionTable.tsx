@@ -8,7 +8,7 @@ import { useDataPosition, useDeleteDataPosition } from '@/app/api/position';
 import SkeletonTable from '../UI/loading/SkeletonTable';
 import ErrPage from '../ErrPage';
 import RefreshBtn from '../UI/btn/RefreshBtn';
-import PositionFrom from '../ฺFrom/PositionFrom';
+import PositionFrom from '../From/PositionFrom';
 import DeleteBtn from '../UI/btn/DeleteBtn';
 import HeadNameComponent from '../UI/HeadNameComponent';
 
