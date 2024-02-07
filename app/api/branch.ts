@@ -1,5 +1,5 @@
 // api/fetchTableData.ts
-import { fetchTableBranch } from '@/types/fetchData';
+import { fetchOptionAddTables, fetchTableBranch, optionSelect } from '@/types/fetchData';
 import { dataVerifyBranch } from '@/types/verify';
 import axios, { AxiosError } from 'axios';
 import { useMutation, useQuery } from 'react-query';
@@ -189,6 +189,46 @@ const updateBranch = async (token: string | undefined,branchData: dataVerifyBran
   }
 };
 
+const fetchOptions = async (token: string | undefined, companyId: number | undefined): Promise<optionSelect[]> => {
+  try {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/selectOption/optionBranch`, {
+          headers: {
+              Authorization: `Bearer ${token}`,
+          },
+      });
+
+      if (!response.data) {
+          console.error('Failed to fetch options data');
+          return [];
+      }
+
+      const optionBranch: optionSelect[] = response.data.optionBranch;
+      return optionBranch;
+  } catch (error: unknown) {
+      if (axios.AxiosError) {
+          // The error is an instance of AxiosError
+          const axiosError = error as AxiosError;
+
+          if (axiosError.response) {
+              // Server responded with a status code that falls out the range of 2xx
+              console.error("Error data: ", axiosError.response.data);
+              console.error("Error status: ", axiosError.response.status);
+              console.error("Error headers: ", axiosError.response.headers);
+          } else if (axiosError.request) {
+              // Request was made but no response was received
+              console.error("Error request: ", axiosError.request);
+          } else {
+              // Something happened in setting up the request that triggered an Error
+              console.error("Error message: ", axiosError.message);
+          }
+      } else {
+          // Handel non-Axios error
+          console.error("Unexpected error: ", error);
+      }
+      throw error;
+  }
+};
+
 // function React Query
 export const useUpdateDataBranch = () => {
   return useMutation(
@@ -217,5 +257,11 @@ export const useDeleteDataBranch = () => {
 export const useDataBranch = (token: string | undefined, company_id: number | undefined) => {
   return useQuery('dataBranch', () => fetchBranchData(token, company_id), {
     refetchOnWindowFocus: false,
+  });
+};
+
+export const useSelectOpBranch = (token: string | undefined, companyId: number | undefined) => {
+  return useQuery('selectOpAddBranch', () => fetchOptions(token, companyId), {
+      refetchOnWindowFocus: false,
   });
 };

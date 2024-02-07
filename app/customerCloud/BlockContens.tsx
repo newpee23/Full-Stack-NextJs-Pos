@@ -36,7 +36,7 @@ const BlockContens = (props: Props) => {
       dispatch(setShowOrderBillMaking(false));
       switch (props.idComponents) {
         case '1':
-          if(session?.user.role === "admin"){
+          if (session?.user.role === "admin") {
             setComponent(<HomeAdminPage />);
             break;
           }
@@ -90,6 +90,9 @@ const BlockContens = (props: Props) => {
         case '21':
           setComponent(<RpExpensesOfBranch />);
           break;
+        case '22':
+          setComponent(<BranchTable />);
+          break;
         // เพิ่ม case ตามต้องการ
         default:
           setComponent(null);
@@ -100,10 +103,10 @@ const BlockContens = (props: Props) => {
 
   return (
     <section className="w-full">
-      { session?.user.role !== "admin" && 
+      {session?.user.role !== "admin" &&
         <div className="flex justify-center m-3">
           <HeadTitle />
-        </div>  
+        </div>
       }
       <div className="flex flex-col justify-center m-3 bg-white shadow-md rounded-lg">
         {showOrderBillProcess ? <OrderBillDetail title="แสดงออเดอร์ประจำวัน" /> : showOrderBillMaking ? <OrderBillDetail title="แสดงออเดอร์กำลังเตรียมประจำวัน" /> : component}

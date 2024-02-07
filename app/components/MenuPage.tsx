@@ -43,7 +43,7 @@ const MenuPage = ({ onMenuClick }: MenuPageProps) => {
     session?.user.role === "userAdmin" ? getItem("โปรโมชั่น", "sub4", <RiAddBoxFill />, [ getItem("หัวข้อโปรโมชั่น", "15"), getItem("บันทึกโปรโมชั่น", "16") ]) : null,
     session?.user.role === "userAdmin" ? getItem("รายงาน", "sub5", <BiSolidReport />, [ getItem("รายงานสรุปยอดขายประจำสาขา", "17"), getItem("รายงานค่าใช้จ่ายประจำสาขา", "18") ]) : null,
     session?.user.role === "admin" ? getItem("ข้อมูลบริษัท", "19", <RiHome3Fill />) : null,
-    session?.user.role === "admin" ? getItem("ข้อมูลสาขา", "20", <FaHouseUser />) : null,
+    session?.user.role === "admin" ? getItem("ข้อมูลสาขา", "22", <FaHouseUser />) : null,
     session?.user.role === "admin" ? getItem("ข้อมูลผู้ใช้ประจำสาขา", "21", <FaUserPlus />) : null,
     getItem("LogOut", "13", <FaSignOutAlt />),
   ];

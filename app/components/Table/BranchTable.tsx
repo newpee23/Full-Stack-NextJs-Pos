@@ -71,19 +71,6 @@ const BranchTable = () => {
       className: "min-w-[230px]",
     },
     {
-      title: "รหัสใบเสร็จ",
-      dataIndex: "codeReceipt",
-      key: "codeReceipt",
-      className: "min-w-[150px] text-center",
-      align: "center",
-    },
-    {
-      title: "ที่อยู่สาขา",
-      dataIndex: "address",
-      key: "address",
-      className: "min-w-[250px]",
-    },
-    {
       title: "วันหมดอายุสาขา",
       dataIndex: "expiration",
       key: "expiration",

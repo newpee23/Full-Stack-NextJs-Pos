@@ -1,5 +1,5 @@
 import { getCompanyById } from "@/utils/company";
-import { fetchOptionAddEmployee, fetchOptionBranch, fetchOptionExpensesItem, fetchOptionProduct, fetchOptionPromotionItem, fetchOptionTables } from "@/utils/optionSelect";
+import { fetchOptionAddEmployee, fetchOptionBranch, fetchOptionCompany, fetchOptionExpensesItem, fetchOptionProduct, fetchOptionPromotionItem, fetchOptionTables } from "@/utils/optionSelect";
 import { NextApiResponse } from "next";
 
 export const handleGetOptionAddEmployee = async (res: NextApiResponse, companyId: number) => {
@@ -43,4 +43,10 @@ export const handleGetOptionBranch  = async (res: NextApiResponse, companyId: nu
     const option = await fetchOptionBranch(companyId);
 
     return res.status(200).json({ message: "Options found", optionBranchItem: option, status: true });
+}
+
+export const handleGetOptionCompany  = async (res: NextApiResponse) => {
+    const option = await fetchOptionCompany();
+
+    return res.status(200).json({ message: "Options found", optionBranch: option, status: true });
 }

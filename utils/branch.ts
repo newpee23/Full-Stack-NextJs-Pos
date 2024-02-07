@@ -174,30 +174,39 @@ export const deleteDataBranch = async (id: number): Promise<fetchBranch | null> 
 
 export const getBranchByCompanyId = async (companyId: number): Promise<fetchTableBranch[] | null> => {
   try {
-    const branch = await prisma.branch.findMany({
-      where: { companyId: companyId, },
-      orderBy: { id: 'asc', },
-    });
+    let branch = null;
+
+    if (companyId !== 1) {
+      branch = await prisma.branch.findMany({
+        where: { companyId: companyId },
+        orderBy: { id: 'asc' },
+      });
+    } else {
+      branch = await prisma.branch.findMany({
+        where: { status: 'Active' },
+        orderBy: { id: 'asc' },
+      });
+    }
 
     if (!branch) return null;
-      // สร้าง key เพื่อเอาไปใส่ table และ แปลง date เป็น str
-      const branchesWithKey: fetchTableBranch[] = branch.map((branch, index) => ({
-        ...branch,
-        index: (index + 1),
-        key: branch.id.toString(),
-        createdAt: formatDate(branch.createdAt),
-        expiration: formatDate(branch.expiration),
-      }));
+
+    // สร้าง key เพื่อเอาไปใส่ table และ แปลง date เป็น str
+    const branchesWithKey: fetchTableBranch[] = branch.map((branch, index) => ({
+      ...branch,
+      index: index + 1,
+      key: branch.id.toString(),
+      createdAt: formatDate(branch.createdAt),
+      expiration: formatDate(branch.expiration),
+    }));
 
     return branchesWithKey;
   } catch (error) {
-    // Handle any errors here or log them
     console.error('Error fetching branch:', error);
     return null;
   } finally {
     await prisma.$disconnect();
   }
-}
+};
 
 export const updateDataBranch = async (id: number, updatedData: Partial<fetchBranch>): Promise<fetchBranch | null> => {
   try {
@@ -212,6 +221,7 @@ export const updateDataBranch = async (id: number, updatedData: Partial<fetchBra
           codeReceipt: updatedData.codeReceipt,
           address: updatedData.address,
           expiration: isoExpiration,
+          companyId: updatedData.companyId,
           phone: updatedData.phone,
           status: updatedData.status
         },

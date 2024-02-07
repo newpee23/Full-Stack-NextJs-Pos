@@ -13,7 +13,6 @@ import { useAddDataProduct, useSelectOpProduct, useUpdateDataProduct } from '@/a
 import ErrPage from '../ErrPage';
 import SelectProductType from '../UI/select/SelectProductType';
 import SelectUnit from '../UI/select/SelectUnit';
-import { RcFile } from 'antd/lib/upload';
 import UploadAnt from '../UI/upload/UploadProduct';
 
 interface Props {

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Form, message } from "antd";
+import { Form, Skeleton, message } from "antd";
 
 import { parseDateStringToMoment } from "./validate/validate";
 import SaveBtn from "../UI/btn/SaveBtn";
 import moment, { Moment } from "moment";
 
 import { useSession } from "next-auth/react";
-import { useAddDataBranch, useUpdateDataBranch } from "@/app/api/branch";
+import { useAddDataBranch, useSelectOpBranch, useUpdateDataBranch } from "@/app/api/branch";
 import { useAppDispatch } from "@/app/store/store";
 import { setLoading } from "@/app/store/slices/loadingSlice";
 import ProgressBar from "../UI/loading/ProgressBar";
@@ -14,12 +14,15 @@ import { DataTypeBranch } from "@/types/columns";
 import DrawerActionData from "../DrawerActionData";
 import InputFrom from "../UI/InputFrom";
 import StatusFrom from "../UI/select/StatusFrom";
+import ErrPage from "../ErrPage";
+import SelectCompany from "../UI/select/SelectCompany";
 
 interface branchSubmit {
     name: string;
     codeReceipt: string;
     address: string;
     expiration: Moment | undefined;
+    company?: string;
     phone: string;
     status: string;
 }
@@ -34,9 +37,10 @@ interface Props {
 const BranchFrom = ({ onClick, editData, title, statusAction }: Props) => {
 
     const dispatch = useAppDispatch();
+    const { data: session } = useSession();
     const addDataBranchMutation = useAddDataBranch();
     const updateDataBranchMutation = useUpdateDataBranch();
-    const { data: session } = useSession();
+    const { data, isLoading, isError, refetch, remove } = useSelectOpBranch(session?.user.accessToken, session?.user.company_id);
     const [messageApi, contextHolder] = message.useMessage();
     const [loadingQuery, setLoadingQuery] = useState<number>(0);
     const [messageError, setMessageError] = useState<{ message: string }[]>([]);
@@ -46,6 +50,7 @@ const BranchFrom = ({ onClick, editData, title, statusAction }: Props) => {
         address: "",
         expiration: undefined,
         phone: "",
+        company: undefined,
         status: "Active",
     });
 
@@ -59,6 +64,16 @@ const BranchFrom = ({ onClick, editData, title, statusAction }: Props) => {
             }
             // UpdateBranch
             if (editData?.key) {
+                
+                const companyFilter = data?.filter(item => item.label  === dataFrom.company);
+                let companyIdSelect = 0;
+           
+                if(companyFilter?.length){
+                    companyIdSelect = companyFilter[0].value;
+                }else{
+                    companyIdSelect = dataFrom.company ? parseInt(dataFrom.company, 10) : 0 ;
+                }
+              
                 const updateBranch = await updateDataBranchMutation.mutateAsync({
                     token: session?.user.accessToken,
                     branchData: {
@@ -68,7 +83,7 @@ const BranchFrom = ({ onClick, editData, title, statusAction }: Props) => {
                         address: dataFrom.address,
                         expiration: dataFrom.expiration ? dataFrom.expiration.toDate() : moment().toDate(),
                         phone: dataFrom.phone,
-                        companyId: session?.user.company_id,
+                        companyId: (session?.user.role === "admin" && dataFrom.company) ? companyIdSelect : session.user.company_id,
                         status: dataFrom.status === "Active" ? "Active" : "InActive",
                     },
                     setLoadingQuery: setLoadingQuery
@@ -91,7 +106,7 @@ const BranchFrom = ({ onClick, editData, title, statusAction }: Props) => {
                     address: dataFrom.address,
                     expiration: dataFrom.expiration ? dataFrom.expiration.toDate() : moment().toDate(),
                     phone: dataFrom.phone,
-                    companyId: session?.user.company_id,
+                    companyId: (session?.user.role === "admin" && dataFrom.company) ? parseInt(dataFrom.company, 10) : session?.user.company_id,
                     status: dataFrom.status === "Active" ? "Active" : "InActive",
                 },
                 setLoadingQuery: setLoadingQuery
@@ -125,9 +140,10 @@ const BranchFrom = ({ onClick, editData, title, statusAction }: Props) => {
                     expiration: parseDateStringToMoment(editData.expiration),
                     phone: editData.phone,
                     status: editData.status,
+                    company: editData.companyId ? "บริษัท นิวจำกัด" : undefined,
                 });
             }
-            if(messageError.length > 0)  setMessageError([]);
+            if (messageError.length > 0) setMessageError([]);
         }
     };
 
@@ -139,26 +155,39 @@ const BranchFrom = ({ onClick, editData, title, statusAction }: Props) => {
         loadComponents();
     }, [loadingQuery]);
 
+    const handleRefresh = () => {
+        remove();
+        return refetch();
+    }
+
+    if (isLoading) {
+        return <div className="mx-3"><Skeleton.Input active={true} size="small" /></div>;
+    }
+
+    if (isError) {
+        return <ErrPage onClick={handleRefresh} />;
+    }
 
     const MyForm = ({ onFinish }: { onFinish: (values: object) => void }): React.JSX.Element => {
         return (
             <Form layout="vertical" onFinish={(values) => { setFormValues(values as branchSubmit); onFinish(values); }} initialValues={formValues}>
-               {/* ชื่อสาขา,รหัสใบเสร็จ */}
-               <div className="grid gap-3 mb-3 grid-cols-1 sml:grid-cols-2">
-                    <InputFrom label="ชื่อสาขา" name="name" required={true} type="text"/>
-                    <InputFrom label="รหัสใบเสร็จ" name="codeReceipt" required={true} type="text"/>
-               </div>
+                {/* ชื่อสาขา,รหัสใบเสร็จ */}
+                <div className="grid gap-3 mb-3 grid-cols-1 sml:grid-cols-2">
+                    <InputFrom label="ชื่อสาขา" name="name" required={true} type="text" />
+                    <InputFrom label="รหัสใบเสร็จ" name="codeReceipt" required={true} type="text" />
+                </div>
                 {/* ที่อยู่สาขา */}
                 <div className="grid gap-3 mb-3 grid-cols-1 sml:grid-cols-1">
-                    <InputFrom label="ที่อยู่สาขา" name="address" required={true} type="textArea"/>
+                    <InputFrom label="ที่อยู่สาขา" name="address" required={true} type="textArea" />
                 </div>
                 {/* วันหมดอายุสาขา,เบอร์โทรศัพท์ */}
                 <div className="grid gap-3 mb-3 grid-cols-1 sml:grid-cols-2">
-                    <InputFrom label="วันหมดอายุสาขา" name="expiration" required={true} type="datePicker"/>
-                    <InputFrom label="เบอร์โทรศัพท์" name="phone" required={true} type="text"/>
+                    <InputFrom label="วันหมดอายุสาขา" name="expiration" required={true} type="datePicker" />
+                    <InputFrom label="เบอร์โทรศัพท์" name="phone" required={true} type="text" />
                 </div>
                 {/* สถานะ */}
-                <div className="grid gap-3 mb-3 grid-cols-1 sml:grid-cols-2">
+                <div className="grid gap-3 mb-4 grid-cols-1 sml:grid-cols-2 mt-3">
+                    {session?.user.role === "admin" && <SelectCompany data={data ? data : []} />}
                     <StatusFrom label="สถานะ" name="status" />
                 </div>
                 <ProgressBar />
@@ -166,7 +195,7 @@ const BranchFrom = ({ onClick, editData, title, statusAction }: Props) => {
             </Form>
         );
     };
-
+    
     return (
         <div>
             {contextHolder}
