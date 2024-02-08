@@ -70,7 +70,7 @@ export const generatePdf = async ({ details, page, detailReceipt }: Props) => {
 
     pdf.addImage(qrCodeDataUrl, 'PNG', qrCodeX, qrCodeY, qrCodeSize, qrCodeSize);
     // Text
-    addText("(สแกนเพื่อสั่งอาหาร)" + qrCodeData, 80, 16);
+    addText("(สแกนเพื่อสั่งอาหาร)", 80, 16);
     addText(`เวลาสั่งอาหาร ${detailReceipt.expiration} นาที (${detailReceipt.peoples} ท่าน)`, 85, 14);
     addText(`เวลาสิ้นสุด ${getDate(detailReceipt.endOrder.toString())} ${getTime7H(detailReceipt.endOrder.toString())}`, 90, 14);
 
