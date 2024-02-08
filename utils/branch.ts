@@ -178,11 +178,17 @@ export const getBranchByCompanyId = async (companyId: number): Promise<fetchTabl
 
     if (companyId !== 1) {
       branch = await prisma.branch.findMany({
+        include: {
+          company: true
+        },
         where: { companyId: companyId },
         orderBy: { id: 'asc' },
       });
     } else {
       branch = await prisma.branch.findMany({
+        include: {
+          company: true
+        },
         where: { status: 'Active' },
         orderBy: { id: 'asc' },
       });
@@ -197,6 +203,7 @@ export const getBranchByCompanyId = async (companyId: number): Promise<fetchTabl
       key: branch.id.toString(),
       createdAt: formatDate(branch.createdAt),
       expiration: formatDate(branch.expiration),
+      companyName: branch.company.name
     }));
 
     return branchesWithKey;

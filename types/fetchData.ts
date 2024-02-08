@@ -52,6 +52,7 @@ export interface fetchTableBranch {
   expiration: string;
   phone: string;
   companyId: number;
+  companyName: string;
   status: "Active" | "InActive";
 }
 
@@ -215,6 +216,12 @@ export interface optionSelect {
   label: string;
 }
 
+export interface optionSelectCompany {
+  value: number;
+  label: string;
+  companyId: number;
+}
+
 export interface optionSelectPromotionItem {
   id?: number;
   value: number;
@@ -229,6 +236,10 @@ export interface optionSelectPromotionItem {
 export interface fetchOptionAddEmployeeType {
   position: optionSelect[];
   branch: optionSelect[];
+  company: optionSelect[];
+  branchCompany: optionSelectCompany[];
+  allBranchs: optionSelectCompany[];
+  allPositions: optionSelectCompany[];
 }
 
 export interface fetchOptionAddTables {

@@ -85,6 +85,22 @@ const ProductFrom = ({ onClick, editData, title, statusAction }: Props) => {
       // Update Tables
       if (editData?.key) {
 
+        let productTypeSelect = 0;
+        let unitSelect = 0;
+        const productTypeFilter = data?.productType.filter(item => item.label  === dataFrom.productTypeId);
+        const unitFilter = data?.unit.filter(item => item.label  === dataFrom.unitId);
+   
+        if(productTypeFilter?.length){
+          productTypeSelect = productTypeFilter[0].value;
+        }else{
+          productTypeSelect = dataFrom.productTypeId ? parseInt(dataFrom.productTypeId, 10) : 0 ;
+        }
+        if(unitFilter?.length){
+          unitSelect = unitFilter[0].value;
+        }else{
+          unitSelect = dataFrom.unitId ? parseInt(dataFrom.unitId, 10) : 0 ;
+        }
+
         const updateProduct = await updateDataProductMutation.mutateAsync({
           token: session?.user.accessToken,
           productData: {
@@ -95,8 +111,8 @@ const ProductFrom = ({ onClick, editData, title, statusAction }: Props) => {
             cost: parseInt(dataFrom.cost, 10),
             price: parseInt(dataFrom.price, 10),
             stock: parseInt(dataFrom.stock, 10),
-            unitId: parseInt(dataFrom.unitId, 10),
-            productTypeId: parseInt(dataFrom.productTypeId, 10),
+            unitId: unitSelect,
+            productTypeId: productTypeSelect,
             companyId: session?.user.company_id,
             status: dataFrom.status === "Active" ? "Active" : "InActive",
             statusSail: dataFrom.statusSail === "Active" ? "Active" : "InActive",
@@ -157,8 +173,8 @@ const ProductFrom = ({ onClick, editData, title, statusAction }: Props) => {
           cost: editData.cost ? editData.cost.toString() : "0",
           price: editData.price ? editData.price.toString() : "0",
           stock: editData.stock ? editData.stock.toString() : "0",
-          unitId: editData.unitId ? editData.unitId.toString() : undefined,
-          productTypeId: editData.productTypeId ? editData.productTypeId.toString() : undefined,
+          unitId: editData.unitId ? editData.unit.name : undefined,
+          productTypeId: editData.productTypeId ? editData.productType.name : undefined,
           companyId: editData.companyId,
           status: editData.status,
           statusSail: editData.statusSail,

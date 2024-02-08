@@ -68,7 +68,7 @@ export const getEmployeeByNameCardIdUser = async (name: string, subname: string,
         const employee = await prisma.employee.findFirst({
             where: whereCondition,
         });
-     
+
         if (!employee) return null;
         return employee as fetchEmployee;
     } catch (error: unknown) {
@@ -175,33 +175,59 @@ export const getEmployeeById = async (id: number): Promise<fetchEmployee | null>
 
 export const getEmployeeByCompanyId = async (companyId: number): Promise<fetchEmployee[] | null> => {
     try {
-        const employee = await prisma.employee.findMany({
-            where: {
-                companyId: companyId,
-            },
-            include: {
-                branch: {
-                    select: {
-                        id: true,
-                        name: true,
+        let employee = null;
+        if (companyId == 1) {
+            employee = await prisma.employee.findMany({
+                include: {
+                    branch: {
+                        select: {
+                            id: true,
+                            name: true,
+                        },
+                    },
+                    company: {
+                        select: {
+                            id: true,
+                            name: true,
+                        },
+                    },
+                    position: {
+                        select: {
+                            id: true,
+                            name: true,
+                        },
                     },
                 },
-                company: {
-                    select: {
-                        id: true,
-                        name: true,
+                orderBy: { id: 'asc', },
+            });
+        } else {
+            employee = await prisma.employee.findMany({
+                where: {
+                    companyId: companyId,
+                },
+                include: {
+                    branch: {
+                        select: {
+                            id: true,
+                            name: true,
+                        },
+                    },
+                    company: {
+                        select: {
+                            id: true,
+                            name: true,
+                        },
+                    },
+                    position: {
+                        select: {
+                            id: true,
+                            name: true,
+                        },
                     },
                 },
-                position: {
-                    select: {
-                        id: true,
-                        name: true,
-                    },
-                },
-            },
-            orderBy: { id: 'asc', },
-        });
-
+                orderBy: { id: 'asc', },
+            });
+        }
         const employeesWithKey: fetchEmployee[] = employee.map((employee, index) => ({
             ...employee,
             index: (index + 1),

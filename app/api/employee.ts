@@ -60,7 +60,7 @@ const fetchOptions = async (token: string | undefined, companyId: number | undef
 
     if (!response.data) {
       console.error('Failed to fetch options data');
-      return {branch: [], position: []};
+      return {branch: [], position: [], company: [], branchCompany: [] , allBranchs: [] , allPositions: []};
     }
 
     const employee: fetchOptionAddEmployeeType = response.data.optionEmployee;

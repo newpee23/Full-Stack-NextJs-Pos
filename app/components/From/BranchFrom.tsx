@@ -140,7 +140,7 @@ const BranchFrom = ({ onClick, editData, title, statusAction }: Props) => {
                     expiration: parseDateStringToMoment(editData.expiration),
                     phone: editData.phone,
                     status: editData.status,
-                    company: editData.companyId ? "บริษัท นิวจำกัด" : undefined,
+                    company: editData.companyId ? editData.companyName : undefined,
                 });
             }
             if (messageError.length > 0) setMessageError([]);

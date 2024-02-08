@@ -8,6 +8,7 @@ export interface DataTypeBranch {
   expiration: string;
   phone: string;
   companyId: number;
+  companyName: string;
   status: "Active" | "InActive";
 }
 
