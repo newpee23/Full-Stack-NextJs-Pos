@@ -94,19 +94,22 @@ const EmployeeFrom = ({ onClick, title, statusAction, editData }: Props) => {
     }
 
     const handleChangeCompany = (companyId: number) => {
+  
         const branch = data?.branchCompany.filter(item => item.companyId === companyId);
         if (branch?.length && branch.length > 0) {
             const updateBranch: optionSelect[] = branch.map((i, k) => ({
                 label: i.label,
                 value: i.value
             }));
-            setFormValues((prev) => ({
+      
+            return setFormValues((prev) => ({
                 ...prev,
                 company: companyId,
                 branchAdmin: updateBranch
             }))
             // setBranchAdmin(updateBranch);
         }
+        return showMessage({ status: "error", text: "ไม่พบข้อมูลสาขาในบริษัทที่เลือก" });
     }
 
     const handleSetBranchs = (companyId: number): optionSelect[] => {

@@ -70,6 +70,17 @@ export const getPositionByIdByCompanyId = async (id: number, fetchColumn: string
       return position as fetchPosition;
     }
 
+    if(id === 1){
+      const position = await getAllPosition();
+      if (!position) return null;
+      // สร้าง key เพื่อเอาไปใส่ table และ แปลง date เป็น str
+      const positionsWithKey: fetchPosition[] = position.map((position, index) => ({
+        ...position,
+        index: (index + 1),
+        key: position.id.toString(),
+      }));
+      return positionsWithKey;
+    }
     // Where CompanyId
     const position = await prisma.position.findMany({
       where: { companyId: id },

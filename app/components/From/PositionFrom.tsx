@@ -1,5 +1,5 @@
 import { useAppDispatch } from "@/app/store/store";
-import { Col, Form, Input, Row, Select, message } from "antd";
+import { Col, Form, Input, Row, Select, Skeleton, message } from "antd";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react"
 import SaveBtn from "../UI/btn/SaveBtn";
@@ -7,8 +7,10 @@ import ProgressBar from "../UI/loading/ProgressBar";
 import { optionStatus, validateWhitespace } from "./validate/validate";
 import DrawerActionData from "../DrawerActionData";
 import { setLoading } from "@/app/store/slices/loadingSlice";
-import { useAddDataPosition, useUpdateDataPosition } from "@/app/api/position";
+import { useAddDataPosition, useSelectOpPosition, useUpdateDataPosition } from "@/app/api/position";
 import { DataTypePosition } from "@/types/columns";
+import ErrPage from "../ErrPage";
+import SelectCompany from "../UI/select/SelectCompany";
 
 interface Props {
     onClick: () => void;
@@ -20,12 +22,14 @@ interface Props {
 interface positionSubmit {
     name: string;
     salary: string;
+    company: number | undefined;
     status: string;
 }
 
 const PositionFrom = ({ onClick, statusAction, title, editData }: Props) => {
     const dispatch = useAppDispatch();
     const { data: session } = useSession();
+    const { data, isLoading, isError, refetch, remove } = useSelectOpPosition(session?.user.accessToken, session?.user.company_id);
     const [messageApi, contextHolder] = message.useMessage();
     const addDataPositionMutation = useAddDataPosition();
     const updateDataPositionMutation = useUpdateDataPosition();
@@ -34,6 +38,7 @@ const PositionFrom = ({ onClick, statusAction, title, editData }: Props) => {
     const [formValues, setFormValues] = useState<positionSubmit>({
         name: "",
         salary: "",
+        company: undefined,
         status: "Active",
     });
 
@@ -50,6 +55,7 @@ const PositionFrom = ({ onClick, statusAction, title, editData }: Props) => {
                     name: editData.name,
                     salary: editData.salary.toString(),
                     status: editData.status,
+                    company: editData.companyId
                 });
             }
             if (messageError.length > 0) setMessageError([]);
@@ -73,7 +79,7 @@ const PositionFrom = ({ onClick, statusAction, title, editData }: Props) => {
                         id: parseInt(editData.key, 10),
                         name: dataFrom.name,
                         salary: parseFloat(dataFrom.salary),
-                        companyId: session?.user.company_id,
+                        companyId: session.user.role === "admin" ? dataFrom.company ? dataFrom.company : session?.user.company_id : session?.user.company_id,
                         status: dataFrom.status === "Active" ? "Active" : "InActive",
                     },
                     setLoadingQuery: setLoadingQuery
@@ -96,7 +102,7 @@ const PositionFrom = ({ onClick, statusAction, title, editData }: Props) => {
                 positionData: {
                     name: dataFrom.name,
                     salary: parseFloat(dataFrom.salary),
-                    companyId: session?.user.company_id,
+                    companyId: session.user.role === "admin" ? dataFrom.company ? dataFrom.company : session?.user.company_id : session?.user.company_id,
                     status: dataFrom.status === "Active" ? "Active" : "InActive",
                 },
                 setLoadingQuery: setLoadingQuery
@@ -121,6 +127,19 @@ const PositionFrom = ({ onClick, statusAction, title, editData }: Props) => {
 
         loadComponents();
     }, [loadingQuery]);
+
+    const handleRefresh = () => {
+        remove();
+        return refetch();
+    }
+
+    if (isLoading) {
+        return <div className="mx-3"><Skeleton.Input active={true} size="small" /></div>;
+    }
+
+    if (isError) {
+        return <ErrPage onClick={handleRefresh} />;
+    }
 
     const MyForm = ({ onFinish }: { onFinish: (values: object) => void }): React.JSX.Element => {
         return (
@@ -158,6 +177,23 @@ const PositionFrom = ({ onClick, statusAction, title, editData }: Props) => {
                     </Col>
                 </Row>
                 <Row gutter={16}>
+                    { session?.user.role === "admin" &&
+                        <Col span={12}>
+                            <Form.Item name="company" label="บริษัท"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: "กรุณาเลือกบริษัท",
+                                    },
+                                ]}
+                            >
+                                <Select showSearch placeholder="เลือกบริษัท" optionFilterProp="children" options={data ? data : []} allowClear
+                                    filterOption={(input, option) => (option?.label ?? '').includes(input)}
+                                    filterSort={(optionA, optionB) => (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())}
+                                />
+                            </Form.Item>
+                        </Col>
+                    }
                     <Col span={12}>
                         <Form.Item name="status" label="สถานะ"
                             rules={[

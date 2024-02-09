@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { RiAddBoxFill, RiBillFill , RiHome3Fill } from "react-icons/ri";
 import { FaBoxArchive } from "react-icons/fa6";
-import { FaHouseUser, FaSignOutAlt, FaUser, FaUserPlus } from "react-icons/fa";
+import { FaHouseUser, FaIdCardAlt, FaSignOutAlt, FaUser, FaUserPlus } from "react-icons/fa";
 import { BiLogoPaypal, BiSolidReport } from "react-icons/bi";
 import { MdTableRestaurant } from "react-icons/md";
 import type { MenuProps } from "antd";
@@ -44,6 +44,7 @@ const MenuPage = ({ onMenuClick }: MenuPageProps) => {
     session?.user.role === "userAdmin" ? getItem("รายงาน", "sub5", <BiSolidReport />, [ getItem("รายงานสรุปยอดขายประจำสาขา", "17"), getItem("รายงานค่าใช้จ่ายประจำสาขา", "18") ]) : null,
     session?.user.role === "admin" ? getItem("ข้อมูลบริษัท", "19", <RiHome3Fill />) : null,
     session?.user.role === "admin" ? getItem("ข้อมูลสาขา", "22", <FaHouseUser />) : null,
+    session?.user.role === "admin" ? getItem("ข้อมูลตำแหน่งผู้ใช้ประจำสาขา", "24", <FaIdCardAlt />) : null,
     session?.user.role === "admin" ? getItem("ข้อมูลผู้ใช้ประจำสาขา", "23", <FaUserPlus />) : null,
     getItem("LogOut", "13", <FaSignOutAlt />),
   ];

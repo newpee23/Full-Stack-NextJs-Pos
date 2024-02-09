@@ -96,6 +96,9 @@ const BlockContens = (props: Props) => {
         case '23':
           setComponent(<EmployeeTable />);
           break;
+        case '24':
+          setComponent(<PositionTable />);
+          break;
         // เพิ่ม case ตามต้องการ
         default:
           setComponent(null);
