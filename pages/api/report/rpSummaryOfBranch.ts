@@ -1,9 +1,9 @@
-"use server";
 import { NextApiRequest, NextApiResponse } from "next";
 import { handleGetRpSummaryOfBranch } from "./service";
 import { dateFetchReport } from "@/types/fetchData";
+import authenticate from "../checkToken";
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+export default authenticate(async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === "GET") {
         // GET(req, res);
     } else if (req.method === "POST") {
@@ -15,7 +15,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     } else {
         res.status(405).end();
     }
-};
+});
 
 
 const POST = async (req: NextApiRequest, res: NextApiResponse) => {

@@ -1,4 +1,3 @@
-"use server";
 import { verifyToken } from "@/utils/verifyToken";
 import { verifyTransactionId, verifyUserId } from "@/utils/verifyUserId";
 import { NextApiRequest, NextApiResponse } from "next";

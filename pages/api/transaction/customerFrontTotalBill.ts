@@ -1,9 +1,8 @@
-"use server";
 import { NextApiRequest, NextApiResponse } from "next";
 import { authOrderTransaction } from "../checkToken";
 import { handleGetOrderTotalBill } from "./service";
 
-export default (async (req: NextApiRequest, res: NextApiResponse) => {
+export default authOrderTransaction(async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (req.method === "GET") {
         GET(req, res);

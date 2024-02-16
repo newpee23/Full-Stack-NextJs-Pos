@@ -1,10 +1,9 @@
-"use server";
 import { typeNumber } from "@/utils/utils";
 import { NextApiRequest, NextApiResponse } from "next";
 import authenticate from "../checkToken";
 import { handleGetOrderBillByBranchId } from "./service";
 
-export default (async (req: NextApiRequest, res: NextApiResponse) => {
+export default authenticate(async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === "GET") {
         GET(req, res);
     } else if (req.method === "POST") {

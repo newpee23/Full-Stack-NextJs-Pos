@@ -4,7 +4,7 @@ import authenticate from "../checkToken";
 import { dataVerifyOrderBill } from "@/types/fetchData";
 import { handleUpdateOrderBillStatus } from "./service";
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+export default authenticate (async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "GET") {
     // GET(req, res);
   } else if (req.method === "POST") {
@@ -16,7 +16,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   } else {
     res.status(405).end();
   }
-};
+});
 
 const PUT = async (req: NextApiRequest, res: NextApiResponse) => {
   try {

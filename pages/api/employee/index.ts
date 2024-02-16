@@ -1,11 +1,10 @@
-"use server";
 import { NextApiRequest, NextApiResponse } from "next";
 import authenticate from "../checkToken";
 import { dataVerifyEmployee } from "@/types/verify";
 import { handleAddEmployee, handleDeleteEmployee, handleGetAllEmployee, handleGetEmployeeByCompanyId, handleGetEmployeeById, handleUpdateEmployee } from "./service";
 import { typeNumber } from "@/utils/utils";
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+export default authenticate (async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "GET") {
     GET(req, res);
   } else if (req.method === "POST") {
@@ -17,7 +16,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   } else {
     res.status(405).end();
   }
-};
+});
 
 const GET = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
