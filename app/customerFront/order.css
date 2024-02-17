@@ -53,3 +53,7 @@ h4.ant-list-item-meta-title{
 :where(.css-dev-only-do-not-override-1adbn6x).ant-spin{
     color: #ffffff
 }
+
+.ant-card.ant-card-hoverable.border.css-dev-only-do-not-override-1adbn6x{
+    padding: 10px !important;
+}

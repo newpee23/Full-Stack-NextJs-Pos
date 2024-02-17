@@ -1,9 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { handleAddOrderBill, handleGetCustomerFrontDataById } from "./service";
-import { authOrderTransaction } from "../checkToken";
+import authenticate from "../checkToken";
 import { myStateCartItem } from "@/app/store/slices/cartSlice";
 
-export default authOrderTransaction(async (req: NextApiRequest, res: NextApiResponse) => {
+export default authenticate(async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (req.method === "GET") {
         GET(req, res);
